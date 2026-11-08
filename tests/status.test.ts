@@ -2,17 +2,8 @@ import { describe, expect, it } from "vitest";
 import { getStatus } from "@/lib/status";
 
 describe("getStatus", () => {
-  it("is demo mode when no API key is set", () => {
-    expect(getStatus({}).mode).toBe("demo");
-  });
-
-  it("is demo mode when the API key is empty or whitespace", () => {
-    expect(getStatus({ ANTHROPIC_API_KEY: "" }).mode).toBe("demo");
-    expect(getStatus({ ANTHROPIC_API_KEY: "   " }).mode).toBe("demo");
-  });
-
-  it("is live mode when an API key is set", () => {
-    expect(getStatus({ ANTHROPIC_API_KEY: "test-key" }).mode).toBe("live");
+  it("has no demo/live mode: the app only serves stored outputs", () => {
+    expect(getStatus({ ANTHROPIC_API_KEY: "test-key" })).not.toHaveProperty("mode");
   });
 
   it("uses the default models when none are configured", () => {

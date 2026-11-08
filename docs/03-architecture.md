@@ -2,22 +2,27 @@
 
 ## Overview
 ```
-Browser (Next.js pages)                      Server (Next.js route handlers)              Anthropic API
-───────────────────────                      ────────────────────────────────             ─────────────
-Work queue / case view  ── GET /api/cases ──▶ loads data/complaints.json + demo outputs
-"Run AI on this case"   ── POST /api/run ───▶ 1 mask ─▶ 2 triage ───────────────────────▶ triage model
-                                              3 retrieve (BM25, local)
-                                              4 draft ─────────────────────────────────▶ draft model
-                                              5 verify (code only)
-                                              6 route (code only)
-                        ◀── result + audit events (masked text only; token map stays server-side)
+OFFLINE, on PK's machine (needs ANTHROPIC_API_KEY)                         Anthropic API
+───────────────────────────────────────────────────                         ─────────────
+npm run precompute / npm run eval
+  for each complaint: 1 mask ─▶ 2 triage ──────────────────────────────────▶ triage model
+                      3 retrieve (BM25, local)
+                      4 draft ─────────────────────────────────────────────▶ draft model
+                      5 verify (code only)
+                      6 route (code only)
+  writes data/demo-outputs.json (masked text only; token map never saved)
+  and data/eval-results.json
+
+HOSTED APP (Vercel, no key, never calls the model)
+Browser (Next.js pages)                      Server (Next.js route handlers)
+Work queue / case view  ── GET /api/cases ──▶ data/complaints.json (masked view) + demo-outputs.json
+Amend (edited draft)    ── POST /api/verify ▶ re-runs step 5 on the edited text, returns checks
 Decision panel          ── localStorage (session actions + audit events)
 Model assurance         ── GET /api/eval ───▶ data/eval-results.json
+Footer                  ── GET /api/status ─▶ models, policy and prompt versions
 ```
-Modes:
-- **Demo mode** (no `ANTHROPIC_API_KEY`): `/api/run` returns the stored result for that case from `data/demo-outputs.json`. "Try your own complaint" is disabled with an explanation.
-- **Live mode** (key present): `/api/run` executes the pipeline. Add a simple rate limit (for example 20 runs per IP per hour, in memory) and a maximum input length of 3,000 characters.
-- Expose the mode via `GET /api/status` → `{ mode: "demo" | "live", models: {...}, policyVersion, promptVersion }`, shown in the footer.
+- The app has one mode: it serves stored results, and the footer and About page show the run date.
+- `/api/cases` must never return raw complaint text or customer fields. It returns the stored masked text only.
 
 ## Folder layout
 ```
@@ -26,9 +31,9 @@ app/
   globals.css                     # tokens from docs/07-ui-design.md
   api/
     cases/route.ts                # GET list + single case
-    run/route.ts                  # POST run pipeline (demo or live)
+    verify/route.ts               # POST re-run the verifier on an amended draft
     eval/route.ts                 # GET eval results
-    status/route.ts               # GET mode and versions
+    status/route.ts               # GET models and versions
 components/
   QueueTable.tsx, CaseHeader.tsx, ComplaintBox.tsx, SummaryBox.tsx,
   DraftBox.tsx, PolicyRefs.tsx, ChecksPanel.tsx, DecisionPanel.tsx,
@@ -132,7 +137,7 @@ type AuditEvent = { ts: string; ref: string; actor: string; event: string; detai
 | System · drafting | Draft generated / Draft withheld | clause IDs cited, or reason withheld |
 | System · verification | Check failed | check ID and reason (one event per failure) |
 | System · routing | Routed | route and reason |
-| Staff | Personal data revealed | who, when |
+| Staff | Over-reliance prompt confirmed | seconds from opening the case to approval |
 | Staff | Approved / Amended / Escalated / Co-approved / Returned | reason code + comment |
 
 ## Security and privacy notes (put a short version in the README)

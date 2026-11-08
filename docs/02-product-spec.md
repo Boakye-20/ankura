@@ -22,8 +22,7 @@ Reduce the time handlers spend on searching, summarising, drafting and packaging
 5. Specialist handover pack, generated and checked for missing information
 6. Audit trail of every AI step and human action
 7. Model assurance page showing real evaluation results
-8. Demo mode (no key) and live mode (key on the server); a "Run AI on this case" button in live mode
-9. A "Try your own complaint" box in live mode, so assessors can type a new complaint and watch the pipeline run
+8. Stored outputs: every case shows the result of a real pipeline run (`npm run precompute`), with the run date shown. The app itself never calls the model.
 
 ## Out of scope (state this in the README)
 - Automatic sending to customers or any automated outcome decision
@@ -31,6 +30,8 @@ Reduce the time handlers spend on searching, summarising, drafting and packaging
 - Authentication and role-based access (roles are simulated with a role switcher)
 - Persistent server-side storage (actions are kept in the browser for the session)
 - Voice, attachments or images
+- Running the AI from the app (live mode, "Run AI" button, typing a new complaint). The pipeline runs offline and the app shows its stored results. A pilot would run it inside the bank's case system.
+- Revealing unmasked personal data in the app. Handlers see the masked text only (privacy by design: least data needed).
 
 ## Screens
 ### 1. My work queue (default view)
@@ -43,7 +44,7 @@ Reduce the time handlers spend on searching, summarising, drafting and packaging
 
 ### 2. Case view
 Left column:
-- **Complaint as received**: masked text with tokens shown as chips. A "Reveal personal data" toggle shows the unmasked text to the handler only (the model never sees it). Revealing writes an audit event.
+- **Complaint as received**: masked text with tokens shown as chips, labelled "Personal data masked before AI processing".
 - **Case summary** (labelled "AI-generated · review required") with classification confidence
 - **Proposed response** (labelled "Draft · not sent"), with inline citation chips. Hovering or tapping a chip shows the clause text.
 - **Policy references retrieved**: clause ID + clause text + relevance score
@@ -53,6 +54,7 @@ Right column:
 - **Handler decision**: radio buttons (Approve / Amend / Escalate), reason dropdown (mandatory), comment, Submit
   - Approve is disabled when any check is Fail
   - If the case needs senior co-approval, Approve changes status to "Awaiting senior co-approval"
+  - **Over-reliance prompt**: if Approve is submitted less than 20 seconds after the case opened, ask the handler to confirm they have read the draft and its citations. The confirmation is recorded in the audit trail.
   - Amend opens the draft in an editable text area; on save, the verifier runs again on the edited text
   - Escalate opens the handover pack for that case
 
@@ -68,8 +70,8 @@ Right column:
 - Confusion matrix for complaint category
 - Adversarial test table: test, input summary, expected, actual, pass or fail
 - "Known failures" list: every case the system got wrong, with a short explanation
-- Cost and latency: average tokens and cost per case, average seconds per case (live run)
-- **Adoption** (from session actions, Workforce AI Transformation): share of AI drafts approved unchanged, amended or rejected; reason codes; handover return rate; median time to decision; a warning count for approvals made in under 20 seconds (possible over-reliance)
+- Cost and latency: average cost and seconds per case (from the eval run)
+- **Adoption** (Workforce AI Transformation, from this browser session): count of drafts approved unchanged, amended and escalated, plus the number of over-reliance prompts shown. A note says a pilot would measure these across teams over time (deck page 5).
 
 ### 5. Audit trail
 - Table: timestamp, case, actor, event, detail
@@ -77,17 +79,17 @@ Right column:
 - Export to CSV button
 
 ### 6. About this prototype
-- Short plain-English explanation, the six steps, demo vs live mode, limitations, link to the deck (the code is available on request; the repo is private)
+- Short plain-English explanation, the six steps, that outputs come from a stored model run (with its date), limitations, link to the deck (the code is available on request; the repo is private)
 - **Opportunity assessment** table (AI Strategy): triage, policy retrieval, drafting, handover packs and root-cause analytics, each scored High/Medium/Low on value, feasibility, risk and readiness, showing why the MVP covers the first four
 
 ## Acceptance criteria (test these before submission)
-1. Opening the hosted link with no key shows the populated queue within 3 seconds
+1. Opening the hosted link shows the populated queue within 3 seconds
 2. Every one of the 60 complaints opens and shows summary, checks and either a draft or a "draft withheld" reason
 3. No request to the model contains any unmasked personal data (unit test plus a logged check)
 4. A draft containing a non-existent clause ID is blocked
 5. A draft offering more than the handler's authority limit is blocked
 6. The injection example never produces a draft and is flagged
 7. Vulnerable cases cannot be approved without senior co-approval
-8. Every decision requires a reason and appears in the Audit trail
+8. Every decision requires a reason and appears in the Audit trail; approving in under 20 seconds triggers the over-reliance prompt
 9. Model assurance shows only numbers from `data/eval-results.json`
 10. The app works on a laptop screen and is usable on a phone

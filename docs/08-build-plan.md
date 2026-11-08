@@ -2,7 +2,9 @@
 
 Time left: Sunday 8 November evening to Wednesday 11 November, 23:30 GMT. Each phase ends with a **checkpoint**: PK runs it, reads Claude's summary, and only then moves on. Paste each prompt into Claude Code in VS Code as written.
 
-If time runs short, cut in this order: "Try your own complaint" box → dark mode → CSV export → confusion matrix. **Never cut**: masking, verifier, the no-PII-leak test, demo mode, the eval run, the README.
+Scope rule: every feature must show one of Ankura's principles. Live mode, the "Try your own complaint" box and the "Reveal personal data" toggle were cut on 08/11/2026 for this reason.
+
+If time runs short, cut in this order: dark mode → CSV export → confusion matrix. **Never cut**: masking, verifier, the no-PII-leak test, stored outputs, the eval run, the over-reliance prompt, the About page.
 
 ---
 
@@ -22,7 +24,7 @@ Do not write code yet. Reply with: (1) a one-paragraph summary of what we are bu
 ## Phase 1 · Scaffold and data (Sunday evening to Monday morning)
 **Prompt 1: scaffold**
 ```
-Scaffold the Next.js App Router + TypeScript project as described in docs/03-architecture.md: folder layout, lib/types.ts, package.json scripts (dev, build, test, eval, precompute, check-data), vitest, zod, @anthropic-ai/sdk, tsx. Add .env.example handling and a GET /api/status route that reports demo or live mode. Do not build the UI yet. Run npm run build and npm test, then summarise what you created.
+Scaffold the Next.js App Router + TypeScript project as described in docs/03-architecture.md: folder layout, lib/types.ts, package.json scripts (dev, build, test, eval, precompute, check-data), vitest, zod, @anthropic-ai/sdk, tsx. Add .env.example handling and a GET /api/status route that reports the models and versions. Do not build the UI yet. Run npm run build and npm test, then summarise what you created.
 ```
 **Prompt 2: policy parser and retrieval**
 ```
@@ -49,23 +51,23 @@ Implement lib/verify.ts (every check in docs/04 step 5), lib/route.ts, lib/deadl
 ```
 **Checkpoint 2:** the injection case has no draft; the bereavement case needs senior co-approval; the card case goes to Fraud & Disputes; the card-delivery case passes all checks. The no-PII-leak test passes.
 
-**Prompt 7: demo mode**
+**Prompt 7: stored outputs**
 ```
-Implement scripts/precompute.ts to run the pipeline on all 60 cases and write data/demo-outputs.json. Make /api/run return the stored result when there is no API key, and run live when there is. Add the rate limit and input length limit from docs/03. Run precompute.
+Implement scripts/precompute.ts to run the pipeline on all 60 cases and write data/demo-outputs.json with the run date. Implement GET /api/cases (masked text and stored results only, never raw text or customer fields) and POST /api/verify (re-run step 5 on an amended draft). Run precompute.
 ```
 
 ## Phase 3 · Interface (Monday evening to Tuesday morning)
 **Prompt 8: shell and queue**
 ```
-Build the app shell and the My work queue view to match reference/mockup.html and docs/07-ui-design.md: environment banner, navy bars, tabs, role switcher, breadcrumbs, sortable queue table, case header, footer with mode and versions. Use IBM Plex via next/font. Show me a screenshot description of what you built and run npm run build.
+Build the app shell and the My work queue view to match reference/mockup.html and docs/07-ui-design.md: environment banner, navy bars, tabs, role switcher, breadcrumbs, sortable queue table, case header, footer with versions and the model run date. Use IBM Plex via next/font. Show me a screenshot description of what you built and run npm run build.
 ```
 **Prompt 9: case view and decisions**
 ```
-Build the case view and decision panel from docs/02 screen 2: masked complaint with token chips and a "Reveal personal data" toggle, AI summary with confidence, cited draft with citation chips showing clause text, retrieved policy list, pre-release checks, and the decision panel with mandatory reasons, approve locking, senior co-approval and amend (re-run the verifier on edited text). Store actions and audit events in localStorage. Add a "Run AI on this case" button that is enabled in live mode only.
+Build the case view and decision panel from docs/02 screen 2: masked complaint with token chips, AI summary with confidence, cited draft with citation chips showing clause text, retrieved policy list, pre-release checks, and the decision panel with mandatory reasons, approve locking, senior co-approval, the over-reliance prompt (approval under 20 seconds) and amend (re-run the verifier on edited text via /api/verify). Store actions and audit events in localStorage.
 ```
 **Prompt 10: handovers, assurance, audit, about**
 ```
-Build the Specialist handovers view (docs/02 screen 3), the Model assurance page reading data/eval-results.json with KPI tiles, confusion matrix, adversarial table, known failures, cost and latency, and an Adoption section from session actions (share approved unchanged, amended, rejected; reason codes; handover returns; time to decision). Build the Audit trail with CSV export and the About this prototype page with the opportunity assessment from docs/00. Show "Not yet run" where data is missing. Never hard-code results.
+Build the Specialist handovers view (docs/02 screen 3), the Model assurance page reading data/eval-results.json with KPI tiles, confusion matrix, adversarial table, known failures, cost and latency, and a small Adoption section from session actions (counts approved unchanged, amended, escalated; over-reliance prompts shown). Build the Audit trail with CSV export and the About this prototype page with the opportunity assessment from docs/00. Show "Not yet run" where data is missing. Never hard-code results.
 ```
 **Checkpoint 3:** PK clicks through every acceptance criterion in docs/02 and lists anything that feels wrong or unclear.
 
@@ -83,7 +85,7 @@ The repo is private and assessors only get the hosted link, so everything they n
 ```
 Then PK:
 1. Push to GitHub.
-2. Import the private repo in Vercel (authorise Vercel to access it). Do **not** add the API key for the public link unless you want live mode exposed. Recommended: leave the hosted link in demo mode, and say on the About page that it runs on pre-computed outputs from real model runs. Live mode stays on your machine. (If you do add the key, keep the rate limit and spend cap on.)
+2. Import the private repo in Vercel (authorise Vercel to access it). Add **no** environment variables: the app never calls the model. The About page says it shows stored outputs from a real model run, with the date.
 3. Open the hosted link in a private browser window and run the 60-second test route.
 
 ## Phase 6 · Deck (Tuesday evening to Wednesday)

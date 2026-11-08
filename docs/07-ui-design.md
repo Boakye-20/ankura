@@ -34,13 +34,13 @@ Load IBM Plex Sans and IBM Plex Mono with `next/font/google`.
 3. Secondary navy tab bar: My work queue · Specialist handovers · Model assurance · Audit trail · About this prototype
 4. Breadcrumbs
 5. Content
-6. Footer: release, policy library version, prompt version, mode (Demo / Live)
+6. Footer: release, policy library version, prompt version, "Stored outputs · model run DD/MM/YYYY"
 
 ## Components to build (see the mock-up for each)
-QueueTable (sortable, row selection, keyboard accessible) · CaseHeader (facts strip) · Box (titled panel with optional AI label) · CitationChip · TokenChip · ChecksPanel · DecisionPanel · HandoverPack · KpiTile · ConfusionMatrix · AuditTable (with CSV export) · ModeBadge
+QueueTable (sortable, row selection, keyboard accessible) · CaseHeader (facts strip) · Box (titled panel with optional AI label) · CitationChip · TokenChip · ChecksPanel · DecisionPanel · HandoverPack · KpiTile · ConfusionMatrix · AuditTable (with CSV export)
 
 ## Accessibility
 Keyboard navigation for tabs and rows, visible focus, labels on every input, contrast 4.5:1, no information by colour alone.
 
 ## About this prototype page
-Plain-English, about 300 words: what it is, the six steps diagram, demo vs live mode, the opportunity assessment table (from docs/00), limitations, and a link to the deck (the code is available on request; the repo is private).
+Plain-English, about 300 words: what it is, the six steps diagram, that outputs come from a stored model run (with its date), the opportunity assessment table (from docs/00), limitations, and a link to the deck (the code is available on request; the repo is private).

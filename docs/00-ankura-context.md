@@ -33,8 +33,8 @@ What Ankura says: "Most AI programs stall in the middle, where the workforce qui
 
 How this build shows it:
 - **Role redesign** made concrete: handler (search and write → review, challenge and approve), senior (ad hoc checks → co-approval and sampling), specialist (chasing information → receiving complete packs).
-- **Adoption metrics built into the product**, so reversion is visible early: share of AI drafts approved unchanged, amended, or rejected; reason codes; handover return rate; time to decision. Show these on the Model assurance page under "Adoption".
-- **Over-reliance safeguards**: mandatory reasons, sampling of approvals, and a warning when a handler approves very quickly. This links to PK's dissertation interest in trust and over-reliance on AI.
+- **Adoption metrics built into the product**, so reversion is visible early. The prototype shows a small "Adoption" section on the Model assurance page (drafts approved unchanged, amended, escalated; over-reliance prompts shown). The full set (reason codes, handover return rate, time to decision, measured across teams) is the pilot measurement plan on deck page 5.
+- **Over-reliance safeguards**: mandatory reasons, and an inline prompt when a handler approves in under 20 seconds, asking them to confirm they read the draft and its citations (recorded in the audit trail). Sampling of approvals is a pilot control on deck page 4. This links to PK's dissertation interest in trust and over-reliance on AI.
 - A **reskilling plan** on deck page 5: AI literacy, judging AI output, spotting weak citations, recording reasons.
 
 ## Ankura's agentic AI insight series (2026)

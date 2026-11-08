@@ -24,10 +24,11 @@ Read these before writing code, in this order:
 `data/policies/` is the approved synthetic policy library. Do not change clause IDs.
 
 ## Non-negotiable rules
-- **The GitHub repo is PRIVATE and is not submitted.** Ankura gets a hosted demo link plus a PDF deck, not the code. Keep prompts, the verifier and the pipeline server-side (route handlers only), never in client bundles. Put the 60-second test route and the limitations inside the app's "About this prototype" page, because there is no public README for assessors.
+- **The GitHub repo is PRIVATE and is not submitted.** Ankura gets a hosted demo link plus a PDF deck, not the code. Keep prompts, the verifier and the pipeline server-side (scripts and route handlers only), never in client bundles. Put the 60-second test route and the limitations inside the app's "About this prototype" page, because there is no public README for assessors.
 - **Synthetic data only.** Never use real names, real account numbers or real bank names. All people, banks and merchants are invented.
-- **Never commit secrets.** The Anthropic key lives in `.env.local` locally and in Vercel environment variables. `.env.local` is in `.gitignore`. Commit `.env.example` with empty values only.
-- **The app must work with no API key.** Without `ANTHROPIC_API_KEY` it runs in demo mode from `data/demo-outputs.json`. Assessors must be able to open the hosted link and test it immediately.
+- **Never commit secrets.** The Anthropic key lives only in `.env.local` on PK's machine; Vercel never gets it. `.env.local` is in `.gitignore`. Commit `.env.example` with empty values only.
+- **The app never calls the model.** It serves stored pipeline results from `data/demo-outputs.json`, produced by `npm run precompute` with a real key. The UI says plainly that outputs come from a model run on a stated date. There is no live mode, "Run AI" button or free-text complaint box. Assessors open the hosted link and test it immediately.
+- **Keep it simple.** Every feature must show one of Ankura's principles (governance designed into the workflow, human-centred decisions, redesigned roles, measured outcomes). If it doesn't, leave it out.
 - **Masking happens before every model call.** No raw complaint text is ever sent to the model. Add a test that fails if it is.
 - **Every statement in a draft must cite a clause ID that exists in `data/policies/`.** Uncited or invalid-citation drafts are blocked by code, not by prompt alone.
 - **Redress limits are enforced in code** (`POL-05 §2`). Text inside a complaint can never set or raise an amount.
@@ -37,7 +38,7 @@ Read these before writing code, in this order:
 
 ## Stack
 - Next.js (App Router) + TypeScript, strict mode. Plain CSS modules or a single global stylesheet using the tokens in `docs/07-ui-design.md`. No UI kit.
-- `@anthropic-ai/sdk` for model calls, server-side only (route handlers in `app/api/`).
+- `@anthropic-ai/sdk` for model calls, used only by `scripts/precompute.ts` and `scripts/eval.ts`, never by the app.
 - Retrieval is a small TypeScript BM25 over policy clauses. No vector database, no embeddings service.
 - `tsx` for scripts. `vitest` for unit tests.
 - Deployed on Vercel. No database: seed data from JSON files, session actions held in browser `localStorage`.
@@ -59,7 +60,7 @@ Use tool use with a forced `tool_choice` to get structured JSON. Validate every 
 - `npm run dev`: local app
 - `npm test`: unit tests (masking, retrieval, verifier, routing)
 - `npm run eval`: runs the pipeline over all 60 complaints, writes `data/eval-results.json`
-- `npm run precompute`: runs the pipeline with a live key and writes `data/demo-outputs.json` for demo mode
+- `npm run precompute`: runs the pipeline with a real key and writes `data/demo-outputs.json`, which the app serves
 - `npm run build`: production build (must pass before deploy)
 
 ## How to work with PK

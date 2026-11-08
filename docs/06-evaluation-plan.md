@@ -4,7 +4,7 @@ The point of the evaluation is credibility: real numbers, failures reported plai
 
 ## Script: `npm run eval` (`scripts/eval.ts`)
 1. Load the 60 complaints and the policy library.
-2. Run the full pipeline on each case in live mode (requires the API key). Run cases with a concurrency of 4.
+2. Run the full pipeline on each case with the API key (on PK's machine). Run cases with a concurrency of 4.
 3. Compare against `labels`.
 4. Write `data/eval-results.json` with a timestamp, git commit hash, model IDs, prompt version and the metrics below.
 5. Print a summary table to the console.
