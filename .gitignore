@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+.env
+.env.local
+.env*.local
+.vercel/
+data/eval-runs/*
+!data/eval-runs/latest.json
+*.log
+.DS_Store
