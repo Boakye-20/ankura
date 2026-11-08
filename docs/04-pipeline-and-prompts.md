@@ -66,6 +66,13 @@ The four drivers and their characteristics come from FCA FG21/1, Table 1 (kept b
 ## Step 4 · Draft (`lib/draft.ts`, model: `ANTHROPIC_MODEL_DRAFT`)
 Skip drafting entirely (return `null` with reason) if: injection suspected, masking failed, or triage invalid.
 
+**Determine response type before calling the model** (derived from triage, not stored in the output):
+- **Summary resolution** if `triage.summaryResolutionEligible` — cites DISP-G §2.1.
+- **Acknowledgement** (DISP 1.6.1R) if the provisional route is a specialist team (Fraud & Disputes, Lending Support, Complaints Management, Vulnerability Team). Confirms receipt, states deadline, directs to team. FOS referral goes in the later final response, not here.
+- **Final response** otherwise — FOS referral required (DISP-G §2.3, §2.5).
+
+Pass the response type as a field to the draft prompt. FOS-01 applies only to summary resolutions and final responses.
+
 Tool-use with a forced tool `record_draft` whose schema matches `DraftOutput`.
 
 **System prompt (`lib/prompts/draft.v1.md`):**
@@ -111,7 +118,7 @@ In order, first match wins:
 2. Category Unauthorised payment or APP scam → **Fraud & Disputes** (POL-04 §3.3, POL-10 §2.1)
 3. Lending and affordability → **Lending Support** (POL-10 §2.2)
 4. Mentions of legal action, regulator, media, or redress > £1,000 → **Complaints Management** (POL-10 §1.2, §2.4)
-5. Vulnerable → **Senior** (co-approval), and Vulnerability Team if complex (more than two indicators)
+5. Vulnerable → **Vulnerability Team** + senior co-approval if 2 or more distinct FG21/1 drivers (complex, POL-10 §2.3); **Senior** + senior co-approval otherwise (POL-07 §2.2)
 6. Confidence < 0.75 → **Handler** with "Low confidence: check classification"
 7. Otherwise → **Handler**
 

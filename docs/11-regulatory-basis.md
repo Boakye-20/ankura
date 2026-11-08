@@ -5,6 +5,7 @@ Every reference below was checked against the primary source on 08/11/2026 (FCA 
 ## Sources used
 | Ref | What it says (summary) | Source |
 |---|---|---|
+| DISP 1.6.1R | On receipt of a complaint: send a prompt written acknowledgement confirming receipt and stating when to expect a final response (or a holding response for payment services); keep the complainant informed of progress (verified 08/11/2026 — quoted verbatim from the Handbook) | handbook.fca.org.uk/handbook/disp1/disp1s6 |
 | DISP 1.3.3R | Root cause analysis: find, check wider impact, and correct root causes of complaints | handbook.fca.org.uk/handbook/disp1/disp1s3 |
 | DISP 1.4.1R | (1) investigate competently, diligently, impartially; (2) assess fairly, consistently, promptly; (3) offer redress where appropriate; (4) explain in a way that is fair, clear and not misleading; (5) comply promptly with accepted offers | handbook.fca.org.uk/handbook/disp1/disp1s4 |
 | DISP 1.5 | Complaints resolved by close of the third business day: summary resolution communication, which must mention the FOS and its website | handbook.fca.org.uk/handbook/disp1/disp1s5 |

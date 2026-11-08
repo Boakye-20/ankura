@@ -2,6 +2,7 @@
   "asOf": "2026-11-08",
   "note": "Verified against primary sources on 08/11/2026. See docs/11-regulatory-basis.md. Synthetic policies are loosely modelled on these rules; not legal advice.",
   "sources": {
+    "DISP 1.6.1R": { "title": "Prompt written acknowledgement on receipt of a complaint; keep complainant informed of progress", "url": "https://handbook.fca.org.uk/handbook/disp1/disp1s6" },
     "DISP 1.3.3R": { "title": "Complaints handling: root cause analysis", "url": "https://handbook.fca.org.uk/handbook/disp1/disp1s3" },
     "DISP 1.4.1R(1)": { "title": "Investigate competently, diligently and impartially", "url": "https://handbook.fca.org.uk/handbook/disp1/disp1s4" },
     "DISP 1.4.1R(2)": { "title": "Assess fairly, consistently and promptly, including what redress is appropriate", "url": "https://handbook.fca.org.uk/handbook/disp1/disp1s4" },
@@ -34,6 +35,7 @@
     "DISP-G §3.1": ["DISP 1.4.1R(1)"],
     "DISP-G §3.2": ["DISP 1.4.1R(4)", "PRIN 2A.5"],
     "DISP-G §3.3": ["DISP 1.3.3R", "FG26/2"],
+    "POL-01 §1.2": ["DISP 1.6.1R"],
     "POL-01 §1.3": ["FG21/1", "PRIN 2A.6.2R(1)"],
     "POL-01 §3.1": ["DISP 1.4.1R(1)"],
     "POL-01 §4.1": ["DISP 1.4.1R(2)"],
