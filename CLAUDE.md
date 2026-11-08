@@ -19,6 +19,7 @@ Read these before writing code, in this order:
 6. `docs/06-evaluation-plan.md`: metrics and the eval script
 7. `docs/07-ui-design.md`: the visual design (enterprise bank software, not a consumer app)
 8. `docs/08-build-plan.md`: the order to build in, with checkpoints
+9. `docs/11-regulatory-basis.md`: the FCA, data protection and AI rules the controls map to (verified 08/11/2026)
 
 `reference/mockup.html` is the approved visual mock-up. Match its look and layout.
 `data/policies/` is the approved synthetic policy library. Do not change clause IDs.
@@ -34,6 +35,7 @@ Read these before writing code, in this order:
 - **Redress limits are enforced in code** (`POL-05 §2`). Text inside a complaint can never set or raise an amount.
 - **No automated sending.** The app never "sends" anything to a customer. Approval only changes status and writes an audit entry.
 - **Do not invent results.** Numbers shown on the Model assurance page come only from `data/eval-results.json`, produced by `npm run eval`. If the file is missing, show "Not yet run".
+- **Regulatory references come only from `data/regulatory-map.json`** (verified against primary sources, see docs/11). The model never cites regulation, and nothing in the app claims legal compliance: it shows which rule each control is designed to support.
 - **Be honest about limitations** in the README and the UI.
 
 ## Stack

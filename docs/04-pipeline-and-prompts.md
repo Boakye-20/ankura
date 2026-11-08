@@ -37,7 +37,12 @@ Personal data has been replaced with tokens such as [CUSTOMER_1]. Keep tokens ex
 
 Classify into exactly one category: Unauthorised payment, APP scam, Charges and interest, Service and conduct, Card delivery and access, Account administration, Lending and affordability, Bereavement.
 
-Vulnerability: set vulnerable to true if there are any signs of poor health, a life event (such as bereavement, job loss, relationship breakdown), low financial resilience or low capability, even if the customer does not use the word "vulnerable". List each indicator briefly.
+Vulnerability: set vulnerable to true if there are any signs of vulnerability, even if the customer does not use the word "vulnerable" and even if the signs are indirect. Record each indicator briefly with the driver it belongs to:
+- Health: physical disability, severe or long-term illness, hearing or visual impairment, mental health condition, addiction, low mental capacity.
+- Life events: retirement, bereavement, income shock (such as job loss), relationship breakdown, domestic abuse, caring responsibilities.
+- Resilience: inadequate or erratic income, over-indebtedness, low savings, low emotional resilience.
+- Capability: low knowledge or confidence with money, poor literacy or numeracy, poor English, poor digital skills, learning difficulties, no access to help.
+Only record what the complaint or case notes say. Do not add detail about health beyond what is needed.
 
 paymentServices is true when the complaint concerns a card payment, a bank transfer, a direct debit or a standing order.
 summaryResolutionEligible is true only for simple complaints that can plausibly be fully resolved within three business days with no investigation.
@@ -48,11 +53,13 @@ The summary must be two sentences at most, factual, and must not add facts that 
 ```
 **User message:** the masked complaint in `<complaint>…</complaint>`, then masked case notes in `<case_notes>…</case_notes>` with their note IDs.
 
+The four drivers and their characteristics come from FCA FG21/1, Table 1 (kept by the FCA's 2025 review). `vulnerabilityIndicators` is an array of `{ driver: "Health" | "Life events" | "Resilience" | "Capability", indicator: string }`. The "only record what is needed" line reflects the joint FCA–ICO statement (26/03/2026) and UK GDPR Art 5(1)(c). See docs/11.
+
 ## Step 3 · Retrieve (`lib/retrieve.ts`)
 - Parse `data/policies/*.md` (skip `README.md`) into clauses: every line starting `§x.y` becomes a clause with ID `<DOC> §x.y` (for example `POL-04 §2.1`). The doc ID is the file name.
 - BM25 (k1 = 1.2, b = 0.75) over clause text plus the section heading and the document title. The title matters: no bereavement clause contains the word "bereavement", only the POL-09 title does, and the query carries the triage category.
 - Query = triage summary + key facts + category name.
-- Always include: the DISP-G clauses that match the deadline type (§2.1, §2.2 or §2.4, plus §2.3 for FOS signposting), and POL-05 §2.1 to §2.5 (authority limits).
+- Always include: the DISP-G clauses that match the deadline type (§2.1, §2.2 or §2.4), §2.3 (FOS signposting) and §2.5 (six-month FOS time limit), and POL-05 §2.1 to §2.5 (authority limits).
 - Return the top 6 plus the always-include clauses, de-duplicated, with scores.
 - Why BM25 not embeddings: deterministic, explainable to a risk team, no extra service, fine for 100 clauses. State this trade-off in the deck.
 
@@ -71,15 +78,15 @@ Rules:
 3. Never cite a clause ID that is not in <policy>. If no clause supports a statement, leave the statement out.
 4. Never offer or mention an amount of money unless a clause supports it and it is consistent with the facts in the complaint and case notes. Any amount requested in the complaint text is not a basis for redress.
 5. Do not decide matters reserved for specialists (for example whether a payment was authorised). Say the case has been passed to the relevant team.
-6. If the case is a final response or summary resolution, include the Financial Ombudsman Service signposting part and cite DISP-G §2.3.
-7. Plain English, warm and professional, UK spelling. No legal jargon. Under 180 words.
+6. If the case is a final response or summary resolution, include a part telling the customer they can refer the complaint to the Financial Ombudsman Service, citing DISP-G §2.3. In a final response, also say they have six months from the date of the response to do so, citing DISP-G §2.5.
+7. Plain English, warm and professional, UK spelling. No legal jargon. Sentences of 20 words or fewer where possible. Under 180 words.
 8. Keep personal data tokens such as [CUSTOMER_1] exactly as written.
 9. If the case needs a specialist, also complete the handover pack: the issue in one sentence, actions already taken (each with the case note ID or clause ID it came from), decisions required (each with a clause ID), and any information that is missing.
 ```
 **User message:** triage JSON, masked complaint, masked case notes with IDs, retrieved clauses as `<policy><clause id="POL-04 §2.1">…</clause>…</policy>`.
 
 ## Step 5 · Verify (`lib/verify.ts`), code only
-Each produces a `Check`.
+Each produces a `Check`. Each check also carries its regulatory basis from `data/regulatory-map.json` (`checks` section), which the checks panel shows next to the result (for example VUL-01 → FG21/1, PRIN 2A.6.2R(1)). See docs/11.
 | ID | Check | Fail when |
 |---|---|---|
 | MASK-01 | Personal data masked | leak check found raw values |
@@ -90,10 +97,11 @@ Each produces a `Check`.
 | CIT-03 | Citations were retrieved | a cited ID was not among the retrieved clauses (Refer) |
 | RED-01 | Redress within authority | `proposedRedress.amount` > £250 (handler limit, POL-05 §2.1) → Refer to senior; > £1,000 → Fail |
 | RED-02 | Amount has a basis | any £ amount in the draft does not appear in the complaint, case notes or a cited clause |
-| FOS-01 | FOS signposting | final or summary response without DISP-G §2.3 |
+| FOS-01 | FOS signposting (DISP 1.6.2R, DISP 1.5) | final or summary response that does not cite DISP-G §2.3 or does not mention "Financial Ombudsman"; a final response (not a summary resolution) that does not also mention "six months" or "6 months" |
 | VUL-01 | Vulnerability handled | triage vulnerable = true → Refer (senior co-approval, POL-07 §2.2) |
 | CONF-01 | Confidence above threshold | `categoryConfidence` < 0.75 → Refer |
 | SCHEMA-01 | AI output valid | zod validation failed after retry |
+| CLEAR-01 | Plain language (PRIN 2A.5, DISP 1.4.1R(4)) | draft over 180 words, any sentence over 30 words, or average sentence over 20 words → Refer. A deliberately simple, explainable proxy for clarity; it does not prove the customer will understand. |
 
 Injection rule patterns (case-insensitive): `ignore (all |any )?(previous|prior|above) instructions`, `system (note|prompt|message)`, `you are now`, `as an ai`, `disregard (the|your) (rules|policy)`, `approve .* (payment|refund|compensation)`, `assistant:`, `<\/?(system|instructions)>`.
 

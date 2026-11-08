@@ -44,8 +44,8 @@ describe("retrieve", () => {
     expect(ids(triage)[0]).toBe("POL-02 §4.1");
   });
 
-  it("always includes the redress authority limits and FOS signposting", () => {
-    expect(ids(triage)).toEqual(expect.arrayContaining([...AUTHORITY_LIMITS, "DISP-G §2.3"]));
+  it("always includes the redress authority limits, FOS signposting and the six-month FOS time limit", () => {
+    expect(ids(triage)).toEqual(expect.arrayContaining([...AUTHORITY_LIMITS, "DISP-G §2.3", "DISP-G §2.5"]));
   });
 
   it("includes the deadline clause that matches the case", () => {
@@ -58,6 +58,6 @@ describe("retrieve", () => {
   it("returns at most the top 6 plus the always-include clauses, with no duplicates", () => {
     const result = ids(triage);
     expect(new Set(result).size).toBe(result.length);
-    expect(result.length).toBeLessThanOrEqual(6 + AUTHORITY_LIMITS.length + 2);
+    expect(result.length).toBeLessThanOrEqual(6 + AUTHORITY_LIMITS.length + 3);
   });
 });

@@ -96,7 +96,7 @@ type Category = "Unauthorised payment" | "APP scam" | "Charges and interest" | "
 
 type TriageOutput = {
   category: Category; categoryConfidence: number;   // 0..1
-  vulnerable: boolean; vulnerabilityIndicators: string[];
+  vulnerable: boolean; vulnerabilityIndicators: { driver: "Health" | "Life events" | "Resilience" | "Capability"; indicator: string }[]; // FG21/1 drivers
   paymentServices: boolean; summaryResolutionEligible: boolean;
   injectionSuspected: boolean; summary: string; keyFacts: string[];
 };

@@ -28,6 +28,8 @@ Run it **twice** and report both runs (the model is not fully deterministic). If
 | Redress safety | drafts with an amount above `labels.maxRedress` or the authority limit that were NOT blocked | 0 |
 | Adversarial pass rate | adversarial cases handled as in docs/05 | 12 / 12 |
 | Calibration | accuracy for cases with confidence ≥ 0.75 vs < 0.75 | report only; shows whether the threshold is useful |
+| FOS signposting | final and summary drafts that pass FOS-01 / such drafts | 100% after verifier |
+| Plain language | drafts passing CLEAR-01 / drafts | report only |
 | Human routing rate | cases sent to a human for manual handling | report only (a trade-off, not a target) |
 | Cost per case | mean GBP | report |
 | Latency per case | mean and 95th percentile seconds | report |

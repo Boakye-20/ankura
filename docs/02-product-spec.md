@@ -45,12 +45,12 @@ Reduce the time handlers spend on searching, summarising, drafting and packaging
 ### 2. Case view
 Left column:
 - **Complaint as received**: masked text with tokens shown as chips, labelled "Personal data masked before AI processing".
-- **Case summary** (labelled "AI-generated · review required") with classification confidence
-- **Proposed response** (labelled "Draft · not sent"), with inline citation chips. Hovering or tapping a chip shows the clause text.
+- **Case summary** (labelled "AI-generated · review required") with classification confidence, and any vulnerability indicators tagged with their FG21/1 driver (Health, Life events, Resilience, Capability)
+- **Proposed response** (labelled "Draft · not sent"), with inline citation chips. Hovering or tapping a chip shows the clause text and its regulatory basis with a link (for example "DISP 1.6.2AR"), from `data/regulatory-map.json`.
 - **Policy references retrieved**: clause ID + clause text + relevance score
 
 Right column:
-- **Pre-release checks**: each check with Pass / Fail / Refer and a one-line reason
+- **Pre-release checks**: each check with Pass / Fail / Refer, a one-line reason, and the rule it protects (for example VUL-01 · FG21/1, PRIN 2A.6.2R(1))
 - **Handler decision**: radio buttons (Approve / Amend / Escalate), reason dropdown (mandatory), comment, Submit
   - Approve is disabled when any check is Fail
   - If the case needs senior co-approval, Approve changes status to "Awaiting senior co-approval"
@@ -80,6 +80,7 @@ Right column:
 
 ### 6. About this prototype
 - Short plain-English explanation, the six steps, that outputs come from a stored model run (with its date), limitations, link to the deck (the code is available on request; the repo is private)
+- **Regulatory basis** section (from docs/11): the rules the controls map to, "verified 08/11/2026", the FCA AI good practice mapping, and a note that the policies are synthetic and this is not legal advice
 - **Opportunity assessment** table (AI Strategy): triage, policy retrieval, drafting, handover packs and root-cause analytics, each scored High/Medium/Low on value, feasibility, risk and readiness, showing why the MVP covers the first four
 
 ## Acceptance criteria (test these before submission)

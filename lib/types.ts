@@ -34,11 +34,14 @@ export type Category =
   | "Lending and affordability"
   | "Bereavement";
 
+// The four drivers of vulnerability in FCA FG21/1 (Table 1).
+export type VulnerabilityDriver = "Health" | "Life events" | "Resilience" | "Capability";
+
 export type TriageOutput = {
   category: Category;
   categoryConfidence: number; // 0..1
   vulnerable: boolean;
-  vulnerabilityIndicators: string[];
+  vulnerabilityIndicators: { driver: VulnerabilityDriver; indicator: string }[]; // FG21/1 Table 1 drivers
   paymentServices: boolean;
   summaryResolutionEligible: boolean;
   injectionSuspected: boolean;

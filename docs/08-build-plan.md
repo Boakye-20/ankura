@@ -47,7 +47,7 @@ Implement lib/anthropic.ts (client, forced tool-use helper, zod validation, retr
 ```
 **Prompt 6: verify, route, deadlines, pipeline**
 ```
-Implement lib/verify.ts (every check in docs/04 step 5), lib/route.ts, lib/deadlines.ts and lib/pipeline.ts (steps 1 to 6 with audit events). Write tests/verify.test.ts, tests/route.test.ts, tests/deadlines.test.ts and tests/no-pii-leak.test.ts (mock the client and assert no customer value appears in any request). Run all tests. Then run the pipeline on the 4 demo cases and show me the checks and route for each.
+Implement lib/verify.ts (every check in docs/04 step 5, including the stronger FOS-01 and CLEAR-01), lib/route.ts, lib/deadlines.ts and lib/pipeline.ts (steps 1 to 6 with audit events). Write tests/verify.test.ts, tests/route.test.ts, tests/deadlines.test.ts and tests/no-pii-leak.test.ts (mock the client and assert no customer value appears in any request). Run all tests. Then run the pipeline on the 4 demo cases and show me the checks and route for each.
 ```
 **Checkpoint 2:** the injection case has no draft; the bereavement case needs senior co-approval; the card case goes to Fraud & Disputes; the card-delivery case passes all checks. The no-PII-leak test passes.
 
@@ -63,11 +63,11 @@ Build the app shell and the My work queue view to match reference/mockup.html an
 ```
 **Prompt 9: case view and decisions**
 ```
-Build the case view and decision panel from docs/02 screen 2: masked complaint with token chips, AI summary with confidence, cited draft with citation chips showing clause text, retrieved policy list, pre-release checks, and the decision panel with mandatory reasons, approve locking, senior co-approval, the over-reliance prompt (approval under 20 seconds) and amend (re-run the verifier on edited text via /api/verify). Store actions and audit events in localStorage.
+Build the case view and decision panel from docs/02 screen 2: masked complaint with token chips, AI summary with confidence, cited draft with citation chips showing clause text and regulatory basis (lib/regulation.ts), vulnerability indicators with their FG21/1 driver, retrieved policy list, pre-release checks with the rule each protects, and the decision panel with mandatory reasons, approve locking, senior co-approval, the over-reliance prompt (approval under 20 seconds) and amend (re-run the verifier on edited text via /api/verify). Store actions and audit events in localStorage.
 ```
 **Prompt 10: handovers, assurance, audit, about**
 ```
-Build the Specialist handovers view (docs/02 screen 3), the Model assurance page reading data/eval-results.json with KPI tiles, confusion matrix, adversarial table, known failures, cost and latency, and a small Adoption section from session actions (counts approved unchanged, amended, escalated; over-reliance prompts shown). Build the Audit trail with CSV export and the About this prototype page with the opportunity assessment from docs/00. Show "Not yet run" where data is missing. Never hard-code results.
+Build the Specialist handovers view (docs/02 screen 3), the Model assurance page reading data/eval-results.json with KPI tiles, confusion matrix, adversarial table, known failures, cost and latency, and a small Adoption section from session actions (counts approved unchanged, amended, escalated; over-reliance prompts shown). Build the Audit trail with CSV export and the About this prototype page with the opportunity assessment from docs/00 and the regulatory basis from docs/11. Show "Not yet run" where data is missing. Never hard-code results.
 ```
 **Checkpoint 3:** PK clicks through every acceptance criterion in docs/02 and lists anything that feels wrong or unclear.
 

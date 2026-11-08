@@ -68,7 +68,7 @@ export function searchClauses(query: string): ScoredClause[] {
 
 const TOP_K = 6;
 const AUTHORITY_LIMITS = ["POL-05 §2.1", "POL-05 §2.2", "POL-05 §2.3", "POL-05 §2.4", "POL-05 §2.5"];
-const FOS_SIGNPOSTING = "DISP-G §2.3";
+const FOS_CLAUSES = ["DISP-G §2.3", "DISP-G §2.5"]; // FOS signposting and the six-month time limit
 
 type RetrievalInput = Pick<TriageOutput, "category" | "summary" | "keyFacts" | "paymentServices" | "summaryResolutionEligible">;
 
@@ -82,13 +82,13 @@ function deadlineClauses({ paymentServices, summaryResolutionEligible }: Retriev
 
 /**
  * Step 3 of the pipeline: the top 6 BM25 matches for the triage output, plus the clauses every
- * draft may need (deadline rule, FOS signposting, redress authority limits), with no duplicates.
+ * draft may need (deadline rule, FOS signposting and time limit, redress authority limits), with no duplicates.
  */
 export function retrieve(triage: RetrievalInput): ScoredClause[] {
   const ranked = searchClauses([triage.summary, ...triage.keyFacts, triage.category].join(" "));
   const result = ranked.slice(0, TOP_K);
 
-  for (const id of [...deadlineClauses(triage), FOS_SIGNPOSTING, ...AUTHORITY_LIMITS]) {
+  for (const id of [...deadlineClauses(triage), ...FOS_CLAUSES, ...AUTHORITY_LIMITS]) {
     if (result.some((c) => c.id === id)) continue;
     const clause = ranked.find((c) => c.id === id) ?? { ...loadClauses().find((c) => c.id === id)!, score: 0 };
     result.push(clause);

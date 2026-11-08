@@ -29,9 +29,10 @@ Write it as an Ankura AI by Design team would present to Meadowlane Bank's Head 
 
 ## Page 4 · Controls and human review (Governance Engineering)
 - Headline: Governance is designed into the handler's screen, so controls produce their own evidence.
-- Control matrix: risk, control, owner, evidence (masking; citation verifier; redress limits in code; injection detection; vulnerability co-approval; over-reliance).
+- Control matrix: risk, control, owner, evidence, regulatory basis (masking → UK GDPR Art 5(1)(c); citation verifier → DISP 1.4.1R(4); redress limits in code → DISP 1.4.1R(3); injection detection; vulnerability co-approval → FG21/1, PRIN 2A.6.2R(1); FOS wording → DISP 1.6.2R; plain language → PRIN 2A.5; over-reliance prompt → UK GDPR Art 22A "meaningful human involvement"). Name an accountable SMF owner. Source: docs/11.
+- One line on the FCA's AI good practice report (05/10/2026): the build answers its "areas for improvement", especially over-reliance on human-in-the-loop (Case Study O) and assuming an LLM can spot vulnerability without testing.
 - Human review tiers: Tier 1 handler; Tier 2 senior co-approval (vulnerable, low confidence, redress over £250); Tier 3 specialist (authorisation, fraud, high value, legal).
-- Regulatory alignment (stated carefully as design intent, not legal advice): DISP timescales and FOS signposting; Consumer Duty outcomes; FG21/1 vulnerability; UK GDPR data minimisation.
+- Regulatory alignment (stated carefully as design intent, not legal advice): DISP timescales and FOS signposting; Consumer Duty outcomes; FG21/1 vulnerability (kept by the FCA in 2025) and the joint FCA–ICO statement on vulnerability data (03/2026); UK GDPR data minimisation; horizon: CP26/9 redress reforms and the ICO statutory AI code (SI 2026/425).
 - Monitoring in production: drift in category mix, citation failures, override rates, monthly QA sample.
 
 ## Page 5 · People, value and roadmap (Workforce AI Transformation)
