@@ -1,6 +1,6 @@
 // Shared data model, as specified in docs/03-architecture.md.
 
-export type Clause = { id: string; doc: string; section: string; text: string }; // id e.g. "POL-04 §2.1"
+export type Clause = { id: string; doc: string; title: string; section: string; text: string }; // id e.g. "POL-04 §2.1"; title = document title
 
 export type Complaint = {
   ref: string; // "CMP-2026-104712"

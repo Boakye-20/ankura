@@ -67,7 +67,7 @@ reference/mockup.html
 
 ## Data model (`lib/types.ts`)
 ```ts
-type Clause = { id: string; doc: string; section: string; text: string };   // id e.g. "POL-04 §2.1"
+type Clause = { id: string; doc: string; title: string; section: string; text: string };   // id e.g. "POL-04 §2.1"; title = document title
 
 type Complaint = {
   ref: string;                 // "CMP-2026-104712"

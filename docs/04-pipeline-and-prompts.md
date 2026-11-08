@@ -50,7 +50,7 @@ The summary must be two sentences at most, factual, and must not add facts that 
 
 ## Step 3 · Retrieve (`lib/retrieve.ts`)
 - Parse `data/policies/*.md` (skip `README.md`) into clauses: every line starting `§x.y` becomes a clause with ID `<DOC> §x.y` (for example `POL-04 §2.1`). The doc ID is the file name.
-- BM25 (k1 = 1.2, b = 0.75) over clause text plus the section heading.
+- BM25 (k1 = 1.2, b = 0.75) over clause text plus the section heading and the document title. The title matters: no bereavement clause contains the word "bereavement", only the POL-09 title does, and the query carries the triage category.
 - Query = triage summary + key facts + category name.
 - Always include: the DISP-G clauses that match the deadline type (§2.1, §2.2 or §2.4, plus §2.3 for FOS signposting), and POL-05 §2.1 to §2.5 (authority limits).
 - Return the top 6 plus the always-include clauses, de-duplicated, with scores.
