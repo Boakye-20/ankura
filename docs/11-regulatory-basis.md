@@ -39,5 +39,5 @@ Every reference below was checked against the primary source on 08/11/2026 (FCA 
 | Avoid single-model dependence (Case Studies S, T) | Models set by configuration (technology-agnostic) |
 | Clear SMF ownership of AI risk | Deck page 4: named accountable owner (the DISP oversight SMF) |
 
-## Known gap in the synthetic policies
-POL-07 §2.1 says "Record vulnerability with the customer's consent". The FCA–ICO joint statement (26/03/2026) says consent is one lawful basis among several. PK to decide whether to update the clause text (keeping the ID).
+## Policy updated to current guidance
+POL-07 §2.1 originally said "Record vulnerability with the customer's consent". On 08/11/2026 it was updated (same clause ID) to "Record vulnerability on an appropriate lawful basis, tell the customer how the information will be used, and record only the detail needed", in line with the joint FCA–ICO statement (26/03/2026), which says consent is one lawful basis among several.
