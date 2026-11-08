@@ -145,3 +145,10 @@ type AuditEvent = { ts: string; ref: string; actor: string; event: string; detai
 - Only masked text, retrieved clauses and structured triage go to the model.
 - No customer data is stored server-side. The synthetic dataset is public by design.
 - The API key is server-side only; client bundles must not reference it (check with `grep` after build).
+
+### Security rules from the slopsec review (08/11/2026)
+1. **Masked data only leaves the server.** `data/demo-outputs.json` never contains the token map or raw text. `/api/cases` returns masked text, stored results and case notes (masked) only, never `customer`, raw `text` or `labels`. No client component imports anything from `data/`. Test: extend `no-pii-leak.test.ts` so no customer value appears in `demo-outputs.json` or in the `/api/cases` response.
+2. **`/api/verify` treats its body as hostile.** Validate with zod: `ref` must match an existing case (looked up in memory, never used as a file path), the draft is an array of at most 20 parts, with a total of at most 3,000 characters. The length cap also bounds the regex work in INJ-01. On invalid input, return a generic 400 with no stack trace.
+3. **Render all complaint and draft text as text.** Token chips and citation chips are built by splitting the string and rendering React elements. Never use `dangerouslySetInnerHTML`. The adversarial cases deliberately contain tags like `<system>`.
+4. **Security headers** are set in `next.config.ts`: no `X-Powered-By`, nosniff, frame-ancestors none, no-referrer.
+5. **Known limitation (state it on the About page and in the deck):** roles, decisions and the audit trail live in the browser's `localStorage`, so they are a simulation. A pilot needs real sign-in, server-side authorisation of approvals, and an append-only server-side audit log.

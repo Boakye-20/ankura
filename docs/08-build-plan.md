@@ -53,7 +53,7 @@ Implement lib/verify.ts (every check in docs/04 step 5), lib/route.ts, lib/deadl
 
 **Prompt 7: stored outputs**
 ```
-Implement scripts/precompute.ts to run the pipeline on all 60 cases and write data/demo-outputs.json with the run date. Implement GET /api/cases (masked text and stored results only, never raw text or customer fields) and POST /api/verify (re-run step 5 on an amended draft). Run precompute.
+Implement scripts/precompute.ts to run the pipeline on all 60 cases and write data/demo-outputs.json with the run date. Implement GET /api/cases (masked text and stored results only, never raw text or customer fields) and POST /api/verify (re-run step 5 on an amended draft). Follow the security rules in docs/03, and extend no-pii-leak.test.ts to cover demo-outputs.json and the /api/cases response. Run precompute.
 ```
 
 ## Phase 3 · Interface (Monday evening to Tuesday morning)
