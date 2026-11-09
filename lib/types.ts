@@ -49,11 +49,20 @@ export type TriageOutput = {
   keyFacts: string[];
 };
 
+export type DraftPart = { text: string; citations: string[] };
+
 export type DraftOutput = {
-  response: { text: string; citations: string[] }[]; // one entry per sentence or short paragraph
+  response: DraftPart[]; // one entry per sentence or short paragraph
   proposedRedress: { amount: number; basis: string; clause: string } | null;
-  handover?: HandoverPack;
+  handover: HandoverPack | null; // null when no specialist is needed
 };
+
+// Decided by code from triage before drafting (docs/04 step 4), never by the model.
+export type ResponseType = "Summary resolution" | "Acknowledgement" | "Final response";
+
+export type Route = GoldLabels["route"];
+
+export type CaseNote = Complaint["caseNotes"][number];
 
 export type HandoverPack = {
   team: string;
@@ -65,18 +74,24 @@ export type HandoverPack = {
 
 export type Check = { id: string; label: string; result: "Pass" | "Fail" | "Refer"; detail: string };
 
+export type Deadline = { basis: string; total: number; used: number; unit: string; due: string }; // due = ISO date
+
 export type PipelineResult = {
   ref: string;
   mode: "demo" | "live";
   maskedText: string;
+  maskedNotes: CaseNote[]; // case notes after masking; raw notes never leave the server
   tokenCount: number;
-  triage: TriageOutput;
+  triage: TriageOutput | null; // null when masking failed or the AI output was invalid
   retrieved: (Clause & { score: number })[];
+  responseType: ResponseType | null;
   draft: DraftOutput | null;
+  draftWithheldReason: string | null;
   checks: Check[];
-  route: GoldLabels["route"];
+  route: Route;
+  routeReason: string;
   requiresSeniorCoApproval: boolean;
-  deadline: { basis: string; total: number; used: number; unit: string };
+  deadline: Deadline | null;
   audit: AuditEvent[];
   usage: { inputTokens: number; outputTokens: number; costGbp: number; ms: number };
   promptVersion: string;

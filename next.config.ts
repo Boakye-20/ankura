@@ -10,6 +10,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Route handlers read the synthetic data and stored outputs from disk at runtime.
+  outputFileTracingIncludes: { "/api/**": ["./data/**/*.json", "./data/policies/*.md"] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

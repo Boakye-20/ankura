@@ -80,6 +80,7 @@
     "VUL-01": ["FG21/1", "PRIN 2A.6.2R(1)", "FCA AI 2026"],
     "CONF-01": ["FCA AI 2026"],
     "SCHEMA-01": ["FCA AI 2026"],
-    "CLEAR-01": ["PRIN 2A.5", "DISP 1.4.1R(4)"]
+    "CLEAR-01": ["PRIN 2A.5", "DISP 1.4.1R(4)"],
+    "LTR-01": ["DISP 1.6.2R", "DISP 1.6.2AR", "DISP 1.6.1R"]
   }
 }
