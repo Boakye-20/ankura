@@ -30,44 +30,44 @@ export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; 
   return (
     <div className="panel">
       <Box
-        title={`Audit Trail (${events.length} events)`}
+        title={`${events.length} events`}
         label={
           <div className="btnrow">
             <button type="button" className="btn small" aria-pressed={onlyMine} onClick={() => setOnlyMine((v) => !v)}>
-              {onlyMine ? "Showing your session actions" : `Filter to my actions (${session.events.length})`}
+              Only this session ({session.events.length})
             </button>
             <button type="button" className="btn small" onClick={exportCsv}>Export CSV</button>
             <button type="button" className="btn small" onClick={onReset} disabled={!session.events.length}>
-              Reset session ({session.events.length})
+              Reset session
             </button>
           </div>
         }
       >
-        <div className="tw" style={{ maxHeight: 340, overflowY: "auto" }}>
+        <div className="tw scroll">
           <table className="dt">
             <thead>
               <tr><th>Timestamp</th><th>Case</th><th>Actor</th><th>Event</th><th>Detail</th></tr>
             </thead>
             <tbody>
-              {events.slice(0, 150).map((e, i) => (
+              {events.slice(0, 200).map((e, i) => (
                 <tr key={i}>
                   <td className="mono">{fmtDateTime(e.ts)}</td>
                   <td className="mono">{e.ref}</td>
                   <td>{e.actor}</td>
-                  <td><b>{e.event}</b></td>
+                  <td>{e.event}</td>
                   <td>{e.detail}</td>
                 </tr>
               ))}
               {!events.length && (
                 <tr>
-                  <td colSpan={5} className="note">No events match this filter yet. Take an action on any case in the Case Workbench to see it logged here.</td>
+                  <td colSpan={5} className="note">Nothing yet. Approve, amend or escalate a case and it will appear here.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
         <p className="note">
-          Every AI pipeline step (masking, triage, policy retrieval, drafting, guardrail verification) and every human decision (with actor and mandatory reason code, POL-08 §3.2) is logged.
+          Newest first{events.length > 200 ? ", latest 200 shown; the CSV export has all of them" : ""}. Each AI step (masking, triage, retrieval, drafting, checks, routing) and each human decision is recorded with who did it and why (POL-08 §3.2). In this prototype your own actions are kept in this browser only; a pilot needs an append-only log on the server.
         </p>
       </Box>
     </div>

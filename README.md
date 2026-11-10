@@ -82,6 +82,7 @@ npm run dev                  # http://localhost:3000
 npm test                     # unit tests, including the no-PII-leak test
 npm run precompute           # writes data/demo-outputs.json (needs a key)
 npm run eval                 # appends a run to data/eval-results.json (needs a key); run it twice
+npm run recheck              # re-runs the code checks on stored outputs after a verifier change (no key)
 npm run eval -- --batch      # same, through the Message Batches API at half price (minutes to hours); also works for precompute
 npm run build
 ```
@@ -89,10 +90,10 @@ npm run build
 ## Project structure
 ```
 app/            page, layout, styles, API routes (cases, verify, eval, status)
-components/     workbench views: queue, case, decision, handovers, assurance, audit, about
+components/     workbench views: queue, case, decision, handover pack, governance (assurance, adoption, audit), about
 lib/            pipeline steps (mask, triage, retrieve, draft, verify, route, deadlines), eval scoring
 lib/prompts/    triage.v1.md, draft.v1.md
-scripts/        precompute.ts, eval.ts, check-data.ts
+scripts/        precompute.ts, eval.ts, recheck.ts, check-data.ts
 data/           policies, synthetic complaints, generated outputs
 tests/          vitest unit tests
 ```

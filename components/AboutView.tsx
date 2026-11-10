@@ -1,120 +1,109 @@
 "use client";
-import { fmtDate } from "@/lib/format";
+// The assessor's guide: what this is, how to test it in a minute, and what it cannot do. There is no public README.
+import { fmtDate, gbp } from "@/lib/format";
 import type { WorkbenchData } from "@/lib/stored-types";
-import { BasisList, Box, Pill } from "./ui";
+import { GUIDE } from "./QueueView";
+import { BasisList, Box } from "./ui";
 
-const STEPS: [string, string, string][] = [
-  ["1. Mask PII", "Deterministic code replaces customer names, accounts, contacts and merchants with tokens before any AI call.", "code"],
-  ["2. Triage", "Claude Haiku classifies the complaint, extracts key facts, flags FG21/1 vulnerability drivers and sets the DISP deadline.", "ai"],
-  ["3. Retrieve Policy", "BM25 search retrieves the top policy clauses plus mandatory DISP deadline, ombudsman and redress rules.", "code"],
-  ["4. Draft & Handover", "Claude Sonnet drafts a customer response citing policy clauses and prepares a structured specialist handover pack.", "ai"],
-  ["5. Verify Guardrails", "Code checks every citation exists, blocks redress >£1,000, verifies FOS signposting, and blocks prompt injections.", "code"],
-  ["6. Human Sign-off", "Named handlers approve, edit or escalate with mandatory reason codes. Vulnerable/high-redress cases require a Senior.", "human"],
+const STEPS: [string, string, "code" | "ai" | "human"][] = [
+  ["Mask personal data", "Names, account numbers, contact details and merchants become tokens before any AI step.", "code"],
+  ["Triage", "The model classifies the complaint, lists the key facts, flags signs of vulnerability and identifies which deadline applies.", "ai"],
+  ["Retrieve policy", "A keyword search finds the relevant policy clauses. Deadline, ombudsman and redress clauses are always included.", "code"],
+  ["Draft", "The model drafts a reply that cites clauses, and a handover pack if a specialist team is needed.", "ai"],
+  ["Check", "Code confirms every citation exists, redress is within limits, the ombudsman wording is present and no instruction was aimed at the AI.", "code"],
+  ["Decide", "A named handler approves, edits or escalates, with a reason. Vulnerable customers and higher redress need a senior as well.", "human"],
 ];
+const KIND = { code: "Code", ai: "AI model", human: "Person" } as const;
 
 const CONTROLS: [string, string][] = [
-  ["MASK-01", "PII is masked before model calls; a post-check blocks processing if any unmasked personal data leaks through"],
-  ["INJ-01", "Prompt injection attempts in customer text are detected; the draft is withheld and routed to a human"],
-  ["CIT-01 / 02", "Every factual statement must cite a policy clause ID, and code verifies that every cited clause exists in the library"],
-  ["RED-01", "Redress >£250 requires Senior Handler co-approval; redress >£1,000 is blocked in code"],
-  ["VUL-01", "Cases with FG21/1 vulnerability indicators always require Senior Handler co-approval"],
-  ["FOS-01 / LTR-01", "Final, summary, and statutory delay letters are checked in code for mandatory Financial Ombudsman Service rights"],
+  ["MASK-01", "Personal data is masked before every model call. If anything slips through, the case gets no AI processing."],
+  ["INJ-01", "If a complaint contains an instruction aimed at the AI, the draft is withheld and a person writes the reply."],
+  ["CIT-01", "Every clause a draft cites must exist in the policy library, and every statement of fact must cite one (CIT-02)."],
+  ["RED-01", "Redress above £250 needs a senior. Redress above £1,000 is blocked. Text in a complaint cannot set an amount."],
+  ["VUL-01", "A case with signs of vulnerability always needs senior co-approval."],
+  ["FOS-01", "Final and summary responses must tell the customer about the Financial Ombudsman Service. Delay letters are checked too (LTR-01)."],
 ];
 
 export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCase: (ref: string) => void }) {
-  const caseLink = (ref: string, label?: string) => (
-    <button type="button" className="cite" onClick={() => onOpenCase(ref)}>
-      {label ?? ref}
-    </button>
-  );
+  const run = data.run;
+  const evalRun = data.evalResults?.runs.at(-1) ?? null;
+  const open = (ref: string) => <button type="button" className="linkish" onClick={() => onOpenCase(ref)}>{ref}</button>;
 
   return (
-    <div className="about-page">
-      <div className="about-hero">
-        <div>
-          <Pill tone="info">Scenario 1 · Banking Complaint Handling</Pill>
-          <h2>Executive Brief &amp; Prototype Guide</h2>
-          <p className="lead">
-            Built for <b>Meadowlane Bank plc</b> (fictional UK retail bank) to address a growing backlog of customer complaints, slow policy look-ups across case notes, and incomplete handovers to specialist teams.
-          </p>
-        </div>
-        <div className="quick-test-box">
-          <h3>Interactive Walkthrough (60 seconds)</h3>
-          <ol>
-            <li>
-              <b>Prompt Injection Guardrail:</b> Open {caseLink("CMP-2026-105103")} — hidden instructions attempt to force a £950 refund; <code>INJ-01</code> blocks the AI draft.
-            </li>
-            <li>
-              <b>Vulnerability &amp; Over-reliance Control:</b> Open {caseLink("CMP-2026-104288")} — approve within 20s to trigger the fast-approval check, then switch role (top right) to <b>Senior Handler</b> to co-approve.
-            </li>
-            <li>
-              <b>Specialist Handover Gate:</b> Open {caseLink("CMP-2026-104712")} — choose <b>Escalate to Fraud &amp; Disputes</b>, resolve the missing item, then switch role to <b>Specialist</b> to accept or return.
-            </li>
-            <li>
-              <b>Live Guardrail Re-verification:</b> On any case, click <b>Edit &amp; re-check</b> and enter an invalid citation like <code>[POL-99 §1.1]</code> or redress of <code>1500</code> — approval immediately locks.
-            </li>
-          </ol>
-        </div>
+    <div className="page">
+      <div className="page-head">
+        <h2>About this prototype</h2>
+        <p className="lead">
+          Meadowlane Bank is a fictional UK retail bank with a growing complaints backlog. Handlers lose time searching case notes and policy documents, and specialist teams receive incomplete handovers. This workbench finds the relevant policy, drafts a reply that cites it and builds a complete handover pack. The AI assists. A named person makes every decision.
+        </p>
+        <p className="lead">
+          Every complaint, person and policy here is synthetic. {run
+            ? `The AI outputs are real: they were produced by ${run.models.triage} (triage) and ${run.models.draft} (drafting) on ${fmtDate(run.runDate)} and stored. The app does not call a model, so it works without a key and shows the same results to everyone.`
+            : "The AI outputs have not been generated yet."}
+        </p>
       </div>
 
-      <section className="section-block">
-        <h3>End-to-End Architecture: Where AI Assists vs. Where Code &amp; Humans Govern</h3>
-        <div className="pipe" aria-label="Six-step complaint handling pipeline">
-          {STEPS.map(([title, text, kind]) => (
-            <div key={title} className={`step ${kind}`}>
-              <span className="n">{kind === "ai" ? "AI Model" : kind === "human" ? "Human Review" : "Deterministic Code"}</span>
+      <Box title="Test it in a minute">
+        <ol className="steps">
+          {GUIDE.map((g) => <li key={g.ref}><b>{g.title}.</b> Open {open(g.ref)}. {g.hint}</li>)}
+          <li><b>See the evidence.</b> Governance and assurance shows the measured results, including what the system got wrong, and the audit trail of every step you just took.</li>
+        </ol>
+      </Box>
+
+      <Box title="How a complaint moves through it">
+        <ol className="pipe" aria-label="Six steps">
+          {STEPS.map(([title, text, kind], i) => (
+            <li key={title} className={kind}>
+              <span className="kind">{i + 1} · {KIND[kind]}</span>
               <h4>{title}</h4>
               <p>{text}</p>
-            </div>
+            </li>
           ))}
-        </div>
-      </section>
+        </ol>
+      </Box>
 
-      <div className="grid2">
-        <Box title="1. Potential Business Value" label={<Pill tone="ok">AI Strategy</Pill>}>
+      <div className="cols2">
+        <Box title="Expected value">
           <ul className="plain">
-            <li><b>Faster handling &amp; backlog reduction:</b> Eliminates manual searching across 11 policy documents and multi-note case histories by pre-assembling cited drafts and key facts at intake.</li>
-            <li><b>Lower specialist return rate:</b> Structured handover packs enforce a mandatory completeness checklist (<code>POL-10 §3.1</code>) before escalation, preventing incomplete handoffs to Fraud, Bereavement, and Executive teams.</li>
-            <li><b>Protected regulatory SLAs:</b> Automatic classification of PSD2 payment-service complaints (15 business days) vs. standard DISP complaints (56 calendar days), with built-in statutory delay letters.</li>
-            <li><b>Negligible marginal cost:</b> Pre-computed / batched triage and drafting costs ~£0.006 per complaint across the 60-case evaluation suite.</li>
+            <li><b>Less searching.</b> The key facts, the relevant clauses and a cited draft are ready when the handler opens the case, instead of being pieced together from notes and {new Set(Object.values(data.clauses).map((c) => c.doc)).size} policy documents.</li>
+            <li><b>Fewer handovers sent back.</b> A pack cannot go to a specialist team until each required item is attached or marked not available with a reason.</li>
+            <li><b>Deadlines kept in view.</b> The queue is ordered by the regulatory clock (15 business days for payment complaints, 8 weeks otherwise), and the letter owed at the deadline is checked by code.</li>
+            <li><b>Low running cost.</b> {evalRun ? `${gbp(evalRun.cost.meanGbp, 4)} per complaint at list prices in the latest evaluation run.` : "Cost per complaint is reported once the evaluation has run."}</li>
+            <li className="note">Time saved is an expectation, not a measurement: a pilot would time handlers with and without the tool.</li>
           </ul>
         </Box>
 
-        <Box title="2. Workforce &amp; Role Transformation" label={<Pill tone="info">Workforce Transformation</Pill>}>
+        <Box title="How roles change">
           <ul className="plain">
-            <li><b>Complaint Handlers:</b> Shift from locating clauses and typing routine paragraphs to verifying facts, tailoring tone, and resolving missing handover evidence.</li>
-            <li><b>Senior Handlers:</b> Focus exclusively on high-risk sign-offs — co-approving cases with FG21/1 vulnerability indicators or redress between £250 and £1,000.</li>
-            <li><b>Specialist Teams:</b> Receive standardised handover packs (issue summary, actions already taken with note citations, specific questions required) and can formally return incomplete packs with tracked reason codes.</li>
-            <li><b>Over-reliance mitigation:</b> Approvals submitted in under 20 seconds trigger an explicit confirmation prompt, and session adoption metrics track unchanged-approval rates.</li>
+            <li><b>Complaint handlers</b> spend less time finding clauses and typing routine paragraphs, and more time checking facts, adjusting tone and completing handovers.</li>
+            <li><b>Senior handlers</b> review the cases that carry most risk: signs of vulnerability, or redress between £250 and £1,000.</li>
+            <li><b>Specialist teams</b> receive the same structured pack every time and can return an incomplete one with a reason, which is counted.</li>
+            <li><b>Over-reliance is watched.</b> Approving within 20 seconds asks the handler to confirm they read the reply, and the share of drafts approved unchanged is tracked.</li>
           </ul>
         </Box>
 
-        <Box title="3. Risks, Controls &amp; Human Oversight" label={<Pill tone="warn">Governance Engineering</Pill>}>
-          <ul className="checks">
+        <Box title="Controls and human review" label="Each control shows the rule it is designed to support">
+          <ul className="rows">
             {CONTROLS.map(([id, text]) => (
               <li key={id}>
-                <span className="cid">{id}</span>
-                <span>
-                  {text}
-                  {data.checkBasis[id.split(" ")[0]] && <><br /><BasisList basis={data.checkBasis[id.split(" ")[0]]} /></>}
-                </span>
+                <span className="label">{id}</span>
+                <span>{text}{data.checkBasis[id] && <><br /><BasisList basis={data.checkBasis[id]} /></>}</span>
               </li>
             ))}
           </ul>
+          <p className="note">These controls are designed to support the rules shown. Nothing here is a claim of legal compliance. Sources checked {fmtDate(data.regulatory.asOf)}.</p>
         </Box>
 
-        <Box title="4. AI Tools Used, Assumptions &amp; Limitations" label={<Pill>Transparency</Pill>}>
+        <Box title="Limitations">
           <ul className="plain">
-            <li><b>AI Models Assessed:</b> Anthropic <code>claude-haiku-4-5</code> for fast structured triage and <code>claude-sonnet-4-5</code> for policy-grounded response drafting, paired with deterministic BM25 policy retrieval.</li>
-            <li><b>Why stored outputs in the UI:</b> The prototype serves real model outputs generated on {data.run ? fmtDate(data.run.runDate) : "precompute"} so reviewers can test instantaneously without API keys, while live server routes (<code>/api/verify</code>, <code>/api/letter</code>) re-run deterministic guardrails on edits.</li>
-            <li><b>Explicit Limitations:</b>
-              <ul>
-                <li>60 synthetic cases and labels were authored by one person (~1.7% per case); prompt v2 was tuned after inspecting v1 errors on the same set.</li>
-                <li>Self-reported model confidence is poorly calibrated (see Governance tab), so deterministic rule checks carry the real assurance burden.</li>
-                <li>Regex/list PII masking and browser-local RBAC/audit logs are prototype simulations; production requires enterprise IAM, append-only server logs, and NER-backed redaction.</li>
-              </ul>
-            </li>
+            <li>The 60 complaints and their labels were written by one person and not independently reviewed. Each case is about 1.7 percentage points, so small differences mean little.</li>
+            <li>The second prompt version was written after seeing the first one’s errors on the same 60 cases. There is no held-out set, so results on new complaints would probably be lower.</li>
+            <li>Masking uses rules and name lists. It catches the patterns tested, not every way of writing personal data.</li>
+            <li>The model’s own confidence score does not reliably separate right from wrong answers, so the code checks carry the assurance.</li>
+            <li>Roles, decisions and your part of the audit trail are held in this browser. A pilot needs real sign-in, approvals authorised on the server and an append-only log.</li>
+            <li>No real handler has used this. Effects on handling time and staff behaviour are untested.</li>
           </ul>
+          <p className="note">Built with Claude Code. The source code is private and available on request.</p>
         </Box>
       </div>
     </div>

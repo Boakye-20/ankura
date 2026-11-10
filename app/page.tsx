@@ -9,7 +9,7 @@ export default function Home() {
   const outputs = loadDemoOutputs();
   const data: WorkbenchData = {
     cases: caseViews(),
-    run: outputs ? { runDate: outputs.runDate, models: outputs.models, promptVersion: outputs.promptVersion, policyVersion: outputs.policyVersion } : null,
+    run: outputs ? { runDate: outputs.runDate, models: outputs.models, promptVersion: outputs.promptVersion, policyVersion: outputs.policyVersion, checksRerun: outputs.checksRerun } : null,
     clauses: clauseLibrary(),
     checkBasis: checkBasis(),
     evalResults: loadEvalResults(),

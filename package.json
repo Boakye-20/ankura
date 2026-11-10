@@ -9,6 +9,7 @@
     "test": "vitest run",
     "eval": "tsx --env-file-if-exists=.env.local scripts/eval.ts",
     "precompute": "tsx --env-file-if-exists=.env.local scripts/precompute.ts",
+    "recheck": "tsx scripts/recheck.ts",
     "check-data": "tsx scripts/check-data.ts"
   },
   "dependencies": {

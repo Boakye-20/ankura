@@ -78,6 +78,12 @@ describe("verify: each check fails or refers on crafted input", () => {
     expect(result(verify(input({ draft })), "CIT-02")).toBe("Fail");
   });
 
+  it("CIT-02 does not treat the digit in a masking token as a fact", () => {
+    const draft = goodDraft();
+    draft.response.push({ text: "Dear [CUSTOMER_1], thank you for contacting us about [ACCOUNT_2].", citations: [] });
+    expect(result(verify(input({ draft })), "CIT-02")).toBe("Pass");
+  });
+
   it("CIT-03 refers when a real clause was not retrieved", () => {
     const draft = goodDraft();
     draft.response[1].citations.push("POL-08 §1.1");

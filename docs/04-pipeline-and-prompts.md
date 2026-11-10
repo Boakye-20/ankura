@@ -96,18 +96,18 @@ Rules:
 Each produces a `Check`. Each check also carries its regulatory basis from `data/regulatory-map.json` (`checks` section), which the checks panel shows next to the result (for example VUL-01 → FG21/1, PRIN 2A.6.2R(1)). See docs/11.
 | ID | Check | Fail when |
 |---|---|---|
-| MASK-01 | Personal data masked | leak check found raw values |
-| MASK-02 | No obfuscated personal data | number-word heuristic triggered (result Refer) |
-| INJ-01 | No instruction aimed at the AI | rule patterns match OR triage `injectionSuspected` |
-| CIT-01 | All citations exist | any cited ID not in the policy library |
-| CIT-02 | Factual parts are cited | a part contains a digit, "£", "days", "refund", "will", "policy" and has no citation |
-| CIT-03 | Citations were retrieved | a cited ID was not among the retrieved clauses (Refer) |
-| RED-01 | Redress within authority | `proposedRedress.amount` > £250 (handler limit, POL-05 §2.1) → Refer to senior; > £1,000 → Fail |
-| RED-02 | Amount has a basis | any £ amount in the draft does not appear in the complaint, case notes or a cited clause |
+| MASK-01 | Personal data masking | leak check found raw values |
+| MASK-02 | Obfuscated personal data | number-word heuristic triggered (result Refer) |
+| INJ-01 | Instruction aimed at the AI | rule patterns match OR triage `injectionSuspected` |
+| CIT-01 | Citations exist | any cited ID not in the policy library |
+| CIT-02 | Facts are cited | a part contains a digit (digits inside masking tokens such as [CUSTOMER_1] do not count), "£", "days", "refund", "will", "policy" and has no citation |
+| CIT-03 | Citations match retrieved policy | a cited ID was not among the retrieved clauses (Refer) |
+| RED-01 | Redress authority | `proposedRedress.amount` > £250 (handler limit, POL-05 §2.1) → Refer to senior; > £1,000 → Fail |
+| RED-02 | Basis for the amount | any £ amount in the draft does not appear in the complaint, case notes or a cited clause |
 | FOS-01 | FOS signposting (DISP 1.6.2R, DISP 1.5) | final or summary response that does not cite DISP-G §2.3 or does not mention "Financial Ombudsman"; a final response (not a summary resolution) that does not also mention "six months" or "6 months" |
-| VUL-01 | Vulnerability handled | triage vulnerable = true → Refer (senior co-approval, POL-07 §2.2) |
-| CONF-01 | Confidence above threshold | `categoryConfidence` < 0.75 → Refer |
-| SCHEMA-01 | AI output valid | zod validation failed after retry |
+| VUL-01 | Vulnerability | triage vulnerable = true → Refer (senior co-approval, POL-07 §2.2) |
+| CONF-01 | Classification confidence | `categoryConfidence` < 0.75 → Refer |
+| SCHEMA-01 | AI output format | zod validation failed after retry |
 | CLEAR-01 | Plain language (PRIN 2A.5, DISP 1.4.1R(4)) | draft over 180 words, any sentence over 30 words, or average sentence over 20 words → Refer. A deliberately simple, explainable proxy for clarity; it does not prove the customer will understand. |
 
 Injection rule patterns (case-insensitive): `ignore (all |any )?(previous|prior|above) instructions`, `system (note|prompt|message)`, `you are now`, `as an ai`, `disregard (the|your) (rules|policy)`, `approve .* (payment|refund|compensation)`, `assistant:`, `<\/?(system|instructions)>`.

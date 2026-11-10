@@ -77,6 +77,14 @@ export function dueText(d: Deadline | null): string {
   return `${left} ${unit(left)} left`;
 }
 
+/** The same, shortened for a queue row. The case header gives the unit in full. */
+export function dueShort(d: Deadline | null): string {
+  if (!d) return "No deadline";
+  const left = d.total - d.used;
+  const days = (n: number) => `${n} day${n === 1 ? "" : "s"}`;
+  return left < 0 ? `${days(-left)} overdue` : left === 0 ? "Due today" : `${days(left)} left`;
+}
+
 export function deadlineTone(d: Deadline | null): Tone {
   const share = deadlineShare(d);
   return share >= 0.9 ? "bad" : share >= 0.5 ? "warn" : "";

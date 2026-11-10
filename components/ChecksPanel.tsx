@@ -4,34 +4,35 @@ import type { Check } from "@/lib/types";
 import { BasisList, Pill } from "./ui";
 
 const TONE = { Pass: "ok", Fail: "bad", Refer: "warn" } as const;
+const names = (checks: Check[]) => checks.map((c) => `${c.label} (${c.id})`).join(", ");
 
-/** One line in the reply box: does anything block approval? */
+/** One line above the draft: can it be approved, and if not, which check stopped it? */
 export function CheckSummary({ checks, draftWithheld }: { checks: Check[]; draftWithheld: boolean }) {
   const fails = checks.filter((c) => c.result === "Fail");
   const refers = checks.filter((c) => c.result === "Refer");
   const passed = checks.length - fails.length - refers.length;
   const tone = fails.length ? "bad" : refers.length ? "warn" : "ok";
-  const text = fails.length
-    ? `${fails.map((c) => c.label).join(", ")}: blocks approval. ${passed} of ${checks.length} checks passed.`
-    : refers.length
-      ? `${refers.map((c) => c.label).join(", ")}: needs your judgement. ${passed} of ${checks.length} checks passed.`
-      : `All ${checks.length} checks passed.`;
   return (
-    <p className={`status-line ${tone}`} role="status">
+    <p className={`status ${tone}`} role="status">
       <span className="dot" aria-hidden="true" />
-      {draftWithheld && !fails.length ? "No draft to check. " : ""}{text}
+      <span>
+        {fails.length > 0 && <><b>{draftWithheld ? "Draft withheld." : "Approval blocked."}</b> Failed: {names(fails)}.</>}
+        {!fails.length && refers.length > 0 && <><b>Needs your judgement.</b> Review: {names(refers)}.</>}
+        {!fails.length && !refers.length && <b>All checks passed.</b>}
+      </span>
+      <span className="count">{passed} of {checks.length} passed</span>
     </p>
   );
 }
 
-/** Context panel: what needs attention first, then every check and the rule it is designed to support. */
+/** Every check that needs attention, then the full list with the rule each one is designed to support. */
 export function ChecksPanel({ checks, basis, amended, draftWithheld }: { checks: Check[]; basis: Record<string, RegulatorySource[]>; amended: boolean; draftWithheld: boolean }) {
   const attention = checks.filter((c) => c.result !== "Pass");
   const row = (c: Check, withBasis: boolean) => (
     <li key={c.id}>
       <Pill tone={TONE[c.result]}>{c.result}</Pill>
       <span>
-        <span className="cid">{c.label}</span> <span className="note">({c.id})</span>
+        <span className="name">{c.label}</span> <span className="label">{c.id}</span>
         <br />
         <span className="note">{c.detail}</span>
         {withBasis && <><br /><BasisList basis={basis[c.id] ?? []} /></>}
@@ -40,14 +41,16 @@ export function ChecksPanel({ checks, basis, amended, draftWithheld }: { checks:
   );
   return (
     <>
-      <h3>Checks before release</h3>
-      <p className="note">Run by code, not by the AI{amended ? ", and re-run on your amended reply" : ""}. A fail blocks approval.</p>
-      {attention.length > 0 && <ul className="checks">{attention.map((c) => row(c, false))}</ul>}
+      <div className="sec-head">
+        <h3>Checks</h3>
+        <span className="label">Run by code, not by the AI{amended ? ". Re-run on your amended reply" : ""}</span>
+      </div>
+      {attention.length > 0 && <ul className="rows">{attention.map((c) => row(c, false))}</ul>}
       <details>
         <summary>All {checks.length} checks and the rules they support</summary>
-        <ul className="checks">{checks.map((c) => row(c, true))}</ul>
+        <ul className="rows">{checks.map((c) => row(c, true))}</ul>
       </details>
-      {draftWithheld && <p className="note">Checks on the draft (citations, redress, ombudsman wording, plain language) did not run because there is no draft.</p>}
+      {draftWithheld && <p className="note">The checks on a draft (citations, redress, ombudsman wording, plain language) did not run because there is no draft.</p>}
     </>
   );
 }

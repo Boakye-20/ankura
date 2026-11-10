@@ -21,7 +21,7 @@ Read these before writing code, in this order:
 8. `docs/08-build-plan.md`: the order to build in, with checkpoints
 9. `docs/11-regulatory-basis.md`: the FCA, data protection and AI rules the controls map to (verified 08/11/2026)
 
-`reference/mockup.html` is the approved visual mock-up. Match its look and layout.
+The visual design is defined in `docs/07-ui-design.md` and `app/globals.css` (redesigned 10/11/2026). `reference/mockup.html` is the earlier mock-up, kept for history only: do not match it.
 `data/policies/` is the approved synthetic policy library. Do not change clause IDs.
 
 ## Non-negotiable rules
@@ -63,6 +63,7 @@ Get structured JSON with structured outputs (`output_config.format` from the zod
 - `npm test`: unit tests (masking, retrieval, verifier, routing)
 - `npm run eval`: runs the pipeline over all 60 complaints, writes `data/eval-results.json`
 - `npm run precompute`: runs the pipeline with a real key and writes `data/demo-outputs.json`, which the app serves
+- `npm run recheck`: re-runs the code-only checks on the stored outputs after a change to `lib/verify.ts` (no key, no model call)
 - `npm run build`: production build (must pass before deploy)
 
 ## How to work with PK

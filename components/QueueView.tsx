@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState, type KeyboardEvent } from "react";
 import { caseState, type Role, type Session, type useSession } from "@/lib/audit";
-import { deadlineShare, deadlineTone, dueText, flags, queueBucket, statusTone } from "@/lib/case-helpers";
+import { deadlineShare, deadlineTone, dueShort, flags, queueBucket, statusTone } from "@/lib/case-helpers";
 import { isLetterDue } from "@/lib/letter";
 import type { CaseView, WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
@@ -14,42 +14,36 @@ type Props = {
   act: ReturnType<typeof useSession>["act"];
   selected: string | null;
   onSelect: (ref: string) => void;
-  onEscalated?: (ref: string) => void;
 };
 
-const VIEWS = {
-  mine: "Needs my action",
-  progress: "With others",
-  done: "Completed",
-  all: "All cases",
-} as const;
+const VIEWS = { mine: "Mine", progress: "With others", done: "Done", all: "All" } as const;
 type ViewKey = keyof typeof VIEWS;
 
-const SCENARIOS: { ref: string; title: string; badge: string; tone: "bad" | "warn" | "info"; desc: string }[] = [
+/** Four cases that show the main controls. Listed for assessors; a live deployment would not have this strip. */
+export const GUIDE: { ref: string; title: string; hint: string }[] = [
+  {
+    ref: "CMP-2026-104712",
+    title: "Cited draft and handover",
+    hint: "Hover a clause reference to read the policy. Choose Escalate, deal with the missing items, submit, then switch to Specialist to accept or return the pack.",
+  },
+  {
+    ref: "CMP-2026-101003",
+    title: "Vulnerable customer",
+    hint: "Approve within 20 seconds to see the over-reliance check. The case then waits for a senior: switch to Senior handler to co-approve.",
+  },
   {
     ref: "CMP-2026-105103",
-    title: "1. Prompt injection & safety block",
-    badge: "Guardrail block",
-    tone: "bad",
-    desc: "Customer embeds hidden AI instructions to force a £950 payout. INJ-01 detects the injection and withholds the draft.",
+    title: "Instruction aimed at the AI",
+    hint: "The complaint tells the AI to approve £5,000. Code withholds the draft, so the handler writes the reply.",
   },
   {
     ref: "CMP-2026-104288",
-    title: "2. Vulnerable customer co-approval",
-    badge: "Senior sign-off",
-    tone: "warn",
-    desc: "Bereaved customer (FG21/1 indicator). Handler approval routes to Senior Handler; fast approval (<20s) triggers an over-reliance check.",
-  },
-  {
-    ref: "CMP-2026-104712",
-    title: "3. Specialist handover & checklist",
-    badge: "Handover pack",
-    tone: "info",
-    desc: "Card fraud dispute routed to Fraud & Disputes. AI builds a structured handover pack and blocks submission until missing items are resolved.",
+    title: "Uncited statement blocked",
+    hint: "One sentence states a fact without a policy clause, so approval is locked. Choose Edit and re-check to fix it, or try citing [POL-99 §1.1].",
   },
 ];
 
-export function QueueView({ data, role, session, act, selected, onSelect, onEscalated }: Props) {
+export function QueueView({ data, role, session, act, selected, onSelect }: Props) {
   const [view, setView] = useState<ViewKey>("mine");
   const [vulnOnly, setVulnOnly] = useState(false);
 
@@ -58,7 +52,8 @@ export function QueueView({ data, role, session, act, selected, onSelect, onEsca
   const rows = useMemo(() => {
     return data.cases
       .filter((c) => inView(c, view) && (!vulnOnly || Boolean(c.result?.triage?.vulnerable)))
-      .sort((a, b) => -deadlineShare(a.result?.deadline ?? null) - -deadlineShare(b.result?.deadline ?? null));
+      .sort((a, b) => deadlineShare(b.result?.deadline ?? null) - deadlineShare(a.result?.deadline ?? null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.cases, view, vulnOnly, session, role]);
 
   const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
@@ -69,56 +64,32 @@ export function QueueView({ data, role, session, act, selected, onSelect, onEsca
     (next?.querySelector("button") as HTMLElement | null)?.focus();
   };
 
-  // Auto-select first case if none selected or if selected exists
   const current = data.cases.find((c) => c.ref === selected) ?? null;
+  const guided = GUIDE.find((g) => g.ref === selected);
 
   return (
-    <div className="workspace-wrap">
-      {/* Guided Scenario Strip for Evaluators */}
-      <div className="scenario-bar" aria-label="Featured evaluation scenarios">
-        <span className="sb-label">Key scenarios to test:</span>
-        <div className="sb-cards">
-          {SCENARIOS.map((s) => (
-            <button
-              key={s.ref}
-              type="button"
-              className={`sb-card ${selected === s.ref ? "active" : ""}`}
-              onClick={() => onSelect(s.ref)}
-            >
-              <div className="sb-top">
-                <b>{s.title}</b>
-                <Pill tone={s.tone}>{s.badge}</Pill>
-              </div>
-              <span className="sb-desc">{s.desc}</span>
-            </button>
-          ))}
-        </div>
+    <div className="work">
+      <div className="guide" aria-label="Suggested cases to test">
+        <span>Try these cases</span>
+        {GUIDE.map((g) => (
+          <button key={g.ref} type="button" aria-pressed={selected === g.ref} onClick={() => onSelect(g.ref)}>{g.title}</button>
+        ))}
+        {guided && <span className="try">{guided.hint}</span>}
       </div>
 
       <div className="split">
-        <section className="qpane" aria-label="Case queue">
-          <div className="qhead">
-            <div className="view-pills" role="group" aria-label="Filter queue by status">
-              {(Object.keys(VIEWS) as ViewKey[]).map((k) => {
-                const count = data.cases.filter((c) => inView(c, k)).length;
-                return (
-                  <button key={k} type="button" aria-pressed={view === k} onClick={() => setView(k)}>
-                    <span>{VIEWS[k]}</span>
-                    <span className="count">{count}</span>
-                  </button>
-                );
-              })}
+        <section className="queue" aria-label="Case queue">
+          <div className="queue-head">
+            <div className="filters" role="group" aria-label="Filter the queue">
+              {(Object.keys(VIEWS) as ViewKey[]).map((k) => (
+                <button key={k} type="button" aria-pressed={view === k} onClick={() => setView(k)}>
+                  {VIEWS[k]}<span className="n">{data.cases.filter((c) => inView(c, k)).length}</span>
+                </button>
+              ))}
             </div>
-            <div className="q-subbar">
-              <span className="note">Sorted by regulatory deadline risk</span>
-              <button
-                type="button"
-                className="vuln-toggle"
-                aria-pressed={vulnOnly}
-                onClick={() => setVulnOnly((v) => !v)}
-              >
-                Vulnerable only
-              </button>
+            <div className="queue-sub">
+              <span>Closest to deadline first</span>
+              <label><input type="checkbox" checked={vulnOnly} onChange={(e) => setVulnOnly(e.target.checked)} /> Vulnerable only</label>
             </div>
           </div>
 
@@ -127,24 +98,17 @@ export function QueueView({ data, role, session, act, selected, onSelect, onEsca
               const d = c.result?.deadline ?? null;
               const state = caseState(session, c.ref);
               const tone = deadlineTone(d);
-              const tags = flags(c).filter(([label]) => label !== "Summary resolution").slice(0, 2);
+              const letterDue = isLetterDue(d, state.status) && !state.letterApproved;
+              const tags = flags(c).filter(([label]) => label !== "Summary resolution").slice(0, letterDue ? 1 : 2);
               return (
                 <li key={c.ref}>
-                  <button
-                    type="button"
-                    className="qitem"
-                    aria-current={c.ref === selected}
-                    onClick={() => onSelect(c.ref)}
-                    onKeyDown={onKey}
-                  >
+                  <button type="button" className="qitem" aria-current={c.ref === selected} onClick={() => onSelect(c.ref)} onKeyDown={onKey}>
                     <span className="r">{c.ref}</span>
-                    <span className={`d ${tone === "bad" ? "late" : tone === "warn" ? "soon" : ""}`}>{dueText(d)}</span>
-                    <span className="s">
-                      {c.result?.triage?.category ?? "Unclassified"} · {c.result?.route ?? "Unassigned"}
-                    </span>
+                    <span className={`d ${tone === "bad" ? "late" : tone === "warn" ? "soon" : ""}`}>{dueShort(d)}</span>
+                    <span className="s">{c.result?.triage?.category ?? "Unclassified"} · {c.result?.route ?? "Unassigned"}</span>
                     <span className="tags">
                       {state.status !== "Open" && <Pill tone={statusTone(state.status)}>{state.status}</Pill>}
-                      {isLetterDue(d, state.status) && !state.letterApproved && <Pill tone="bad">Delay letter due</Pill>}
+                      {letterDue && <Pill tone="bad">Delay letter due</Pill>}
                       {tags.map(([label, t]) => <Pill key={label} tone={t}>{label}</Pill>)}
                     </span>
                   </button>
@@ -155,29 +119,22 @@ export function QueueView({ data, role, session, act, selected, onSelect, onEsca
               <li className="empty">
                 {view === "mine" ? (
                   <>
-                    <b>No cases waiting for {role.toLowerCase()} action.</b>
-                    <span className="note">Switch to &ldquo;All cases&rdquo; above or change your simulated role in the top bar.</span>
+                    <b>Nothing is waiting for you as {role === "Senior" ? "senior handler" : role.toLowerCase()}.</b>
+                    <span className="note">Cases arrive here when a handler approves a vulnerable-customer case or submits a handover pack.</span>
                     <button type="button" className="btn small" onClick={() => setView("all")}>Show all {data.cases.length} cases</button>
                   </>
-                ) : (
-                  "No cases match this filter."
-                )}
+                ) : "No cases match this filter."}
               </li>
             )}
           </ul>
         </section>
 
         {current ? (
-          <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onEscalated={onEscalated} />
+          <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} />
         ) : (
-          <div className="cpane empty-pane">
-            <div className="empty" style={{ margin: "auto", maxWidth: 460 }}>
-              <h2>Select a complaint to begin</h2>
-              <p>Choose any case from the queue on the left, or click one of the <b>3 key scenarios</b> at the top to test prompt-injection blocking, vulnerable customer co-approval, or specialist handovers.</p>
-              <button type="button" className="btn primary" onClick={() => onSelect("CMP-2026-105103")}>
-                Start with Scenario 1 (CMP-2026-105103)
-              </button>
-            </div>
+          <div className="empty">
+            <h2>Select a case</h2>
+            <p>Choose a case from the queue, or one of the suggested cases above.</p>
           </div>
         )}
       </div>

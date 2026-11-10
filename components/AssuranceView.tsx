@@ -5,45 +5,49 @@ import { fmtDateTime, gbp, pctText } from "@/lib/format";
 import type { EvalResults, EvalRun } from "@/lib/eval-types";
 import { Box, Pill } from "./ui";
 
-export function AssuranceView({ results, session }: { results: EvalResults | null; session: Session }) {
+export function AssuranceView({ results, checksRerun }: { results: EvalResults | null; checksRerun: string | null }) {
   const latest = results?.runs.at(-1) ?? null;
+  if (!latest) {
+    return <p className="banner"><b>Not yet run.</b> No evaluation results exist. Run <code>npm run eval</code> with an API key and the results appear here exactly as measured.</p>;
+  }
+  const stale = checksRerun !== null && checksRerun > latest.timestamp;
   return (
     <div className="panel">
-      {latest ? (
-        <p className="banner info">
-          Evaluation run {fmtDateTime(latest.timestamp)} · commit <code>{latest.commit}</code> · triage {latest.models.triage} · draft {latest.models.draft} · prompt {latest.promptVersion} · {latest.cases} labelled synthetic cases.
-          {results!.runs.length > 1 && ` ${results!.runs.length} runs recorded; the model is not fully deterministic, so all are shown below.`}
+      <p className="note">
+        Measured on {fmtDateTime(latest.timestamp)} over {latest.cases} labelled synthetic complaints. Triage by {latest.models.triage}, drafting by {latest.models.draft}, prompt set {latest.promptVersion}, code at commit <code>{latest.commit}</code>.
+        {results!.runs.length > 1 && ` ${results!.runs.length} runs are kept because the model does not give the same answer every time.`}
+      </p>
+      {stale && (
+        <p className="banner">
+          The citation check (CIT-02) was corrected on {fmtDateTime(checksRerun!).slice(0, 10)}, after this evaluation ran. Figures that depend on the checks (the two “after verifier” rows, the adversarial tests and the human routing rate) were measured with the earlier check and will change when <code>npm run eval</code> is run again. The triage figures are not affected.
         </p>
-      ) : (
-        <p className="banner"><b>Not yet run.</b> No evaluation results exist. Run <code>npm run eval</code> with an API key; results then appear here exactly as measured.</p>
       )}
-      {latest && <RunDetail run={latest} runs={results!.runs} />}
-      <Adoption session={session} />
+      <RunDetail run={latest} runs={results!.runs} />
     </div>
   );
 }
 
 function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
-  const targeted = run.metrics.filter((m) => m.target !== null);
+  const headline = run.metrics.filter((m) => m.target !== null && m.value !== null && m.pass !== null);
   const cal = run.calibration;
   const timed = run.batch ? [...runs].reverse().find((r) => !r.batch) : run; // batch timings are queue time, not model time
   const rate = (x: { n: number; correct: number }) => (x.n ? `${x.correct} / ${x.n} (${((x.correct / x.n) * 100).toFixed(1)}%)` : "no cases");
   return (
     <>
-      <div className="grid3">
-        {targeted.map((m) => (
+      <div className="kpis">
+        {headline.map((m) => (
           <div className="kpi" key={m.id}>
             <span>{m.label}</span>
-            <b>{m.value === null ? "n/a" : m.id === "redress" ? m.display : pctText(m.value)}</b>
-            <span>Target {m.target}. {m.pass === null ? "Not measured in this run" : <Pill tone={m.pass ? "ok" : "bad"}>{m.pass ? "Met" : "Missed"}</Pill>}</span>
+            <b>{m.id === "redress" ? m.display : pctText(m.value)}</b>
+            <span>Target {m.target} · <Pill tone={m.pass ? "ok" : "bad"}>{m.pass ? "Met" : "Missed"}</Pill></span>
           </div>
         ))}
       </div>
 
-      <Box title="All metrics" label={<span className="note">Target vs result{runs.length > 1 ? " · every run" : ""}</span>}>
+      <Box title="Every metric" label={runs.length > 1 ? "Latest run on the right" : undefined}>
         <div className="tw">
           <table className="dt">
-            <thead><tr><th>Metric</th><th>Target</th>{runs.map((r, i) => <th key={r.timestamp}>Run {i + 1} · {fmtDateTime(r.timestamp).slice(0, 10)}</th>)}<th>Note</th></tr></thead>
+            <thead><tr><th>Metric</th><th>Target</th>{runs.map((r, i) => <th key={r.timestamp}>Run {i + 1}, {fmtDateTime(r.timestamp).slice(0, 16)}</th>)}<th>Note</th></tr></thead>
             <tbody>
               {run.metrics.map((m) => (
                 <tr key={m.id}>
@@ -51,7 +55,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
                   <td>{m.target ?? "Report only"}</td>
                   {runs.map((r) => {
                     const x = r.metrics.find((y) => y.id === m.id);
-                    return <td key={r.timestamp}>{x ? x.display : "—"} {x?.pass === false && <Pill tone="bad">Missed</Pill>}</td>;
+                    return <td key={r.timestamp}>{x ? x.display : "n/a"} {x?.pass === false && <Pill tone="bad">Missed</Pill>}</td>;
                   })}
                   <td className="note">{m.note}</td>
                 </tr>
@@ -61,15 +65,15 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
         </div>
       </Box>
 
-      <div className="grid2">
-        <Box title="Calibration" label={<span className="note">Is self-reported confidence any use?</span>}>
+      <div className="cols2">
+        <Box title="Calibration" label="Does the model’s own confidence mean anything?">
           <dl className="kv">
             <dt>Accuracy, confidence ≥ {cal.threshold}</dt><dd>{rate(cal.high)}</dd>
             <dt>Accuracy, confidence &lt; {cal.threshold}</dt><dd>{rate(cal.low)}</dd>
           </dl>
           <p className="note">If accuracy is similar in both groups, the confidence threshold is not separating good classifications from bad ones, and the CONF-01 control adds less than it appears to.</p>
         </Box>
-        <Box title="Cost and latency" label={<span className="note">From the evaluation run</span>}>
+        <Box title="Cost and latency" label="From the evaluation run">
           <dl className="kv">
             <dt>Average cost per case</dt><dd>{gbp(run.cost.meanGbp, 4)}</dd>
             <dt>Total cost, {run.cases} cases</dt><dd>{gbp(run.cost.totalGbp, 4)}</dd>
@@ -80,7 +84,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
         </Box>
       </div>
 
-      <Box title="Complaint category confusion matrix" label={<span className="note">Rows: human label · columns: AI category</span>}>
+      <Box title="Where categories were confused" label="Rows are the human label, columns the AI category">
         <div className="tw">
           <table className="dt matrix">
             <thead><tr><th>Human label</th>{run.confusion.labels.map((l) => <th key={l} title={l}>{abbr(l)}</th>)}</tr></thead>
@@ -88,7 +92,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
               {run.confusion.labels.map((row, i) => (
                 <tr key={row}>
                   <th scope="row">{row}</th>
-                  {run.confusion.matrix[i].map((n, j) => <td key={j} className={n ? (i === j ? "hit" : "miss") : ""}>{n || "·"}</td>)}
+                  {run.confusion.matrix[i].map((n, j) => <td key={j} className={n ? (i === j ? "hit" : "miss") : ""}>{n || "0"}</td>)}
                 </tr>
               ))}
             </tbody>
@@ -96,7 +100,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
         </div>
       </Box>
 
-      <Box title="Adversarial tests" label={<span className="note">{run.adversarial.filter((a) => a.pass).length} / {run.adversarial.length} passed</span>}>
+      <Box title="Adversarial tests" label={`${run.adversarial.filter((a) => a.pass).length} of ${run.adversarial.length} passed`}>
         <div className="tw">
           <table className="dt">
             <thead><tr><th>Case</th><th>Test</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead>
@@ -109,7 +113,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
         </div>
       </Box>
 
-      <Box title="Known failures" label={<span className="note">Every case the system got wrong in the latest run · {run.failures.length}</span>}>
+      <Box title={`Known failures (${run.failures.length})`} label="Everything the system got wrong in the latest run">
         {run.failures.length ? (
           <div className="tw">
             <table className="dt">
@@ -124,7 +128,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
   );
 }
 
-function Adoption({ session }: { session: Session }) {
+export function Adoption({ session }: { session: Session }) {
   const a = adoption(session.events);
   const tiles: [string, number][] = [
     ["Drafts approved unchanged", a.approvedUnchanged],
@@ -135,9 +139,9 @@ function Adoption({ session }: { session: Session }) {
     ["Handovers returned by specialists", a.handoverReturns],
   ];
   return (
-    <Box title="Adoption · this browser session" label={<span className="note">Workforce measures, counted from your actions</span>}>
-      <div className="grid3">{tiles.map(([label, n]) => <div className="kpi" key={label}><span>{label}</span><b>{n}</b></div>)}</div>
-      <p className="note">A high share of drafts approved unchanged, fast approvals or rising handover returns are early signs of over-reliance or quiet reversion. A pilot would measure these across teams over time, alongside reason codes and time to decision.</p>
+    <Box title="How this session used the AI" label="Counted from your actions in this browser">
+      <div className="kpis">{tiles.map(([label, n]) => <div className="kpi" key={label}><span>{label}</span><b>{n}</b></div>)}</div>
+      <p className="note">These are the measures a pilot would track across teams. A high share of drafts approved unchanged, or many fast approvals, suggests staff are trusting the AI without reading. Rising handover returns suggest the packs are not helping specialists. The numbers start at zero: act on a few cases, then come back.</p>
     </Box>
   );
 }

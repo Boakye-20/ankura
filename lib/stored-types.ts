@@ -3,7 +3,13 @@ import type { EvalResults } from "./eval-types";
 import type { RegulatorySource } from "./regulation";
 import type { Check, CaseNote, PipelineResult } from "./types";
 
-export type RunInfo = { runDate: string; models: { triage: string; draft: string }; promptVersion: string; policyVersion: string };
+export type RunInfo = {
+  runDate: string;
+  models: { triage: string; draft: string };
+  promptVersion: string;
+  policyVersion: string;
+  checksRerun?: string; // set by npm run recheck: the code-only checks were re-run on the stored model outputs
+};
 
 export type DemoOutputs = RunInfo & { results: PipelineResult[] };
 

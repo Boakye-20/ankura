@@ -2,6 +2,14 @@
 
 Changes to prompts, labels or synthetic data that could affect evaluation results (docs/08-build-plan.md, Prompt 9).
 
+## 10/11/2026: CIT-02 no longer counts the digit in a masking token as a fact
+
+**Why:** CIT-02 treats a draft part as factual when it contains a digit, and a masking token such as `[CUSTOMER_1]` contains one. Every greeting ("Dear [CUSTOMER_1], thank you for contacting us") was therefore an uncited fact, so 55 of the 60 stored drafts failed CIT-02 and Approve was locked on 59 of 60 cases. It is also why "citation coverage after verifier" and "FOS signposting after verifier" showed n/a in the evaluation: almost no draft was releasable.
+
+**What changed:** `isFactual` in `lib/verify.ts` removes masking tokens before testing, with a unit test. `npm run recheck` (`scripts/recheck.ts`) re-ran the code-only checks on the stored model outputs in `data/demo-outputs.json` and replaced the verifier's audit events. No model was called and no triage, draft or handover pack was changed. The file records the date in `checksRerun`, and the app footer shows it. After the fix 23 drafts still fail CIT-02, each for a real uncited statement (for example "We tried to call you on 7 October").
+
+**Still to do (needs the API key):** `data/eval-results.json` was measured with the old check and was not edited. Run `npm run eval` again. Until then the Model assurance page shows a notice that the check-dependent figures predate the fix.
+
 ## 09/11/2026: triage prompt v2 probe (not adopted, not an evaluation)
 
 **Why:** two full v1 eval runs missed the targets for category (81.7%), deadline type (85–87%) and routing (87–88%). v2 (`lib/prompts/triage.v2.md`) makes three changes to v1, based on docs/05 and DISP-G rather than on the labels: a one-line definition per category with "choose the main issue", a narrower payment-services rule (DISP-G §2.4) and a narrower summary-resolution rule (DISP-G §2.1). Vulnerability driver tagging was deliberately left unchanged.

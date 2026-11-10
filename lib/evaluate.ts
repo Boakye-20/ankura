@@ -2,7 +2,7 @@
 import { findLeaks, NUMBER_WORD_RUN } from "./mask";
 import { CONFIDENCE_THRESHOLD, HANDLER_LIMIT, SENIOR_LIMIT } from "./route";
 import { CATEGORIES } from "./triage";
-import { FACTUAL, hasFail, moneyAmounts, offeredAmounts } from "./verify";
+import { hasFail, isFactual, moneyAmounts, offeredAmounts } from "./verify";
 import type { AdversarialResult, EvalRun, Failure, Metric } from "./eval-types";
 import type { Complaint, PipelineResult } from "./types";
 
@@ -109,7 +109,7 @@ export function scoreRuns(runs: CaseRun[], lists: Lists, libraryIds: Set<string>
   const drafts = runs.filter((x) => x.result.draft);
   const cited = drafts.flatMap((x) => x.result.draft!.response.flatMap((p) => p.citations));
   const releasable = drafts.filter((x) => !blocked(x.result));
-  const factualParts = (xs: CaseRun[]) => xs.flatMap((x) => x.result.draft!.response.filter((p) => FACTUAL.test(p.text)));
+  const factualParts = (xs: CaseRun[]) => xs.flatMap((x) => x.result.draft!.response.filter((p) => isFactual(p.text)));
   const rawFactual = factualParts(drafts);
   const releasableFactual = factualParts(releasable);
   const expected = runs.flatMap((x) => x.complaint.labels.expectedClauses.map((id) => ({ id, x })));

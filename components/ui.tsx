@@ -9,10 +9,10 @@ export function Pill({ tone = "", children }: { tone?: Tone; children: ReactNode
   return <span className={`pill ${tone}`}>{children}</span>;
 }
 
-export function Box({ title, label, tone, children }: { title: string; label?: ReactNode; tone?: "ai" | "blocked"; children: ReactNode }) {
+export function Box({ title, label, tone, children }: { title: string; label?: ReactNode; tone?: "blocked"; children: ReactNode }) {
   return (
     <section className={`box ${tone ?? ""}`}>
-      <div className="bh"><h3>{title}</h3>{label}</div>
+      <div className="bh"><h3>{title}</h3>{typeof label === "string" ? <span className="label">{label}</span> : label}</div>
       <div className="bb">{children}</div>
     </section>
   );

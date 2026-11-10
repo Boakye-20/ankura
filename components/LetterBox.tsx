@@ -41,20 +41,20 @@ export function LetterBox({ c, data, state, act }: Props) {
   };
 
   return (
-    <Box title={`${type} due`} tone="blocked" label={<span>{c.result?.deadline?.basis} deadline reached · {rule}</span>}>
-      <p className="note">No final response has been approved by the deadline. Complete the letter: replace the text in square brackets with the real reason and date. Code then checks it contains everything the rule requires.</p>
+    <Box title={`${type} due`} tone="blocked" label={<span className="label">Deadline reached · {rule}</span>}>
+      <p className="note">No final response was approved by the deadline, so this letter is owed. Replace the text in square brackets with the real reason and date. Code then checks the letter contains everything the rule requires.</p>
       <label className="sr-only" htmlFor={`letter-${c.ref}`}>{type} text</label>
       <textarea id={`letter-${c.ref}`} className="editor" value={text} maxLength={3000} onChange={(e) => { setText(e.target.value); setCheck(null); }} />
       <div className="btnrow"><button className="btn" onClick={runCheck}>Check letter</button></div>
       {check && (
-        <ul className="checks">
+        <ul className="rows">
           <li>
             <Pill tone={check.result === "Pass" ? "ok" : "bad"}>{check.result}</Pill>
-            <span><span className="cid">{check.id}</span> {check.label}<br /><span className="note">{check.detail}</span><br /><BasisList basis={data.checkBasis[check.id] ?? []} /></span>
+            <span><span className="name">{check.label}</span> <span className="label">{check.id}</span><br /><span className="note">{check.detail}</span><br /><BasisList basis={data.checkBasis[check.id] ?? []} /></span>
           </li>
         </ul>
       )}
-      <label className="ptitle" htmlFor={`lreason-${c.ref}`}>Reason (mandatory, recorded in the audit trail)</label>
+      <label className="sub" htmlFor={`lreason-${c.ref}`}>Reason for the delay (kept in the audit trail)</label>
       <select id={`lreason-${c.ref}`} value={reason} onChange={(e) => setReason(e.target.value)}>
         <option value="">Select a reason</option>
         {REASONS.map((r) => <option key={r}>{r}</option>)}
