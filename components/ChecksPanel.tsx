@@ -1,56 +1,51 @@
 "use client";
+import { checkName, checkWhat } from "@/lib/check-copy";
 import type { RegulatorySource } from "@/lib/regulation";
 import type { Check } from "@/lib/types";
 import { BasisList, Pill } from "./ui";
 
 const TONE = { Pass: "ok", Fail: "bad", Refer: "warn" } as const;
-const names = (checks: Check[]) => checks.map((c) => `${c.label} (${c.id})`).join(", ");
 
-/** One line above the draft: can it be approved, and if not, which check stopped it? */
+/** One line above the draft: does anything block approval? */
 export function CheckSummary({ checks, draftWithheld }: { checks: Check[]; draftWithheld: boolean }) {
   const fails = checks.filter((c) => c.result === "Fail");
   const refers = checks.filter((c) => c.result === "Refer");
   const passed = checks.length - fails.length - refers.length;
   const tone = fails.length ? "bad" : refers.length ? "warn" : "ok";
+  const names = (list: Check[]) => list.map(checkName).join(", ");
+  const text = fails.length
+    ? `${names(fails)}: blocks approval until fixed.`
+    : refers.length
+      ? `${names(refers)}: needs your judgement.`
+      : "All checks passed.";
   return (
     <p className={`status ${tone}`} role="status">
       <span className="dot" aria-hidden="true" />
-      <span>
-        {fails.length > 0 && <><b>{draftWithheld ? "Draft withheld." : "Approval blocked."}</b> Failed: {names(fails)}.</>}
-        {!fails.length && refers.length > 0 && <><b>Needs your judgement.</b> Review: {names(refers)}.</>}
-        {!fails.length && !refers.length && <b>All checks passed.</b>}
-      </span>
+      <b>{draftWithheld && !fails.length ? "No draft to check. " : ""}{text}</b>
       <span className="count">{passed} of {checks.length} passed</span>
     </p>
   );
 }
 
-/** Every check that needs attention, then the full list with the rule each one is designed to support. */
-export function ChecksPanel({ checks, basis, amended, draftWithheld }: { checks: Check[]; basis: Record<string, RegulatorySource[]>; amended: boolean; draftWithheld: boolean }) {
-  const attention = checks.filter((c) => c.result !== "Pass");
-  const row = (c: Check, withBasis: boolean) => (
-    <li key={c.id}>
-      <Pill tone={TONE[c.result]}>{c.result}</Pill>
-      <span>
-        <span className="name">{c.label}</span> <span className="label">{c.id}</span>
-        <br />
-        <span className="note">{c.detail}</span>
-        {withBasis && <><br /><BasisList basis={basis[c.id] ?? []} /></>}
-      </span>
-    </li>
-  );
+/** The checks as a table: every one, or only those that need a person. */
+export function ChecksTable({ checks, basis, only }: { checks: Check[]; basis: Record<string, RegulatorySource[]>; only: "attention" | "all" }) {
+  const rows = only === "attention" ? checks.filter((c) => c.result !== "Pass") : checks;
+  if (!rows.length) return null;
   return (
-    <>
-      <div className="sec-head">
-        <h3>Checks</h3>
-        <span className="label">Run by code, not by the AI{amended ? ". Re-run on your amended reply" : ""}</span>
-      </div>
-      {attention.length > 0 && <ul className="rows">{attention.map((c) => row(c, false))}</ul>}
-      <details>
-        <summary>All {checks.length} checks and the rules they support</summary>
-        <ul className="rows">{checks.map((c) => row(c, true))}</ul>
-      </details>
-      {draftWithheld && <p className="note">The checks on a draft (citations, redress, ombudsman wording, plain language) did not run because there is no draft.</p>}
-    </>
+    <div className="tw">
+      <table className="dt checks">
+        <thead><tr><th scope="col">Result</th><th scope="col">Check</th><th scope="col">What it found</th><th scope="col">Rule it supports</th></tr></thead>
+        <tbody>
+          {rows.map((c) => (
+            <tr key={c.id} className={c.result === "Fail" ? "bad" : c.result === "Refer" ? "warn" : ""}>
+              <td><Pill tone={TONE[c.result]}>{c.result === "Refer" ? "Check" : c.result}</Pill></td>
+              <td><span className="name">{checkName(c)}</span>{only === "all" && <><br /><span className="note">{checkWhat(c.id)}</span></>}</td>
+              <td>{c.detail}</td>
+              <td><BasisList basis={basis[c.id] ?? []} prefix={false} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

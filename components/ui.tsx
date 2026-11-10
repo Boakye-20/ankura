@@ -1,9 +1,9 @@
 "use client";
 // Small shared pieces. All complaint and draft text is rendered as React text, never as HTML (slopsec rule 3).
 import { useState, type ReactNode } from "react";
+import { clauseName, type Tone } from "@/lib/case-helpers";
 import type { RegulatorySource } from "@/lib/regulation";
 import type { ClauseInfo } from "@/lib/stored-types";
-import type { Tone } from "@/lib/case-helpers";
 
 export function Pill({ tone = "", children }: { tone?: Tone; children: ReactNode }) {
   return <span className={`pill ${tone}`}>{children}</span>;
@@ -18,32 +18,47 @@ export function Box({ title, label, tone, children }: { title: string; label?: R
   );
 }
 
-/** Text with personal-data tokens such as [CUSTOMER_1] shown as chips. */
+/** One number with a label. A button when it applies a filter; `active` shows it is applied. */
+export function StatTile({ label, value, sub, tone = "", active, onClick }: { label: string; value: ReactNode; sub?: string; tone?: Tone; active?: boolean; onClick?: () => void }) {
+  const body = <><span className="stat-label">{label}</span><b className={`stat-value ${tone}`}>{value}</b>{sub && <span className="stat-sub">{sub}</span>}</>;
+  return onClick
+    ? <button type="button" className="stat" aria-pressed={active} onClick={onClick}>{body}</button>
+    : <div className="stat">{body}</div>;
+}
+
+const TOKEN = /(\[[A-Z]+_\d+\])/;
+const tokenText = (token: string) => {
+  const [kind, n] = token.slice(1, -1).split("_");
+  return `${kind[0]}${kind.slice(1).toLowerCase()} ${n}`;
+};
+
+/** Text with personal-data tokens such as [CUSTOMER_1] shown as "Customer 1" chips. */
 export function MaskedText({ text }: { text: string }) {
   return (
     <>
-      {text.split(/(\[[A-Z]+_\d+\])/).map((part, i) =>
-        /^\[[A-Z]+_\d+\]$/.test(part) ? <span key={i} className="m" title="Personal data masked before AI processing">{part}</span> : part)}
+      {text.split(TOKEN).map((part, i) =>
+        TOKEN.test(part) ? <span key={i} className="m" title={`Personal data masked before AI processing (${part})`}>{tokenText(part)}</span> : part)}
     </>
   );
 }
 
-export function BasisList({ basis }: { basis: RegulatorySource[] }) {
-  if (!basis.length) return <span className="basis">Bank procedure: no regulatory rule is mapped to this clause</span>;
+export function BasisList({ basis, titles = false, prefix = true }: { basis: RegulatorySource[]; titles?: boolean; prefix?: boolean }) {
+  if (!basis.length) return <span className="basis">{prefix ? "Bank procedure: no regulatory rule is mapped to this clause" : "Bank procedure"}</span>;
   return (
     <span className="basis">
-      Designed to support:{" "}
+      {!titles && prefix && "Designed to support: "}
       {basis.map((b, i) => (
-        <span key={b.ref}>
-          {i > 0 && "; "}
+        <span key={b.ref} className={titles ? "basis-row" : undefined}>
+          {!titles && i > 0 && "; "}
           {b.url ? <a href={b.url} target="_blank" rel="noreferrer" title={b.title}>{b.ref}</a> : <span title={b.title}>{b.ref}</span>}
+          {titles && <span className="note"> {b.title}</span>}
         </span>
       ))}
     </span>
   );
 }
 
-/** A clause ID that shows the clause text and its regulatory basis on hover, focus or tap. */
+/** A policy reference by name ("Unauthorised transactions and fraud §3.3") that opens the clause text on hover, focus or tap. */
 export function CitationChip({ id, clauses }: { id: string; clauses: Record<string, ClauseInfo> }) {
   const [open, setOpen] = useState(false);
   const clause = clauses[id];
@@ -51,18 +66,19 @@ export function CitationChip({ id, clauses }: { id: string; clauses: Record<stri
     <span className="cite-wrap" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button type="button" className={`cite ${clause ? "" : "invalid"}`} aria-expanded={open}
         onClick={() => setOpen((o) => !o)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
-        {id}{clause ? "" : " · not in library"}
+        {clause ? clauseName(id, clauses) : `${id} · not in the policy library`}
       </button>
       {open && (
         <span className="pop" role="tooltip">
           {clause ? (
             <>
-              <b>{clause.id} · {clause.title}</b>
+              <b>{clause.title}: {clause.section}</b>
+              <span className="label">{clause.id}</span>
               <span>{clause.text}</span>
               <BasisList basis={clause.basis} />
             </>
           ) : (
-            <span>This clause ID does not exist in the policy library. CIT-01 blocks the draft.</span>
+            <span>This reference does not exist in the policy library, so the draft is blocked (Policy references exist).</span>
           )}
         </span>
       )}

@@ -54,8 +54,13 @@ export function LetterBox({ c, data, state, act }: Props) {
           </li>
         </ul>
       )}
-      <label className="sub" htmlFor={`lreason-${c.ref}`}>Reason for the delay (kept in the audit trail)</label>
-      <select id={`lreason-${c.ref}`} value={reason} onChange={(e) => setReason(e.target.value)}>
+      <label className="sub" htmlFor={`lreason-${c.ref}`}>Reason for the delay (written into the letter and kept in the audit trail)</label>
+      <select id={`lreason-${c.ref}`} value={reason} onChange={(e) => {
+        const next = e.target.value;
+        setReason(next);
+        // Fill the bracket in the letter from the dropdown, so the reason is typed once.
+        if (next) { setText((t) => t.replace(/\[reason for the delay\]|(?<=This is because )[^.\n]+/, next.charAt(0).toLowerCase() + next.slice(1))); setCheck(null); }
+      }}>
         <option value="">Select a reason</option>
         {REASONS.map((r) => <option key={r}>{r}</option>)}
       </select>

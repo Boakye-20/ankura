@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dueShort, dueText } from "../lib/case-helpers";
+import { dueText } from "../lib/case-helpers";
 
 const d = (used: number, total: number, unit = "business days") => ({ basis: "DISP-G §2.4", used, total, unit, due: "2026-11-10" });
 
@@ -15,15 +15,5 @@ describe("dueText", () => {
   });
   it("handles a case with no deadline", () => {
     expect(dueText(null)).toBe("No deadline set");
-  });
-});
-
-describe("dueShort", () => {
-  const d = (used: number, total: number) => ({ type: "Standard", total, used, unit: "days", due: "2026-12-01", basis: "DISP-G §2.2" }) as never;
-  it("is a short form for the queue", () => {
-    expect(dueShort(d(57, 56))).toBe("1 day overdue");
-    expect(dueShort(d(56, 56))).toBe("Due today");
-    expect(dueShort(d(46, 56))).toBe("10 days left");
-    expect(dueShort(null)).toBe("No deadline");
   });
 });

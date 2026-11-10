@@ -1,11 +1,12 @@
 "use client";
-import { useMemo, useState, type KeyboardEvent } from "react";
-import { caseState, type Role, type Session, type useSession } from "@/lib/audit";
-import { deadlineShare, deadlineTone, dueShort, flags, queueBucket, statusTone } from "@/lib/case-helpers";
-import { isLetterDue } from "@/lib/letter";
-import type { CaseView, WorkbenchData } from "@/lib/stored-types";
+import { useMemo, useState } from "react";
+import type { Role, Session, useSession } from "@/lib/audit";
+import { filterRows, rowStats, sortRows, toRows, type CaseSortKey, type RowFilters } from "@/lib/case-helpers";
+import type { WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
-import { Pill } from "./ui";
+import { CaseFilters, viewLabel, type ViewKey } from "./CaseFilters";
+import { CaseTable } from "./CaseTable";
+import { StatTile } from "./ui";
 
 type Props = {
   data: WorkbenchData;
@@ -13,18 +14,18 @@ type Props = {
   session: Session;
   act: ReturnType<typeof useSession>["act"];
   selected: string | null;
-  onSelect: (ref: string) => void;
+  onSelect: (ref: string | null) => void;
 };
 
-const VIEWS = { mine: "Mine", progress: "With others", done: "Done", all: "All" } as const;
-type ViewKey = keyof typeof VIEWS;
+const PAGE_SIZE = 20;
+const VIEWS: ViewKey[] = ["mine", "upcoming", "progress", "done", "all"];
 
 /** Four cases that show the main controls. Listed for assessors; a live deployment would not have this strip. */
 export const GUIDE: { ref: string; title: string; hint: string }[] = [
   {
     ref: "CMP-2026-104712",
     title: "Cited draft and handover",
-    hint: "Hover a clause reference to read the policy. Choose Escalate, deal with the missing items, submit, then switch to Specialist to accept or return the pack.",
+    hint: "Hover a policy reference to read the clause. Choose Escalate, deal with the missing items, submit, then switch to Specialist to accept or return the pack.",
   },
   {
     ref: "CMP-2026-101003",
@@ -44,100 +45,70 @@ export const GUIDE: { ref: string; title: string; hint: string }[] = [
 ];
 
 export function QueueView({ data, role, session, act, selected, onSelect }: Props) {
-  const [view, setView] = useState<ViewKey>("mine");
-  const [vulnOnly, setVulnOnly] = useState(false);
+  const [filters, setFiltersState] = useState<RowFilters>({ view: "mine" });
+  const [sortKey, setSortKey] = useState<CaseSortKey>("deadline");
+  const [dir, setDir] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(1);
 
-  const inView = (c: CaseView, v: ViewKey) => v === "all" || queueBucket(caseState(session, c.ref).status, role) === v;
+  const rows = useMemo(() => toRows(data.cases, session, role), [data.cases, session, role]);
+  const stats = useMemo(() => rowStats(rows), [rows]);
+  const counts = useMemo(() => Object.fromEntries(VIEWS.map((v) => [v, filterRows(rows, { view: v }).length])) as Record<ViewKey, number>, [rows]);
+  const shown = useMemo(() => sortRows(filterRows(rows, filters), sortKey, dir), [rows, filters, sortKey, dir]);
+  const categories = useMemo(() => [...new Set(rows.map((r) => r.category))].sort(), [rows]);
+  const routes = useMemo(() => [...new Set(rows.map((r) => r.route))].sort(), [rows]);
 
-  const rows = useMemo(() => {
-    return data.cases
-      .filter((c) => inView(c, view) && (!vulnOnly || Boolean(c.result?.triage?.vulnerable)))
-      .sort((a, b) => deadlineShare(b.result?.deadline ?? null) - deadlineShare(a.result?.deadline ?? null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.cases, view, vulnOnly, session, role]);
-
-  const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-    e.preventDefault();
-    const li = e.currentTarget.parentElement;
-    const next = e.key === "ArrowDown" ? li?.nextElementSibling : li?.previousElementSibling;
-    (next?.querySelector("button") as HTMLElement | null)?.focus();
+  const setFilters = (next: RowFilters) => { setFiltersState(next); setPage(1); };
+  const onSort = (key: CaseSortKey) => {
+    if (key === sortKey) setDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setDir("asc"); }
+    setPage(1);
   };
 
-  const current = data.cases.find((c) => c.ref === selected) ?? null;
+  const current = selected ? data.cases.find((c) => c.ref === selected) ?? null : null;
+  if (current) {
+    return <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onBack={() => onSelect(null)} />;
+  }
+
   const guided = GUIDE.find((g) => g.ref === selected);
+  const third = role === "Handler"
+    ? { label: "Approval locked by a check", value: stats.locked, filter: { view: "mine" as const } }
+    : { label: viewLabel("upcoming", role), value: stats.upcoming, filter: { view: "upcoming" as const } };
+  const is = (f: RowFilters) => Object.entries(f).every(([k, v]) => filters[k as keyof RowFilters] === v) && Object.keys(filters).length === Object.keys(f).length;
 
   return (
-    <div className="work">
-      <div className="guide" aria-label="Suggested cases to test">
-        <span>Try these cases</span>
-        {GUIDE.map((g) => (
-          <button key={g.ref} type="button" aria-pressed={selected === g.ref} onClick={() => onSelect(g.ref)}>{g.title}</button>
-        ))}
-        {guided && <span className="try">{guided.hint}</span>}
+    <div className="page wide">
+      <details className="guide" open>
+        <summary>Demo guide: four cases that show the controls</summary>
+        <div className="guide-body">
+          {GUIDE.map((g) => (
+            <button key={g.ref} type="button" aria-pressed={selected === g.ref} onClick={() => onSelect(g.ref)}>{g.title}</button>
+          ))}
+          {guided && <span className="try">{guided.hint}</span>}
+        </div>
+      </details>
+
+      <div className="stats">
+        <StatTile label="Cases" value={stats.total} active={is({ view: "all" })} onClick={() => setFilters({ view: "all" })} />
+        <StatTile label={viewLabel("mine", role)} value={stats.mine} tone={stats.mine ? "info" : ""} active={is({ view: "mine" })} onClick={() => setFilters({ view: "mine" })} />
+        <StatTile label={third.label} value={third.value} tone={third.value ? "warn" : ""} active={is(third.filter)} onClick={() => setFilters(third.filter)} />
+        <StatTile label="Overdue or due today" value={stats.late} tone={stats.late ? "bad" : ""} active={is({ view: "all", deadline: "late" })} onClick={() => setFilters({ view: "all", deadline: "late" })} />
+        <StatTile label="Vulnerable customers" value={stats.vulnerable} active={is({ view: "all", vulnerableOnly: true })} onClick={() => setFilters({ view: "all", vulnerableOnly: true })} />
       </div>
 
-      <div className="split">
-        <section className="queue" aria-label="Case queue">
-          <div className="queue-head">
-            <div className="filters" role="group" aria-label="Filter the queue">
-              {(Object.keys(VIEWS) as ViewKey[]).map((k) => (
-                <button key={k} type="button" aria-pressed={view === k} onClick={() => setView(k)}>
-                  {VIEWS[k]}<span className="n">{data.cases.filter((c) => inView(c, k)).length}</span>
-                </button>
-              ))}
-            </div>
-            <div className="queue-sub">
-              <span>Closest to deadline first</span>
-              <label><input type="checkbox" checked={vulnOnly} onChange={(e) => setVulnOnly(e.target.checked)} /> Vulnerable only</label>
-            </div>
-          </div>
+      <CaseFilters role={role} filters={filters} counts={counts} categories={categories} routes={routes} onChange={setFilters} />
 
-          <ul className="qlist">
-            {rows.map((c) => {
-              const d = c.result?.deadline ?? null;
-              const state = caseState(session, c.ref);
-              const tone = deadlineTone(d);
-              const letterDue = isLetterDue(d, state.status) && !state.letterApproved;
-              const tags = flags(c).filter(([label]) => label !== "Summary resolution").slice(0, letterDue ? 1 : 2);
-              return (
-                <li key={c.ref}>
-                  <button type="button" className="qitem" aria-current={c.ref === selected} onClick={() => onSelect(c.ref)} onKeyDown={onKey}>
-                    <span className="r">{c.ref}</span>
-                    <span className={`d ${tone === "bad" ? "late" : tone === "warn" ? "soon" : ""}`}>{dueShort(d)}</span>
-                    <span className="s">{c.result?.triage?.category ?? "Unclassified"} · {c.result?.route ?? "Unassigned"}</span>
-                    <span className="tags">
-                      {state.status !== "Open" && <Pill tone={statusTone(state.status)}>{state.status}</Pill>}
-                      {letterDue && <Pill tone="bad">Delay letter due</Pill>}
-                      {tags.map(([label, t]) => <Pill key={label} tone={t}>{label}</Pill>)}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-            {rows.length === 0 && (
-              <li className="empty">
-                {view === "mine" ? (
-                  <>
-                    <b>Nothing is waiting for you as {role === "Senior" ? "senior handler" : role.toLowerCase()}.</b>
-                    <span className="note">Cases arrive here when a handler approves a vulnerable-customer case or submits a handover pack.</span>
-                    <button type="button" className="btn small" onClick={() => setView("all")}>Show all {data.cases.length} cases</button>
-                  </>
-                ) : "No cases match this filter."}
-              </li>
-            )}
-          </ul>
-        </section>
+      <p className="count" aria-live="polite">
+        {shown.length} {shown.length === 1 ? "case" : "cases"}{sortKey === "deadline" && dir === "asc" ? ", closest to deadline first" : ""}.
+      </p>
+      {(filters.view ?? "mine") === "mine" && shown.length === 0 && (
+        <p className="banner">
+          Nothing is waiting for you as {role === "Senior" ? "senior handler" : role.toLowerCase()}.
+          {role !== "Handler" && counts.upcoming > 0 && <> {counts.upcoming} {counts.upcoming === 1 ? "case" : "cases"} will reach you once the handler has acted. </>}
+          {role !== "Handler" && counts.upcoming > 0 && <button type="button" className="linkish plain" onClick={() => setFilters({ view: "upcoming" })}>Show {viewLabel("upcoming", role).toLowerCase()}</button>}
+        </p>
+      )}
 
-        {current ? (
-          <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} />
-        ) : (
-          <div className="empty">
-            <h2>Select a case</h2>
-            <p>Choose a case from the queue, or one of the suggested cases above.</p>
-          </div>
-        )}
-      </div>
+      <CaseTable rows={shown} sortKey={sortKey} dir={dir} onSort={onSort} page={page} pageSize={PAGE_SIZE} onPage={setPage} onOpen={onSelect} />
     </div>
   );
 }

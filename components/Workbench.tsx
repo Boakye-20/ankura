@@ -5,40 +5,41 @@ import { fmtDate } from "@/lib/format";
 import type { WorkbenchData } from "@/lib/stored-types";
 import { AboutView } from "./AboutView";
 import { GovernanceView } from "./GovernanceView";
-import { GUIDE, QueueView } from "./QueueView";
+import { QueueView } from "./QueueView";
 
 const TABS = [
   ["queue", "Cases"],
-  ["governance", "Governance and assurance"],
+  ["governance", "Risk, controls and oversight"],
   ["about", "About this prototype"],
 ] as const;
 export type Tab = (typeof TABS)[number][0];
 
 const ROLE_LABEL: Record<Role, string> = { Handler: "Handler", Senior: "Senior handler", Specialist: "Specialist" };
 
+/** Every page and every case has a link: #governance, #about, #case/CMP-2026-104712. */
+function fromHash(): { tab: Tab; ref: string | null } {
+  const hash = window.location.hash.slice(1);
+  if (hash.startsWith("case/")) return { tab: "queue", ref: hash.slice(5) };
+  return { tab: TABS.find(([id]) => id === hash)?.[0] ?? "queue", ref: null };
+}
+
 export function Workbench({ data }: { data: WorkbenchData }) {
   const [tab, setTabState] = useState<Tab>("queue");
   const [role, setRole] = useState<Role>("Handler");
-  const [selected, setSelected] = useState<string | null>(GUIDE[0].ref);
+  const [selected, setSelectedState] = useState<string | null>(null);
   const { session, act, reset } = useSession();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Each page has its own link (#governance, #about), so an assessor or the deck can point straight at it.
   useEffect(() => {
-    const fromHash = () => setTabState(TABS.find(([id]) => id === window.location.hash.slice(1))?.[0] ?? "queue");
-    fromHash();
-    window.addEventListener("hashchange", fromHash);
-    return () => window.removeEventListener("hashchange", fromHash);
+    const apply = () => { const h = fromHash(); setTabState(h.tab); setSelectedState(h.ref); };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
   }, []);
-  const setTab = (id: Tab) => {
-    setTabState(id);
-    window.history.replaceState(null, "", id === "queue" ? window.location.pathname : `#${id}`);
-  };
-
-  const openCase = (ref: string) => {
-    setSelected(ref);
-    setTab("queue");
-  };
+  const setHash = (hash: string) => window.history.replaceState(null, "", hash ? `#${hash}` : window.location.pathname);
+  const setTab = (id: Tab) => { setTabState(id); setSelectedState(null); setHash(id === "queue" ? "" : id); };
+  const setSelected = (ref: string | null) => { setSelectedState(ref); setHash(ref ? `case/${ref}` : ""); };
+  const openCase = (ref: string) => { setTabState("queue"); setSelected(ref); };
 
   const onTabKey = (e: KeyboardEvent, i: number) => {
     const next = e.key === "ArrowRight" ? (i + 1) % TABS.length : e.key === "ArrowLeft" ? (i - 1 + TABS.length) % TABS.length : -1;
