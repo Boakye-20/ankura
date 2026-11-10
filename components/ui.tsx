@@ -43,7 +43,7 @@ export function MaskedText({ text }: { text: string }) {
 }
 
 export function BasisList({ basis, titles = false, prefix = true }: { basis: RegulatorySource[]; titles?: boolean; prefix?: boolean }) {
-  if (!basis.length) return <span className="basis">{prefix ? "Bank procedure: no regulatory rule is mapped to this clause" : "Bank procedure"}</span>;
+  if (!basis.length) return <span className="basis">{prefix ? "Meadowlane's own internal rule. No FCA or data protection rule sits behind it." : "Bank's own rule"}</span>;
   return (
     <span className="basis">
       {!titles && prefix && "Designed to support: "}
@@ -73,7 +73,7 @@ export function CitationChip({ id, clauses }: { id: string; clauses: Record<stri
           {clause ? (
             <>
               <b>{clause.title}: {clause.section}</b>
-              <span className="label">{clause.id}</span>
+              <span className="label">Policy {clause.doc}, section {clause.id.split("§")[1]}</span>
               <span>{clause.text}</span>
               <BasisList basis={clause.basis} />
             </>

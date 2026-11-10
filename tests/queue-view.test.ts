@@ -56,8 +56,8 @@ describe("clauseName: a policy reference a handler can read", () => {
     "DISP-G §2.4": { id: "DISP-G §2.4", doc: "DISP-G", title: "Regulatory complaint rules (internal summary)", section: "Timescales", text: "…", basis: [] },
   };
   it("uses the policy title and the section number, without a bracketed aside", () => {
-    expect(clauseName("POL-04 §3.3", clauses)).toBe("Unauthorised transactions and fraud §3.3");
-    expect(clauseName("DISP-G §2.4", clauses)).toBe("Regulatory complaint rules §2.4");
+    expect(clauseName("POL-04 §3.3", clauses)).toBe("Unauthorised transactions and fraud, section 3.3");
+    expect(clauseName("DISP-G §2.4", clauses)).toBe("Regulatory complaint rules, section 2.4");
   });
   it("falls back to the ID when the clause is not in the library", () => {
     expect(clauseName("POL-99 §1.1", clauses)).toBe("POL-99 §1.1");

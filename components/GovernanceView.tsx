@@ -33,7 +33,7 @@ export function GovernanceView({ data, seeded, session, onReset }: Props) {
       {section === "controls" && <ControlsView data={data} eventCount={seeded.length + session.events.length} />}
       {section === "results" && <AssuranceView results={data.evalResults} checksRerun={data.run?.checksRerun ?? null} />}
       {section === "adoption" && <Adoption session={session} />}
-      {section === "audit" && <AuditView seeded={seeded} session={session} onReset={onReset} />}
+      {section === "audit" && <AuditView seeded={seeded} session={session} onReset={onReset} clauses={data.clauses} />}
     </div>
   );
 }

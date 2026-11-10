@@ -41,11 +41,11 @@ export function statusLabel(status: CaseStatus, team: string): string {
   }
 }
 
-/** "Unauthorised transactions and fraud §3.3" rather than "POL-04 §3.3". The ID stays available on hover. */
+/** "Unauthorised transactions and fraud, section 3.3" rather than "POL-04 §3.3". The ID stays available on hover. */
 export function clauseName(id: string, clauses: Record<string, ClauseInfo>): string {
   const clause = clauses[id];
   const section = id.split("§")[1];
-  return clause && section ? `${clause.title.replace(/\s*\([^)]*\)/g, "")} §${section}` : id;
+  return clause && section ? `${clause.title.replace(/\s*\([^)]*\)/g, "")}, section ${section}` : id;
 }
 
 /** The AI handover pack when there is one; otherwise a pack built from the case notes, labelled as such. */

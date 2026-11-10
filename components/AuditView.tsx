@@ -1,13 +1,15 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { Session } from "@/lib/audit";
+import { describeEvent } from "@/lib/audit-copy";
 import { fmtDateTime } from "@/lib/format";
+import type { ClauseInfo } from "@/lib/stored-types";
 import type { AuditEvent } from "@/lib/types";
 import { Box } from "./ui";
 
 const csvCell = (s: string) => `"${s.replace(/"/g, '""')}"`;
 
-export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; session: Session; onReset: () => void }) {
+export function AuditView({ seeded, session, onReset, clauses }: { seeded: AuditEvent[]; session: Session; onReset: () => void; clauses: Record<string, ClauseInfo> }) {
   const [onlyMine, setOnlyMine] = useState(false);
 
   const allEvents = useMemo(
@@ -46,18 +48,21 @@ export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; 
         <div className="tw scroll">
           <table className="dt">
             <thead>
-              <tr><th>Timestamp</th><th>Case</th><th>Actor</th><th>Event</th><th>Detail</th></tr>
+              <tr><th>When</th><th>Case</th><th>What happened</th><th>Who</th><th>Detail</th></tr>
             </thead>
             <tbody>
-              {events.slice(0, 200).map((e, i) => (
-                <tr key={i}>
-                  <td className="mono">{fmtDateTime(e.ts)}</td>
-                  <td className="mono">{e.ref}</td>
-                  <td>{e.actor}</td>
-                  <td>{e.event}</td>
-                  <td>{e.detail}</td>
-                </tr>
-              ))}
+              {events.slice(0, 200).map((e, i) => {
+                const v = describeEvent(e, clauses);
+                return (
+                  <tr key={i}>
+                    <td className="when">{fmtDateTime(e.ts)}</td>
+                    <td className="when">{e.ref}</td>
+                    <td><b>{v.what}</b></td>
+                    <td>{v.who}</td>
+                    <td>{v.detail}</td>
+                  </tr>
+                );
+              })}
               {!events.length && (
                 <tr>
                   <td colSpan={5} className="note">Nothing yet. Approve, amend or escalate a case and it will appear here.</td>
@@ -67,7 +72,7 @@ export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; 
           </table>
         </div>
         <p className="note">
-          Newest first{events.length > 200 ? ", latest 200 shown; the CSV export has all of them" : ""}. Each AI step (masking, triage, retrieval, drafting, checks, routing) and each human decision is recorded with who did it and why (POL-08 §3.2). In this prototype your own actions are kept in this browser only; a pilot needs an append-only log on the server.
+          Newest first{events.length > 200 ? ", latest 200 shown; the export has all of them" : ""}. Every automatic step and every human decision is recorded with who did it, when and why. The export keeps the exact technical record for auditors. In this prototype your own actions are kept in this browser only; a pilot needs a tamper-proof log on the server.
         </p>
       </Box>
     </div>

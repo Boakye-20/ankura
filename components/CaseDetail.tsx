@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { caseState, type Role, type Session, type useSession } from "@/lib/audit";
+import { describeEvent } from "@/lib/audit-copy";
 import { deadlineTone, dueText, effectiveChecks, effectiveDraft, handoverPackFor, statusLabel, statusTone, type Tone } from "@/lib/case-helpers";
 import { fmtDate, fmtDateTime, gbp } from "@/lib/format";
 import { isLetterDue } from "@/lib/letter";
@@ -104,7 +105,7 @@ export function CaseDetail({ c, data, role, session, act, onBack }: Props) {
         {d && (
           <div className={`due ${dTone === "bad" ? "late" : dTone === "warn" ? "soon" : ""}`}>
             <b>{dueText(d)}</b>
-            <span>Due {fmtDate(d.due)} · day {d.used} of {d.total}</span>
+            <span>Due {fmtDate(d.due)} · {d.used > d.total ? `${d.total}-${d.unit.replace(/s$/, "")} deadline` : `${d.used} of ${d.total} ${d.unit} used`}</span>
           </div>
         )}
       </header>
@@ -236,11 +237,12 @@ export function CaseDetail({ c, data, role, session, act, onBack }: Props) {
               <summary>What happened to this case ({events.length} events)</summary>
               <div className="tw">
                 <table className="dt">
-                  <thead><tr><th scope="col">When</th><th scope="col">What</th><th scope="col">Who</th><th scope="col">Detail</th></tr></thead>
+                  <thead><tr><th scope="col">When</th><th scope="col">What happened</th><th scope="col">Who</th><th scope="col">Detail</th></tr></thead>
                   <tbody>
-                    {events.map((e, i) => (
-                      <tr key={i}><td className="mono">{fmtDateTime(e.ts)}</td><td>{e.event}</td><td>{e.actor}</td><td>{e.detail}</td></tr>
-                    ))}
+                    {events.map((e, i) => {
+                      const v = describeEvent(e, data.clauses);
+                      return <tr key={i}><td className="when">{fmtDateTime(e.ts)}</td><td><b>{v.what}</b></td><td>{v.who}</td><td>{v.detail}</td></tr>;
+                    })}
                   </tbody>
                 </table>
               </div>
