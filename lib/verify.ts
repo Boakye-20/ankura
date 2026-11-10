@@ -34,8 +34,16 @@ const MAX_SENTENCE_WORDS = 30;
 const MAX_AVERAGE_SENTENCE_WORDS = 20;
 const FACTUAL = /\d|£|\bdays?\b|refund|\bwill\b|policy/i;
 const MASK_TOKEN = /\[[A-Z]+_\d+\]/g;
-/** CIT-02: a part that states a fact must cite a clause. The digit inside a masking token such as [CUSTOMER_1] is not a fact. */
-export const isFactual = (text: string) => FACTUAL.test(text.replace(MASK_TOKEN, ""));
+const NUMBER = /£?\s?\d[\d,]*(?:\.\d+)?/g;
+/** Every number in a text, so a draft can be checked against what the customer and the case notes already say. */
+export const numbersIn = (text: string) => new Set((text.match(NUMBER) ?? []).map((n) => Number(n.replace(/[£,\s]/g, ""))));
+/**
+ * CIT-02: a part that makes a claim must cite a clause. Not a claim: the digit inside a masking token such as
+ * [CUSTOMER_1], and an amount or date that only restates what the customer or the case notes already say.
+ * A promise, a deadline or an entitlement ("will", "days", "refund", "policy") always needs a clause.
+ */
+export const isFactual = (text: string, known: Set<number> = new Set()) =>
+  FACTUAL.test(text.replace(MASK_TOKEN, "").replace(NUMBER, (m) => (known.has(Number(m.replace(/[£,\s]/g, ""))) ? "" : m)));
 const MONEY = /£\s?(\d{1,3}(?:,\d{3})+|\d+)(\.\d{1,2})?/g;
 
 const check = (id: string, label: string, result: Check["result"], detail: string): Check => ({ id, label, result, detail });
@@ -110,7 +118,8 @@ function verifyDraft(input: VerifyInput, draft: DraftOutput): Check[] {
     ? check("CIT-01", "Citations exist", "Fail", `Not in the policy library: ${invalid.join(", ")}`)
     : check("CIT-01", "Citations exist", "Pass", `${plural(cited.length, "clause")} cited, all in the policy library`));
 
-  const factual = draft.response.filter((p) => isFactual(p.text));
+  const known = numbersIn([input.maskedText, ...input.maskedNotes].join(" "));
+  const factual = draft.response.filter((p) => isFactual(p.text, known));
   const uncited = factual.filter((p) => p.citations.length === 0);
   checks.push(uncited.length
     ? check("CIT-02", "Facts are cited", "Fail", `${uncited.length} of ${plural(factual.length, "factual part")} ${uncited.length === 1 ? "has" : "have"} no citation: "${uncited[0].text.slice(0, 60)}…"`)

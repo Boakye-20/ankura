@@ -100,7 +100,7 @@ Each produces a `Check`. Each check also carries its regulatory basis from `data
 | MASK-02 | Obfuscated personal data | number-word heuristic triggered (result Refer) |
 | INJ-01 | Instruction aimed at the AI | rule patterns match OR triage `injectionSuspected` |
 | CIT-01 | Citations exist | any cited ID not in the policy library |
-| CIT-02 | Facts are cited | a part contains a digit (digits inside masking tokens such as [CUSTOMER_1] do not count), "£", "days", "refund", "will", "policy" and has no citation |
+| CIT-02 | Facts are cited | a part makes a claim and has no citation. A claim is a part containing "days", "refund", "will", "policy", or a number or £ amount that does not appear in the masked complaint or case notes. Digits inside masking tokens such as [CUSTOMER_1], and amounts or dates that only restate the customer's own complaint or the notes, do not count (changed 10/11/2026, see CHANGELOG) |
 | CIT-03 | Citations match retrieved policy | a cited ID was not among the retrieved clauses (Refer) |
 | RED-01 | Redress authority | `proposedRedress.amount` > £250 (handler limit, POL-05 §2.1) → Refer to senior; > £1,000 → Fail |
 | RED-02 | Basis for the amount | any £ amount in the draft does not appear in the complaint, case notes or a cited clause |

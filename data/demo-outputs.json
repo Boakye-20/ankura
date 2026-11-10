@@ -697,8 +697,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 3 factual parts has no citation: \"We tried to call you on 7 October and left a voicemail. Plea…\""
+          "result": "Pass",
+          "detail": "2 of 2 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -775,7 +775,7 @@
           "ref": "CMP-2026-104288",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 10 pass, 2 refer, 1 fail"
+          "detail": "13 checks: 11 pass, 2 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.863Z",
@@ -790,13 +790,6 @@
           "actor": "System · verification",
           "event": "Check referred",
           "detail": "CONF-01: Confidence 0.70 is below 0.75: check the classification"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.863Z",
-          "ref": "CMP-2026-104288",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"We tried to call you on 7 October and left a voicemail. Plea…\""
         },
         {
           "ts": "2026-11-09T19:28:20.863Z",
@@ -1314,7 +1307,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Pass",
-          "detail": "3 of 3 factual parts cite a clause"
+          "detail": "2 of 2 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -1692,7 +1685,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Pass",
-          "detail": "3 of 3 factual parts cite a clause"
+          "detail": "2 of 2 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -2702,8 +2695,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 5 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £21…\""
+          "result": "Pass",
+          "detail": "4 of 4 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -2780,7 +2773,7 @@
           "ref": "CMP-2026-100304",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 10 pass, 2 refer, 1 fail"
+          "detail": "13 checks: 11 pass, 2 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.941Z",
@@ -2788,13 +2781,6 @@
           "actor": "System · verification",
           "event": "Check referred",
           "detail": "MASK-02: 1 run of number words masked as [NUMBER_n]; check before release"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.941Z",
-          "ref": "CMP-2026-100304",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 5 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £21…\""
         },
         {
           "ts": "2026-11-09T19:28:20.941Z",
@@ -3491,7 +3477,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Fail",
-          "detail": "1 of 5 factual parts has no citation: \"Thank you for your patience. We will be in touch as soon as …\""
+          "detail": "1 of 4 factual parts has no citation: \"Thank you for your patience. We will be in touch as soon as …\""
         },
         {
           "id": "CIT-03",
@@ -3575,7 +3561,7 @@
           "ref": "CMP-2026-100306",
           "actor": "System · verification",
           "event": "Check failed",
-          "detail": "CIT-02: 1 of 5 factual parts has no citation: \"Thank you for your patience. We will be in touch as soon as …\""
+          "detail": "CIT-02: 1 of 4 factual parts has no citation: \"Thank you for your patience. We will be in touch as soon as …\""
         },
         {
           "ts": "2026-11-09T19:28:20.943Z",
@@ -3870,7 +3856,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Fail",
-          "detail": "1 of 3 factual parts has no citation: \"Thank you for your patience. We will be in touch again soon.…\""
+          "detail": "1 of 2 factual parts has no citation: \"Thank you for your patience. We will be in touch again soon.…\""
         },
         {
           "id": "CIT-03",
@@ -3954,7 +3940,7 @@
           "ref": "CMP-2026-100307",
           "actor": "System · verification",
           "event": "Check failed",
-          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"Thank you for your patience. We will be in touch again soon.…\""
+          "detail": "CIT-02: 1 of 2 factual parts has no citation: \"Thank you for your patience. We will be in touch again soon.…\""
         },
         {
           "ts": "2026-11-09T19:28:20.943Z",
@@ -4258,8 +4244,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 3 factual parts has no citation: \"We have noted that you did not make the £892 payment and tha…\""
+          "result": "Pass",
+          "detail": "2 of 2 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -4336,14 +4322,7 @@
           "ref": "CMP-2026-100308",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.944Z",
-          "ref": "CMP-2026-100308",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"We have noted that you did not make the £892 payment and tha…\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.944Z",
@@ -4637,7 +4616,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Pass",
-          "detail": "2 of 2 factual parts cite a clause"
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -7333,7 +7312,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Pass",
-          "detail": "2 of 2 factual parts cite a clause"
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -7934,7 +7913,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Fail",
-          "detail": "2 of 4 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £18…\""
+          "detail": "1 of 3 factual parts has no citation: \"We could not find a policy 9.4 in our policy library, so we …\""
         },
         {
           "id": "CIT-03",
@@ -8018,7 +7997,7 @@
           "ref": "CMP-2026-100505",
           "actor": "System · verification",
           "event": "Check failed",
-          "detail": "CIT-02: 2 of 4 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £18…\""
+          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"We could not find a policy 9.4 in our policy library, so we …\""
         },
         {
           "ts": "2026-11-09T19:28:20.948Z",
@@ -8528,8 +8507,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 2 factual parts has no citation: \"You told us a member of staff promised you a £300 goodwill p…\""
+          "result": "Pass",
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -8606,7 +8585,7 @@
           "ref": "CMP-2026-100507",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 10 pass, 2 refer, 1 fail"
+          "detail": "13 checks: 11 pass, 2 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.949Z",
@@ -8614,13 +8593,6 @@
           "actor": "System · verification",
           "event": "Check referred",
           "detail": "CONF-01: Confidence 0.70 is below 0.75: check the classification"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.949Z",
-          "ref": "CMP-2026-100507",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 2 factual parts has no citation: \"You told us a member of staff promised you a £300 goodwill p…\""
         },
         {
           "ts": "2026-11-09T19:28:20.949Z",
@@ -9603,8 +9575,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "2 of 6 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for contacting us, and I am sor…\""
+          "result": "Pass",
+          "detail": "3 of 3 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -9681,14 +9653,7 @@
           "ref": "CMP-2026-100601",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 11 pass, 0 refer, 2 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.951Z",
-          "ref": "CMP-2026-100601",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 2 of 6 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for contacting us, and I am sor…\""
+          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.951Z",
@@ -10699,8 +10664,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 4 factual parts has no citation: \"You waited 45 minutes and then learned the person you needed…\""
+          "result": "Pass",
+          "detail": "3 of 3 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -10777,14 +10742,7 @@
           "ref": "CMP-2026-100604",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.952Z",
-          "ref": "CMP-2026-100604",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 4 factual parts has no citation: \"You waited 45 minutes and then learned the person you needed…\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.952Z",
@@ -11034,8 +10992,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 2 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for telling us about your visit…\""
+          "result": "Pass",
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -11112,14 +11070,7 @@
           "ref": "CMP-2026-100605",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.953Z",
-          "ref": "CMP-2026-100605",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 2 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for telling us about your visit…\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.953Z",
@@ -11395,8 +11346,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 3 factual parts has no citation: \"Our records show we spoke with you on 23 October. Your direc…\""
+          "result": "Pass",
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -11473,7 +11424,7 @@
           "ref": "CMP-2026-100606",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 10 pass, 1 refer, 2 fail"
+          "detail": "13 checks: 11 pass, 1 refer, 1 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.953Z",
@@ -11481,13 +11432,6 @@
           "actor": "System · verification",
           "event": "Check referred",
           "detail": "CONF-01: Confidence 0.70 is below 0.75: check the classification"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.953Z",
-          "ref": "CMP-2026-100606",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"Our records show we spoke with you on 23 October. Your direc…\""
         },
         {
           "ts": "2026-11-09T19:28:20.953Z",
@@ -12768,8 +12712,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 2 factual parts has no citation: \"Dear [CUSTOMER_1], I'm sorry your card was blocked without w…\""
+          "result": "Pass",
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -12846,14 +12790,7 @@
           "ref": "CMP-2026-100702",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.955Z",
-          "ref": "CMP-2026-100702",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 2 factual parts has no citation: \"Dear [CUSTOMER_1], I'm sorry your card was blocked without w…\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.955Z",
@@ -13461,8 +13398,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 3 factual parts has no citation: \"Dear [CUSTOMER_1], I'm sorry you have been without a replace…\""
+          "result": "Pass",
+          "detail": "2 of 2 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -13539,14 +13476,7 @@
           "ref": "CMP-2026-100704",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.956Z",
-          "ref": "CMP-2026-100704",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 3 factual parts has no citation: \"Dear [CUSTOMER_1], I'm sorry you have been without a replace…\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.956Z",
@@ -15555,8 +15485,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "2 of 3 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for getting in touch about the …\""
+          "result": "Pass",
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -15633,14 +15563,7 @@
           "ref": "CMP-2026-100804",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 12 pass, 0 refer, 1 fail"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.958Z",
-          "ref": "CMP-2026-100804",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 2 of 3 factual parts have no citation: \"Dear [CUSTOMER_1], thank you for getting in touch about the …\""
+          "detail": "13 checks: 13 pass, 0 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.958Z",
@@ -15903,7 +15826,7 @@
           "id": "CIT-02",
           "label": "Facts are cited",
           "result": "Pass",
-          "detail": "2 of 2 factual parts cite a clause"
+          "detail": "1 of 1 factual part cite a clause"
         },
         {
           "id": "CIT-03",
@@ -21562,8 +21485,8 @@
         {
           "id": "CIT-02",
           "label": "Facts are cited",
-          "result": "Fail",
-          "detail": "1 of 4 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £92…\""
+          "result": "Pass",
+          "detail": "3 of 3 factual parts cite a clause"
         },
         {
           "id": "CIT-03",
@@ -21640,7 +21563,7 @@
           "ref": "CMP-2026-101102",
           "actor": "System · verification",
           "event": "Checks run",
-          "detail": "13 checks: 11 pass, 1 refer, 1 fail"
+          "detail": "13 checks: 12 pass, 1 refer, 0 fail"
         },
         {
           "ts": "2026-11-09T19:28:20.961Z",
@@ -21648,13 +21571,6 @@
           "actor": "System · verification",
           "event": "Check referred",
           "detail": "CONF-01: Confidence 0.70 is below 0.75: check the classification"
-        },
-        {
-          "ts": "2026-11-09T19:28:20.961Z",
-          "ref": "CMP-2026-101102",
-          "actor": "System · verification",
-          "event": "Check failed",
-          "detail": "CIT-02: 1 of 4 factual parts has no citation: \"Dear [CUSTOMER_1], thank you for contacting us about the £92…\""
         },
         {
           "ts": "2026-11-09T19:28:20.961Z",
@@ -21678,5 +21594,5 @@
       }
     }
   ],
-  "checksRerun": "2026-11-10T15:48:57.757Z"
+  "checksRerun": "2026-11-10T19:11:50.467Z"
 }

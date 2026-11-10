@@ -2,6 +2,14 @@
 
 Changes to prompts, labels or synthetic data that could affect evaluation results (docs/08-build-plan.md, Prompt 9).
 
+## 10/11/2026 (evening): CIT-02 no longer demands a policy clause for a sentence that only restates the customer's own facts
+
+**Why:** after the masking-token fix below, 23 of 60 drafts were still locked by CIT-02, most of them for sentences such as "thank you for telling us about the £215 payment at [MERCHANT_1]" or "we tried to call you on 7 October". Those restate what the customer or the case notes already say; they are not claims about the bank's position, so asking for a policy clause creates friction (alert fatigue) without adding assurance. PK accepted the change on 10/11/2026.
+
+**What changed:** `isFactual` in `lib/verify.ts` now takes the set of numbers found in the masked complaint and case notes and ignores a number or £ amount in the draft that appears there. "will", "days", "refund" and "policy" still make a sentence a claim, so a promise, a deadline or an entitlement always needs a clause. Two unit tests cover both sides. `npm run recheck` re-ran the code-only checks on the stored outputs; no model was called and no draft changed.
+
+**Still to do (needs the API key):** `data/eval-results.json` predates both CIT-02 changes. Run `npm run eval` again; until then the Results page says so.
+
 ## 10/11/2026: CIT-02 no longer counts the digit in a masking token as a fact
 
 **Why:** CIT-02 treats a draft part as factual when it contains a digit, and a masking token such as `[CUSTOMER_1]` contains one. Every greeting ("Dear [CUSTOMER_1], thank you for contacting us") was therefore an uncited fact, so 55 of the 60 stored drafts failed CIT-02 and Approve was locked on 59 of 60 cases. It is also why "citation coverage after verifier" and "FOS signposting after verifier" showed n/a in the evaluation: almost no draft was releasable.

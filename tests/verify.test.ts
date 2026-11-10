@@ -84,6 +84,26 @@ describe("verify: each check fails or refers on crafted input", () => {
     expect(result(verify(input({ draft })), "CIT-02")).toBe("Pass");
   });
 
+  it("CIT-02 lets a sentence restate the customer's own facts without a citation", () => {
+    const draft = goodDraft();
+    draft.response.push({ text: "Thank you for telling us about the £412.00 payment at [MERCHANT_1] on 12 October.", citations: [] });
+    draft.response.push({ text: "We tried to call you on 7 October and left a voicemail.", citations: [] });
+    const checks = verify(input({
+      draft,
+      maskedText: "On 12 October a payment of £412.00 at [MERCHANT_1] was taken from my account.",
+      maskedNotes: ["Call-back attempt 07/10/2026, no answer. JO"],
+    }));
+    expect(result(checks, "CIT-02")).toBe("Pass");
+  });
+
+  it("CIT-02 still requires a citation for a new amount, a deadline or a promise", () => {
+    for (const text of ["You were charged £96 in interest.", "We will refund the payment.", "You will hear from us within 15 business days."]) {
+      const draft = goodDraft();
+      draft.response.push({ text, citations: [] });
+      expect(result(verify(input({ draft, maskedText: "On 12 October a payment of £412.00 was taken." })), "CIT-02"), text).toBe("Fail");
+    }
+  });
+
   it("CIT-03 refers when a real clause was not retrieved", () => {
     const draft = goodDraft();
     draft.response[1].citations.push("POL-08 §1.1");
