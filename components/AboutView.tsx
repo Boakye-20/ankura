@@ -27,6 +27,9 @@ const CONTROLS: [string, string][] = [
 export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCase: (ref: string) => void }) {
   const run = data.run;
   const evalRun = data.evalResults?.runs.at(-1) ?? null;
+  const withResult = data.cases.filter((c) => c.result);
+  const locked = withResult.filter((c) => c.result!.checks.some((k) => k.result === "Fail"));
+  const failing = (id: string) => locked.filter((c) => c.result!.checks.some((k) => k.id === id && k.result === "Fail")).length;
   const open = (ref: string) => <button type="button" className="linkish" onClick={() => onOpenCase(ref)}>{ref}</button>;
 
   return (
@@ -96,6 +99,9 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
 
         <Box title="Limitations">
           <ul className="plain">
+            {locked.length > 0 && (
+              <li>The code checks block approval on {locked.length} of the {withResult.length} stored drafts: {failing("CIT-02")} for a statement with no policy clause, {failing("INJ-01")} for an instruction aimed at the AI, {failing("RED-01") + failing("RED-02")} for redress. That is the controls working, and also a measure of how often a handler must edit the AI’s draft.</li>
+            )}
             <li>The 60 complaints and their labels were written by one person and not independently reviewed. Each case is about 1.7 percentage points, so small differences mean little.</li>
             <li>The second prompt version was written after seeing the first one’s errors on the same 60 cases. There is no held-out set, so results on new complaints would probably be lower.</li>
             <li>Masking uses rules and name lists. It catches the patterns tested, not every way of writing personal data.</li>

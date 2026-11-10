@@ -29,7 +29,7 @@ export function MaskedText({ text }: { text: string }) {
 }
 
 export function BasisList({ basis }: { basis: RegulatorySource[] }) {
-  if (!basis.length) return <span className="basis">No regulatory mapping recorded</span>;
+  if (!basis.length) return <span className="basis">Bank procedure: no regulatory rule is mapped to this clause</span>;
   return (
     <span className="basis">
       Designed to support:{" "}

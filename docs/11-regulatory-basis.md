@@ -19,11 +19,13 @@ Every reference below was checked against the primary source on 08/11/2026 (FCA 
 | FCA AI good practice (05/10/2026) | AI in financial services: good practice and areas for improvement (see below) | fca.org.uk/publications/good-poor-practice/ai-financial-services |
 | FCA AI approach (updated 02/10/2026) | No AI-specific rules; existing frameworks apply (Consumer Duty, SM&CR, governance and controls) | fca.org.uk/firms/innovation/ai-approach |
 | UK GDPR Art 5(1)(c) | Data minimisation | legislation.gov.uk/eur/2016/679/article/5 |
-| UK GDPR Arts 22A–22D | Inserted by the Data (Use and Access) Act 2025 s.80. A decision is solely automated if there is no meaningful human involvement; safeguards for significant decisions. The ICO says the Act was fully commenced by 19/06/2026. | legislation.gov.uk/ukpga/2025/18/section/80 |
+| UK GDPR Arts 22A–22D | Inserted by the Data (Use and Access) Act 2025 s.80. A decision is solely automated if there is no meaningful human involvement; safeguards for significant decisions. Section 80 is in force from 05/02/2026 (SI 2026/82 reg 2(j), as shown on legislation.gov.uk, checked 10/11/2026); parts were in force from Royal Assent. The FCA–ICO statement applies Articles 22A–22C to firms and flags the Article 22D regulation-making power. | legislation.gov.uk/ukpga/2025/18/section/80 |
 | SI 2026/425 | In force 12/05/2026: the ICO must prepare a statutory code of practice on AI and automated decision-making. The code is not yet published (ICO, 23/06/2026). | legislation.gov.uk/uksi/2026/425/made |
 | PSRs 2017 regs 76(2), 77(1), 77(3) | Refund unauthorised payments by the end of the next business day; payer liability up to £35 for a lost or stolen instrument; no refund for fraud or gross negligence | legislation.gov.uk/uksi/2017/752 |
 
-**Not verified from a primary source, so cited without detail:** the PSR APP scam reimbursement requirement (October 2024) limits, excess and treatment of vulnerable customers (POL-04 §4); PRA SS1/23 model risk management (relevant to a bank's AI models; check before quoting in the deck); the exact commencement date of Articles 22A–22D.
+**Rechecked 10/11/2026 against primary sources:** the FCA AI report (created 05/10/2026, amended 20/10/2026, every quoted phrase below is on the page), the FCA–ICO statement (created 26/03/2026), s.80 commencement (above), DISP 1.6.2AR (15 business days, 35 with a reasoned holding response) and PSRs reg 76 (refund by the end of the next business day). Two sources were not reached: the £35 liability figure in reg 77 and the APP limits.
+
+**Not verified from a primary source, so cited without detail:** the PSR APP scam reimbursement requirement (October 2024) limits, excess and treatment of vulnerable customers (POL-04 §4); PRA SS1/23 model risk management (relevant to a bank's AI models; check before quoting in the deck).
 
 **Watch list (not in force; mention in the deck as horizon scanning):** CP26/9 *Modernising the redress system* (FCA and FOS, consultation closed 11/05/2026; FOS policy statement 11/08/2026); the ICO statutory AI and ADM code (in preparation).
 
