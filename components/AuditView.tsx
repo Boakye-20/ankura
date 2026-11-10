@@ -1,13 +1,20 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Session } from "@/lib/audit";
 import { fmtDateTime } from "@/lib/format";
 import type { AuditEvent } from "@/lib/types";
+import { Box } from "./ui";
 
 const csvCell = (s: string) => `"${s.replace(/"/g, '""')}"`;
 
 export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; session: Session; onReset: () => void }) {
-  const events = useMemo(() => [...seeded, ...session.events].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)), [seeded, session.events]);
+  const [onlyMine, setOnlyMine] = useState(false);
+
+  const allEvents = useMemo(
+    () => [...seeded, ...session.events].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)),
+    [seeded, session.events]
+  );
+  const events = onlyMine ? session.events.slice().reverse() : allEvents;
 
   const exportCsv = () => {
     const rows = [["Timestamp", "Case", "Actor", "Event", "Detail"], ...events.map((e) => [e.ts, e.ref, e.actor, e.event, e.detail])];
@@ -22,23 +29,47 @@ export function AuditView({ seeded, session, onReset }: { seeded: AuditEvent[]; 
 
   return (
     <div className="panel">
-      <div className="btnrow">
-        <span className="ptitle" style={{ marginRight: "auto" }}>Event log · {events.length} events · newest first</span>
-        <button className="btn" onClick={exportCsv}>Export CSV</button>
-        <button className="btn" onClick={onReset} disabled={!session.events.length} title="Clears your session actions; the stored AI events remain">Clear my session</button>
-      </div>
-      <div className="tw">
-        <table className="dt">
-          <thead><tr><th>Timestamp</th><th>Case</th><th>Actor</th><th>Event</th><th>Detail</th></tr></thead>
-          <tbody>
-            {events.map((e, i) => (
-              <tr key={i}><td className="mono">{fmtDateTime(e.ts)}</td><td className="mono">{e.ref}</td><td>{e.actor}</td><td>{e.event}</td><td>{e.detail}</td></tr>
-            ))}
-            {!events.length && <tr><td colSpan={5} className="note">No events yet. AI events appear after <code>npm run precompute</code>; your actions appear as you take them.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-      <p className="note">AI events come from the stored model run and record the model, prompt version, clauses retrieved and checks run. Staff events record who acted, what changed and the reason given (POL-08 §3.2). In this prototype staff events live in your browser only; a pilot needs an append-only server-side log.</p>
+      <Box
+        title={`Audit Trail (${events.length} events)`}
+        label={
+          <div className="btnrow">
+            <button type="button" className="btn small" aria-pressed={onlyMine} onClick={() => setOnlyMine((v) => !v)}>
+              {onlyMine ? "Showing your session actions" : `Filter to my actions (${session.events.length})`}
+            </button>
+            <button type="button" className="btn small" onClick={exportCsv}>Export CSV</button>
+            <button type="button" className="btn small" onClick={onReset} disabled={!session.events.length}>
+              Reset session ({session.events.length})
+            </button>
+          </div>
+        }
+      >
+        <div className="tw" style={{ maxHeight: 340, overflowY: "auto" }}>
+          <table className="dt">
+            <thead>
+              <tr><th>Timestamp</th><th>Case</th><th>Actor</th><th>Event</th><th>Detail</th></tr>
+            </thead>
+            <tbody>
+              {events.slice(0, 150).map((e, i) => (
+                <tr key={i}>
+                  <td className="mono">{fmtDateTime(e.ts)}</td>
+                  <td className="mono">{e.ref}</td>
+                  <td>{e.actor}</td>
+                  <td><b>{e.event}</b></td>
+                  <td>{e.detail}</td>
+                </tr>
+              ))}
+              {!events.length && (
+                <tr>
+                  <td colSpan={5} className="note">No events match this filter yet. Take an action on any case in the Case Workbench to see it logged here.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <p className="note">
+          Every AI pipeline step (masking, triage, policy retrieval, drafting, guardrail verification) and every human decision (with actor and mandatory reason code, POL-08 §3.2) is logged.
+        </p>
+      </Box>
     </div>
   );
 }

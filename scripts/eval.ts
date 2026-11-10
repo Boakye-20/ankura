@@ -5,6 +5,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import names from "../data/names.json";
 import merchants from "../data/merchants.json";
 import { createClient } from "../lib/anthropic";
+import { createBatchClient } from "../lib/batch-client";
 import { scoreRuns } from "../lib/evaluate";
 import { loadClauses } from "../lib/policies";
 import { requestText } from "../lib/request-text";
@@ -21,7 +22,9 @@ async function main() {
   const models = configuredModels(process.env);
   const requests = new Map<string, string[]>(); // ref -> text of every model request, to prove masking held
   console.log(`Evaluating ${ALL_COMPLAINTS.length} complaints · triage ${models.triage} · draft ${models.draft} · prompt ${PROMPT_VERSION}`);
-  const results = await runAll(ALL_COMPLAINTS, pipelineDeps(createClient(), models), {
+  const batch = process.argv.includes("--batch"); // Message Batches API: half price, results in minutes to hours
+  const results = await runAll(ALL_COMPLAINTS, pipelineDeps(batch ? createBatchClient() : createClient(), models), {
+    concurrency: batch ? ALL_COMPLAINTS.length : undefined,
     onRequest: (ref, params) => requests.set(ref, [...(requests.get(ref) ?? []), requestText(params)]),
   });
 
@@ -34,7 +37,7 @@ async function main() {
     { names, merchants },
     new Set(loadClauses().map((c) => c.id)),
   );
-  const run: EvalRun = { timestamp, commit, models, promptVersion: PROMPT_VERSION, policyVersion: POLICY_VERSION, ...scored };
+  const run: EvalRun = { timestamp, commit, models, promptVersion: PROMPT_VERSION, policyVersion: POLICY_VERSION, ...scored, ...(batch && { batch: true }) };
 
   const file = "data/eval-results.json";
   const previous: EvalResults = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : { runs: [] };

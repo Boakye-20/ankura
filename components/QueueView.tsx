@@ -1,8 +1,7 @@
 "use client";
 import { useMemo, useState, type KeyboardEvent } from "react";
 import { caseState, type Role, type Session, type useSession } from "@/lib/audit";
-import { deadlineShare, deadlineTone, flags, statusTone } from "@/lib/case-helpers";
-import { fmtDate } from "@/lib/format";
+import { deadlineShare, deadlineTone, dueText, flags, queueBucket, statusTone } from "@/lib/case-helpers";
 import { isLetterDue } from "@/lib/letter";
 import type { CaseView, WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
@@ -15,93 +14,173 @@ type Props = {
   act: ReturnType<typeof useSession>["act"];
   selected: string | null;
   onSelect: (ref: string) => void;
-  onEscalated: (ref: string) => void;
+  onEscalated?: (ref: string) => void;
 };
 
-type SortKey = "risk" | "ref" | "received" | "status";
+const VIEWS = {
+  mine: "Needs my action",
+  progress: "With others",
+  done: "Completed",
+  all: "All cases",
+} as const;
+type ViewKey = keyof typeof VIEWS;
+
+const SCENARIOS: { ref: string; title: string; badge: string; tone: "bad" | "warn" | "info"; desc: string }[] = [
+  {
+    ref: "CMP-2026-105103",
+    title: "1. Prompt injection & safety block",
+    badge: "Guardrail block",
+    tone: "bad",
+    desc: "Customer embeds hidden AI instructions to force a £950 payout. INJ-01 detects the injection and withholds the draft.",
+  },
+  {
+    ref: "CMP-2026-104288",
+    title: "2. Vulnerable customer co-approval",
+    badge: "Senior sign-off",
+    tone: "warn",
+    desc: "Bereaved customer (FG21/1 indicator). Handler approval routes to Senior Handler; fast approval (<20s) triggers an over-reliance check.",
+  },
+  {
+    ref: "CMP-2026-104712",
+    title: "3. Specialist handover & checklist",
+    badge: "Handover pack",
+    tone: "info",
+    desc: "Card fraud dispute routed to Fraud & Disputes. AI builds a structured handover pack and blocks submission until missing items are resolved.",
+  },
+];
 
 export function QueueView({ data, role, session, act, selected, onSelect, onEscalated }: Props) {
-  const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "risk", desc: true });
+  const [view, setView] = useState<ViewKey>("mine");
+  const [vulnOnly, setVulnOnly] = useState(false);
+
+  const inView = (c: CaseView, v: ViewKey) => v === "all" || queueBucket(caseState(session, c.ref).status, role) === v;
 
   const rows = useMemo(() => {
-    const value = (c: CaseView): string | number => {
-      if (sort.key === "risk") return deadlineShare(c.result?.deadline ?? null);
-      if (sort.key === "status") return caseState(session, c.ref).status;
-      return c[sort.key];
-    };
-    return [...data.cases].sort((a, b) => {
-      const [x, y] = [value(a), value(b)];
-      const order = x < y ? -1 : x > y ? 1 : 0;
-      return sort.desc ? -order : order;
-    });
-  }, [data.cases, sort, session]);
+    return data.cases
+      .filter((c) => inView(c, view) && (!vulnOnly || Boolean(c.result?.triage?.vulnerable)))
+      .sort((a, b) => -deadlineShare(a.result?.deadline ?? null) - -deadlineShare(b.result?.deadline ?? null));
+  }, [data.cases, view, vulnOnly, session, role]);
 
-  const header = (key: SortKey, label: string) => (
-    <th aria-sort={sort.key === key ? (sort.desc ? "descending" : "ascending") : "none"}>
-      <button type="button" onClick={() => setSort((s) => ({ key, desc: s.key === key ? !s.desc : key === "risk" }))}>
-        {label}{sort.key === key ? (sort.desc ? " ↓" : " ↑") : ""}
-      </button>
-    </th>
-  );
-
-  const onRowKey = (e: KeyboardEvent<HTMLTableRowElement>, ref: string) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(ref); }
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault();
-      const sibling = e.key === "ArrowDown" ? e.currentTarget.nextElementSibling : e.currentTarget.previousElementSibling;
-      (sibling as HTMLElement | null)?.focus();
-    }
+  const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    const li = e.currentTarget.parentElement;
+    const next = e.key === "ArrowDown" ? li?.nextElementSibling : li?.previousElementSibling;
+    (next?.querySelector("button") as HTMLElement | null)?.focus();
   };
 
+  // Auto-select first case if none selected or if selected exists
   const current = data.cases.find((c) => c.ref === selected) ?? null;
-  const open = data.cases.filter((c) => !["Approved", "Co-approved", "Accepted by specialist"].includes(caseState(session, c.ref).status)).length;
 
   return (
-    <>
-      <div className="panel">
-        {!data.run && (
-          <p className="banner">AI outputs have not been generated yet. Run <code>npm run precompute</code> with an API key, then rebuild. Masked complaints are shown below.</p>
-        )}
-        <div className="ptitle">Open cases · {open} of {data.cases.length} · default order: least time remaining as a share of the deadline</div>
-        <div className="tw">
-          <table className="qt">
-            <caption className="sr-only">Work queue. Select a row to open the case below.</caption>
-            <thead>
-              <tr>
-                {header("ref", "Reference")}{header("received", "Received")}<th>Product</th><th>Issue</th><th>Flags</th>
-                {header("risk", "Regulatory deadline")}<th>Route</th>{header("status", "Status")}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((c) => {
-                const d = c.result?.deadline ?? null;
-                const status = caseState(session, c.ref).status;
+    <div className="workspace-wrap">
+      {/* Guided Scenario Strip for Evaluators */}
+      <div className="scenario-bar" aria-label="Featured evaluation scenarios">
+        <span className="sb-label">Key scenarios to test:</span>
+        <div className="sb-cards">
+          {SCENARIOS.map((s) => (
+            <button
+              key={s.ref}
+              type="button"
+              className={`sb-card ${selected === s.ref ? "active" : ""}`}
+              onClick={() => onSelect(s.ref)}
+            >
+              <div className="sb-top">
+                <b>{s.title}</b>
+                <Pill tone={s.tone}>{s.badge}</Pill>
+              </div>
+              <span className="sb-desc">{s.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="split">
+        <section className="qpane" aria-label="Case queue">
+          <div className="qhead">
+            <div className="view-pills" role="group" aria-label="Filter queue by status">
+              {(Object.keys(VIEWS) as ViewKey[]).map((k) => {
+                const count = data.cases.filter((c) => inView(c, k)).length;
                 return (
-                  <tr key={c.ref} tabIndex={0} aria-selected={c.ref === selected} onClick={() => onSelect(c.ref)} onKeyDown={(e) => onRowKey(e, c.ref)}>
-                    <td className="ref">{c.ref}</td>
-                    <td>{fmtDate(c.received)}</td>
-                    <td>{c.product}</td>
-                    <td>{c.result?.triage?.category ?? "Not classified"}</td>
-                    <td>{isLetterDue(d, status) && !caseState(session, c.ref).letterApproved && <Pill tone="bad">Letter due</Pill>}{flags(c).map(([label, tone]) => <Pill key={label} tone={tone}>{label}</Pill>)}</td>
-                    <td>
-                      {d ? (
-                        <span className="sla">
-                          <span className={`bar ${deadlineTone(d)}`} aria-hidden="true"><i style={{ width: `${Math.min(100, deadlineShare(d) * 100)}%` }} /></span>
-                          {d.used} / {d.total} {d.unit}{d.used > d.total ? " · overdue" : d.used === d.total ? " · due today" : ""}
-                        </span>
-                      ) : "Not set"}
-                    </td>
-                    <td>{c.result?.route ?? "—"}</td>
-                    <td><Pill tone={statusTone(status)}>{status}</Pill></td>
-                  </tr>
+                  <button key={k} type="button" aria-pressed={view === k} onClick={() => setView(k)}>
+                    <span>{VIEWS[k]}</span>
+                    <span className="count">{count}</span>
+                  </button>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-        {!current && <p className="note">Select a case to open it. Suggested start: <button type="button" className="cite" onClick={() => onSelect("CMP-2026-105103")}>CMP-2026-105103</button> (an instruction hidden in the complaint).</p>}
+            </div>
+            <div className="q-subbar">
+              <span className="note">Sorted by regulatory deadline risk</span>
+              <button
+                type="button"
+                className="vuln-toggle"
+                aria-pressed={vulnOnly}
+                onClick={() => setVulnOnly((v) => !v)}
+              >
+                Vulnerable only
+              </button>
+            </div>
+          </div>
+
+          <ul className="qlist">
+            {rows.map((c) => {
+              const d = c.result?.deadline ?? null;
+              const state = caseState(session, c.ref);
+              const tone = deadlineTone(d);
+              const tags = flags(c).filter(([label]) => label !== "Summary resolution").slice(0, 2);
+              return (
+                <li key={c.ref}>
+                  <button
+                    type="button"
+                    className="qitem"
+                    aria-current={c.ref === selected}
+                    onClick={() => onSelect(c.ref)}
+                    onKeyDown={onKey}
+                  >
+                    <span className="r">{c.ref}</span>
+                    <span className={`d ${tone === "bad" ? "late" : tone === "warn" ? "soon" : ""}`}>{dueText(d)}</span>
+                    <span className="s">
+                      {c.result?.triage?.category ?? "Unclassified"} · {c.result?.route ?? "Unassigned"}
+                    </span>
+                    <span className="tags">
+                      {state.status !== "Open" && <Pill tone={statusTone(state.status)}>{state.status}</Pill>}
+                      {isLetterDue(d, state.status) && !state.letterApproved && <Pill tone="bad">Delay letter due</Pill>}
+                      {tags.map(([label, t]) => <Pill key={label} tone={t}>{label}</Pill>)}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+            {rows.length === 0 && (
+              <li className="empty">
+                {view === "mine" ? (
+                  <>
+                    <b>No cases waiting for {role.toLowerCase()} action.</b>
+                    <span className="note">Switch to &ldquo;All cases&rdquo; above or change your simulated role in the top bar.</span>
+                    <button type="button" className="btn small" onClick={() => setView("all")}>Show all {data.cases.length} cases</button>
+                  </>
+                ) : (
+                  "No cases match this filter."
+                )}
+              </li>
+            )}
+          </ul>
+        </section>
+
+        {current ? (
+          <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onEscalated={onEscalated} />
+        ) : (
+          <div className="cpane empty-pane">
+            <div className="empty" style={{ margin: "auto", maxWidth: 460 }}>
+              <h2>Select a complaint to begin</h2>
+              <p>Choose any case from the queue on the left, or click one of the <b>3 key scenarios</b> at the top to test prompt-injection blocking, vulnerable customer co-approval, or specialist handovers.</p>
+              <button type="button" className="btn primary" onClick={() => onSelect("CMP-2026-105103")}>
+                Start with Scenario 1 (CMP-2026-105103)
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-      {current && <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onEscalated={onEscalated} />}
-    </>
+    </div>
   );
 }

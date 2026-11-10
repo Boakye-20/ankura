@@ -18,7 +18,7 @@ describe("getStatus", () => {
   it("reports the policy and prompt versions", () => {
     const status = getStatus({});
     expect(status.policyVersion).toBe("v2026.04");
-    expect(status.promptVersion).toBe("v1");
+    expect(status.promptVersion).toBe("v2");
   });
 
   it("never exposes the API key", () => {

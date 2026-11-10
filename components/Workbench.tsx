@@ -6,88 +6,125 @@ import type { WorkbenchData } from "@/lib/stored-types";
 import { AboutView } from "./AboutView";
 import { AssuranceView } from "./AssuranceView";
 import { AuditView } from "./AuditView";
-import { HandoversView } from "./HandoversView";
 import { QueueView } from "./QueueView";
 
 const TABS = [
-  ["queue", "My work queue", "Complaints"],
-  ["handovers", "Specialist handovers", "Complaints"],
-  ["assurance", "Model assurance", "Governance"],
-  ["audit", "Audit trail", "Governance"],
-  ["about", "About this prototype", "Help"],
+  ["queue", "Case Workbench"],
+  ["governance", "Governance & Assurance"],
+  ["about", "Brief & Approach"],
 ] as const;
 export type Tab = (typeof TABS)[number][0];
 
 export function Workbench({ data }: { data: WorkbenchData }) {
   const [tab, setTab] = useState<Tab>("queue");
   const [role, setRole] = useState<Role>("Handler");
-  const [selected, setSelected] = useState<string | null>(null);
-  const [handoverRef, setHandoverRef] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>("CMP-2026-105103");
   const { session, act, reset } = useSession();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const staff = STAFF[role];
-  const current = TABS.find((t) => t[0] === tab)!;
 
-  const openCase = (ref: string) => { setSelected(ref); setTab("queue"); };
-  const openHandover = (ref: string) => { setHandoverRef(ref); setTab("handovers"); };
+  const openCase = (ref: string) => {
+    setSelected(ref);
+    setTab("queue");
+  };
 
-  // Arrow keys move between tabs (WAI-ARIA tabs pattern).
   const onTabKey = (e: KeyboardEvent, i: number) => {
-    const next = e.key === "ArrowRight" ? (i + 1) % TABS.length : e.key === "ArrowLeft" ? (i - 1 + TABS.length) % TABS.length : -1;
+    const fwd = e.key === "ArrowRight" || e.key === "ArrowDown";
+    const back = e.key === "ArrowLeft" || e.key === "ArrowUp";
+    const next = fwd ? (i + 1) % TABS.length : back ? (i - 1 + TABS.length) % TABS.length : -1;
     if (next < 0) return;
     e.preventDefault();
     setTab(TABS[next][0]);
     tabRefs.current[next]?.focus();
   };
 
-  const crumbRef = tab === "queue" ? selected : tab === "handovers" ? handoverRef : null;
   const seeded = useMemo(() => data.cases.flatMap((c) => c.result?.audit ?? []), [data.cases]);
 
   return (
     <div className="app">
-      <div className="env">TEST ENVIRONMENT · SYNTHETIC DATA ONLY · NOT FOR CUSTOMER USE</div>
-      <header className="gbar">
-        <div className="logo">
-          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" fill="none" stroke="#ffffff" strokeWidth="1.5" /><path d="M6 16V6l5 6 5-6v10" stroke="#ffffff" strokeWidth="1.8" fill="none" /></svg>
-          <span className="bank">MEADOWLANE BANK</span>
-          <span className="prod">Complaints Workbench</span>
+      <header className="top-nav">
+        <div className="brand">
+          <svg width="24" height="24" viewBox="0 0 22 22" aria-hidden="true">
+            <path d="M2 18c3-6 6-9 9-9s6 3 9 9" stroke="currentColor" strokeWidth="1.8" fill="none" />
+            <path d="M2 13c3-4 6-6 9-6s6 2 9 6" stroke="currentColor" strokeWidth="1.3" fill="none" opacity=".65" />
+          </svg>
+          <div>
+            <span className="bank">Meadowlane Bank</span>
+            <span className="prod">Complaints AI Workbench · Synthetic Prototype</span>
+          </div>
         </div>
-        <div className="user">
-          <span>{staff.name} · {staff.title} · {staff.team}</span>
-          <label className="sr-only" htmlFor="role">Role (simulated)</label>
-          <select id="role" value={role} onChange={(e) => setRole(e.target.value as Role)} title="Roles are simulated; there is no sign-in">
-            <option value="Handler">Role: Handler</option>
-            <option value="Senior">Role: Senior</option>
-            <option value="Specialist">Role: Specialist</option>
-          </select>
-          <span className="av" aria-hidden="true">{staff.initials}</span>
+
+        <nav className="top-tabs" role="tablist" aria-label="Main navigation">
+          {TABS.map(([id, label], i) => (
+            <button
+              key={id}
+              ref={(el) => { tabRefs.current[i] = el; }}
+              role="tab"
+              id={`tab-${id}`}
+              aria-selected={tab === id}
+              aria-controls="view"
+              tabIndex={tab === id ? 0 : -1}
+              onClick={() => setTab(id)}
+              onKeyDown={(e) => onTabKey(e, i)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="role-switcher" aria-label="Simulated staff role">
+          <span className="rs-label">Viewing as:</span>
+          <div className="rs-pills" role="group" aria-label="Select simulated role">
+            {(["Handler", "Senior", "Specialist"] as const).map((r) => (
+              <button
+                key={r}
+                type="button"
+                aria-pressed={role === r}
+                onClick={() => setRole(r)}
+                title={`Switch to ${STAFF[r].name} (${STAFF[r].title})`}
+              >
+                {r === "Senior" ? "Senior Handler" : r}
+              </button>
+            ))}
+          </div>
+          <span className="rs-who" title="Simulated user in browser storage">{staff.name}</span>
         </div>
       </header>
-      <nav className="nav" role="tablist" aria-label="Workbench sections">
-        {TABS.map(([id, label], i) => (
-          <button key={id} ref={(el) => { tabRefs.current[i] = el; }} role="tab" id={`tab-${id}`} aria-selected={tab === id}
-            aria-controls="view" tabIndex={tab === id ? 0 : -1} onClick={() => setTab(id)} onKeyDown={(e) => onTabKey(e, i)}>
-            {label}
-          </button>
-        ))}
-      </nav>
-      <div className="crumbs" aria-label="Breadcrumbs">
-        <span>{current[2]}</span><span aria-hidden="true">›</span><span>{current[1]}</span>
-        {crumbRef && <><span aria-hidden="true">›</span><span className="mono">{crumbRef}</span></>}
-      </div>
+
       <main id="view" role="tabpanel" aria-labelledby={`tab-${tab}`}>
-        {tab === "queue" && <QueueView data={data} role={role} session={session} act={act} selected={selected} onSelect={setSelected} onEscalated={openHandover} />}
-        {tab === "handovers" && <HandoversView data={data} role={role} session={session} act={act} selected={handoverRef} onSelect={setHandoverRef} onOpenCase={openCase} />}
-        {tab === "assurance" && <AssuranceView results={data.evalResults} session={session} />}
-        {tab === "audit" && <AuditView seeded={seeded} session={session} onReset={reset} />}
+        {tab === "queue" && (
+          <QueueView
+            data={data}
+            role={role}
+            session={session}
+            act={act}
+            selected={selected}
+            onSelect={setSelected}
+          />
+        )}
+        {tab === "governance" && (
+          <div className="gov-page">
+            <div className="gov-intro">
+              <div>
+                <h2>Governance, Model Assurance &amp; Audit Trail</h2>
+                <p className="note">
+                  Measured performance across 60 synthetic complaints, live session adoption telemetry, and the full immutable audit log of AI steps and human decisions.
+                </p>
+              </div>
+            </div>
+            <AuditView seeded={seeded} session={session} onReset={reset} />
+            <AssuranceView results={data.evalResults} session={session} />
+          </div>
+        )}
         {tab === "about" && <AboutView data={data} onOpenCase={openCase} />}
       </main>
+
       <footer className="foot">
+        <span>Synthetic data only · Not for customer use</span>
         <span>Release {data.versions.release}</span>
         <span>Policy library {data.versions.policyVersion}</span>
         <span>Prompt set {data.versions.promptVersion}</span>
-        <span>{data.run ? `Stored outputs · model run ${fmtDate(data.run.runDate)}` : "Stored outputs · not yet generated"}</span>
-        <span>Session actions kept in this browser only</span>
+        <span>{data.run ? `Precomputed AI run: ${fmtDate(data.run.runDate)}` : "AI outputs not generated"}</span>
       </footer>
     </div>
   );

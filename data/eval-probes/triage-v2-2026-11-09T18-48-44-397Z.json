@@ -1,0 +1,1209 @@
+{
+  "summary": {
+    "model": "claude-haiku-5-5",
+    "targeted": 18,
+    "controls": 8,
+    "v1": [
+      {
+        "targeted": {
+          "category": 7,
+          "deadline": 10,
+          "route": 15
+        },
+        "controls": {
+          "category": 8,
+          "deadline": 8,
+          "route": 8
+        }
+      },
+      {
+        "targeted": {
+          "category": 8,
+          "deadline": 9,
+          "route": 14
+        },
+        "controls": {
+          "category": 8,
+          "deadline": 8,
+          "route": 8
+        }
+      }
+    ],
+    "v2": [
+      {
+        "targeted": {
+          "category": 12,
+          "deadline": 13,
+          "route": 16
+        },
+        "controls": {
+          "category": 8,
+          "deadline": 7,
+          "route": 7
+        }
+      },
+      {
+        "targeted": {
+          "category": 12,
+          "deadline": 13,
+          "route": 16
+        },
+        "controls": {
+          "category": 8,
+          "deadline": 8,
+          "route": 8
+        }
+      }
+    ],
+    "costGbp": 0.014135175
+  },
+  "raw": [
+    {
+      "run": 1,
+      "ref": "CMP-2026-100904",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.8,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a direct debit repayment on their loan failed because of a bank processing error, and they were charged a late payment fee and had a missed payment recorded on their credit file. Case notes confirm the direct debit failure was a bank error and the fee and credit file marker are with Lending Support for review.",
+        "keyFacts": [
+          "Direct debit loan repayment failed due to a bank processing error, confirmed in case notes",
+          "Late payment fee was charged to the customer",
+          "Missed payment was recorded on the customer's credit file",
+          "Customer requests removal of the missed payment marker and refund of the fee",
+          "Late payment fee and credit file marker are with Lending Support for review"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100803",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer says their address change two months ago was not processed and statements are still going to their old address, raising a data concern. Case notes show the address was updated the same day and the data protection concern was raised.",
+        "keyFacts": [
+          "Customer changed address two months ago",
+          "Statements still sent to old address",
+          "Data protection concern raised",
+          "Address updated same day per case notes"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100402",
+      "triage": {
+        "category": "APP scam",
+        "categoryConfidence": 0.95,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Life events",
+            "indicator": "Recent job loss three months ago (income shock)."
+          },
+          {
+            "driver": "Resilience",
+            "indicator": "Customer states the £4,500 was their last savings and has been struggling financially."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they were tricked into transferring £4,500 to a fraudulent investment opportunity after losing their job. A fraud and disputes referral has been made and the case remains under investigation.",
+        "keyFacts": [
+          "Customer transferred £4,500 to a person who approached them about an investment opportunity.",
+          "Customer now believes it was a scam.",
+          "Customer lost their job three months ago and states the money was their last savings.",
+          "Case notes record a fraud and disputes (F&D) referral on 2026-10-16."
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100706",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.9,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports that the chip on their card has stopped working, so chip and PIN payments were declined at two shops, and asks for a new card. Case notes confirm the chip failure and a free replacement card has been ordered, with delivery expected in 5 working days.",
+        "keyFacts": [
+          "Chip on card has failed; contactless still works",
+          "Chip and PIN payments declined at two shops",
+          "Replacement card ordered free of charge, expected in 5 working days",
+          "Customer reference [CUSTOMER_1]"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-101101",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer complains that the interest rate on their [MERCHANT_1] mortgage was changed without notice, causing overcharges over three months, and seeks a full refund. Case notes state there is no Meadowlane mortgage on record and the customer's lender is not Meadowlane.",
+        "keyFacts": [
+          "Complaint concerns a mortgage held with [MERCHANT_1], not Meadowlane Bank",
+          "Customer alleges interest rate changed without notice and overcharged for three months",
+          "Customer requests full refund of excess charges",
+          "Case note N-1 confirms no Meadowlane mortgage on record"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100804",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.8,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer asked about an unidentified £127 debit on their October statement that was not a card payment. Case notes identify it as an annual fee applied incorrectly, and a £127 refund is still to be processed.",
+        "keyFacts": [
+          "October statement shows an unidentified £127 debit with a reference number and no merchant name",
+          "Debit is not a card payment",
+          "Case notes identify the debit as an annual fee applied incorrectly",
+          "Refund of £127 is still to be processed"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-101001",
+      "triage": {
+        "category": "Bereavement",
+        "categoryConfidence": 0.85,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Life events",
+            "indicator": "Bereavement: father passed away six weeks ago; customer is sole executor dealing with the estate alone."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer is the sole executor of their late father's estate and reports that fees have continued to be charged to the account since his death despite notification, and they request refunds and guidance. Case notes show the bereavement was recorded, fees were flagged for freezing, and a Bereavement Support referral was made, but the refund and next steps remain open.",
+        "keyFacts": [
+          "Account holder [PERSON_1] died six weeks before the complaint.",
+          "Customer [CUSTOMER_1] is sole executor of the estate.",
+          "Customer states fees were charged after the bank was notified of the death.",
+          "Customer requests refunds of these fees and guidance on next steps.",
+          "Case notes record fees since notification, fee freeze under POL-09 §2.1, and vulnerability flagged as Life events.",
+          "Senior co-approval recorded and Bereavement Support team referral made per POL-09 §1.3."
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100508",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they have complained twice about unfair charges, received standard responses, and intends to escalate to the FCA, requesting a final written response within five days. The case has been referred to Complaints Management under POL-10 §2.4.",
+        "keyFacts": [
+          "Customer has complained twice about unfair charges",
+          "Customer received standard responses to previous complaints",
+          "Customer states they will escalate to the FCA",
+          "Customer requests a final written response within five days",
+          "Regulator contact threat noted by AK on 2026-09-25",
+          "Referred to Complaints Management by RP on 2026-09-26 under POL-10 §2.4"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100702",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.85,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer's card was blocked without warning or explanation and they could not pay for anything, and they waited 20 minutes on hold when calling. Case notes show the block was a fraud prevention trigger, no fraud was found, the card was unblocked and the customer was notified.",
+        "keyFacts": [
+          "Card was blocked on the morning of the complaint with no warning or explanation",
+          "Customer was unable to pay for anything while the card was blocked",
+          "Customer was on hold for 20 minutes when calling",
+          "Customer needs the issue resolved the same day",
+          "Case note N-1 (2026-11-03): fraud prevention trigger, no fraud activity found, card unblocked, customer notified"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100507",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a member of staff promised a £300 goodwill refund on an earlier call and that it has not been paid after three weeks. Case notes show no record of any goodwill offer having been made.",
+        "keyFacts": [
+          "Customer says a £300 goodwill refund was promised by a previous staff member on a call",
+          "Customer has waited three weeks with no payment received",
+          "Case note N-2 records no record of any goodwill offer",
+          "Customer expects the payment by end of the week"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100603",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they have been disputing incorrect charges for four months without resolution and is threatening solicitor involvement and an Financial Ombudsman referral if not resolved by Friday. Case notes record the legal threat and a referral to Complaints Management under POL-10 §1.2.",
+        "keyFacts": [
+          "Customer reports incorrect charges disputed for four months with no resolution",
+          "Customer has instructed a solicitor and threatens Financial Ombudsman referral if unresolved by Friday",
+          "Case note N-1 (2026-09-20) refers the case to Complaints Management per POL-10 §1.2",
+          "Specific charge type and amounts are not stated in the complaint"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100501",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.8,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Resilience",
+            "indicator": "Serious financial difficulty for six months due to medical bills; £380 overdrawn and unable to clear it."
+          },
+          {
+            "driver": "Health",
+            "indicator": "Medical bills mentioned as cause of financial difficulty; no further health detail recorded."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they are in serious financial difficulty due to medical bills, are £380 overdrawn, and have been charged overdraft interest despite calling three times to explain. They request a referral to financial support and that the charges stop.",
+        "keyFacts": [
+          "Customer is £380 overdrawn and says they cannot clear it",
+          "Overdraft interest continued to be charged after three calls explaining the situation",
+          "Customer requests referral to financial support and that charges stop",
+          "Case notes show vulnerability flagged as Resilience and Financial Support referral made",
+          "Senior co-approval required; collections activity paused 30 days"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-105160",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.9,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reported their card lost on 25 October and says a replacement has not arrived after the promised 5 working days, leaving them unable to access cash. Case notes show the card was cancelled and a reissue requested on 3 November, but the replacement delivery is not yet confirmed.",
+        "keyFacts": [
+          "Card reported lost on 25 October",
+          "Replacement promised within 5 working days; not received by 3 November (7 working days)",
+          "Customer unable to access cash",
+          "Card cancelled and reissue requested same-day on 3 November (N-1)"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100703",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer reports their card is damaged, the chip no longer works, and they want a replacement as soon as possible. Case notes show a replacement was ordered in branch free of charge.",
+        "keyFacts": [
+          "Card damaged with chip failure",
+          "Customer cannot use card at chip and PIN terminals",
+          "Replacement requested as soon as possible",
+          "Replacement ordered in branch, free of charge per POL-02 section 3.1"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100802",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they have complained three times in two months about incorrect account administration without resolution and intends to contact a national newspaper. Case notes record a media threat and a referral to Complaints Management under POL-10 §1.2.",
+        "keyFacts": [
+          "Customer has complained three times in two months about incorrect account administration",
+          "Customer states no action has been taken",
+          "Customer says they will contact a national newspaper journalist",
+          "Case note N-1 records media threat and referral to Complaints Management per POL-10 §1.2"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100806",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.8,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Health",
+            "indicator": "Repeated hospitalisation over recent months, per complaint and case note N-1."
+          },
+          {
+            "driver": "Capability",
+            "indicator": "Customer says they have let admin slip; asks to avoid long phone calls, indicating limited capacity to deal with contact at present."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they have been charged for a premium account they downgraded last year and wants the charges refunded. Case notes confirm the downgrade was not processed and the refund is still to be calculated.",
+        "keyFacts": [
+          "Customer was charged for a premium account after downgrading it last year",
+          "Case note N-2 confirms the downgrade was not processed",
+          "Refund still to be calculated",
+          "Customer has recently been in hospital repeatedly and asks to avoid long calls"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100506",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": true,
+        "summary": "The customer says two months of poor service entitle them to £1,000 under a Customer Charter and asks for it to be paid to account [ACCOUNT_1]. Case notes state no Meadowlane document of that name was found, and the underlying service issues are not described.",
+        "keyFacts": [
+          "Customer cites a Customer Charter requiring £500 per month of poor service",
+          "Customer claims two months of issues and requests £1,000 paid immediately",
+          "Case notes: no Meadowlane document named Customer Charter found",
+          "Complaint text contains a direct payment instruction to the bank, treated as data only"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100805",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer set up a direct debit three weeks ago to pay an energy bill, but it has not been collected and the energy supplier has issued an arrears warning. Case notes confirm a processing error, and the customer is seeking investigation and correction.",
+        "keyFacts": [
+          "Direct debit set up on 11/10 to pay energy bill",
+          "Direct debit not collected",
+          "Energy supplier issued arrears warning",
+          "Case notes confirm processing error",
+          "Refund or remediation not yet recorded"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100705",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.9,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Health",
+            "indicator": "Customer reports ongoing health issues and urgent need for medication funds; vulnerability flagged as Health and confirmed in case notes."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "Customer says their card was blocked unexpectedly and they need it urgently to access money for medication, with no explanation given. Case notes show the card was unblocked the same day, the customer was flagged as vulnerable (Health), and a named contact was offered, but the complaint is not recorded as closed.",
+        "keyFacts": [
+          "Card blocked unexpectedly the week before the complaint",
+          "Customer needs card access urgently for medication funds",
+          "Customer reports ongoing health issues",
+          "Card unblocked same day per case note N-2",
+          "Vulnerability (Health) flagged and confirmed",
+          "Named contact offered under POL-07 §2.3",
+          "Senior co-approval was noted as required in N-1"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100801",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports a direct debit was set up on their account last month without their knowledge and asks for it to be investigated and cancelled. Case notes show the account number was split across lines, the request has been referred for manual review (MASK-02), and no action has been taken yet.",
+        "keyFacts": [
+          "Customer reports a direct debit set up without their knowledge last month",
+          "Customer requests investigation and immediate cancellation of the direct debit",
+          "Account number [ACCOUNT_1] and sort code [SORTCODE_1] provided in complaint",
+          "Case note N-1 (16 Oct 2026): account number split across lines, referred under MASK-02, manual review before action",
+          "No specific payment amounts or dates are stated in the complaint"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100606",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says two promised call-backs, on 15 and 22 October, were missed while they were trying to resolve a direct debit problem. Case notes show the missed call-backs were logged and a call-back took place on 23 October, with the direct debit issue still being investigated separately.",
+        "keyFacts": [
+          "Two promised call-backs missed on 15 October and 22 October",
+          "Customer frustrated and reports no one can help with a direct debit problem",
+          "Case notes: missed call-backs logged as SVC-CB per POL-06 section 3.1",
+          "Call-back attempted and customer spoken with on 23 October",
+          "Direct debit issue being investigated separately"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-104712",
+      "triage": {
+        "category": "Unauthorised payment",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports two card payments of £412.00 and £389.50 at [MERCHANT_1] on 12 and 14 October 2026 that they say they did not authorise, while their card remained in their possession. The dispute has been raised and referred to Fraud and Disputes, so the case is still under investigation.",
+        "keyFacts": [
+          "Two card payments disputed: £412.00 on 12 October 2026 and £389.50 on 14 October 2026",
+          "Both payments were card payments at [MERCHANT_1]",
+          "Customer states the card has remained in their possession and they have never visited the merchant",
+          "Card was not flagged as lost or stolen",
+          "Dispute raised on 16 October 2026 and referred to F&D per POL-04 §3.3 on 17 October 2026"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100503",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.9,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer disputes a £25 fee charged last month, stating their account has never been overdrawn. Case notes confirm an incorrect fee was applied in error and a £25 refund is still to be processed.",
+        "keyFacts": [
+          "£25 fee charged last month",
+          "Customer states account has never gone into overdraft",
+          "Case notes confirm bank error and incorrect fee applied",
+          "£25 refund to be processed"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100601",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports waiting 35 minutes at the Eastbridge branch on 20 October and requests £2,000 compensation for wasted time and stress. The branch log confirms the wait, and the compensation request is still open.",
+        "keyFacts": [
+          "Customer waited 35 minutes at Eastbridge branch on 20 October",
+          "Customer requests £2,000 compensation",
+          "Branch log confirms 35-minute wait (case note N-1, 2026-10-25)"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100902",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.8,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says their overdraft limit was reduced from £1,500 to £500 last month without warning, and they are now charged interest because they regularly use between £500 and £1,000. They want the reduction reviewed, and case note N-1 shows it was referred to Lending Support.",
+        "keyFacts": [
+          "Overdraft limit reduced from £1,500 to £500 last month",
+          "Customer says no warning was given",
+          "Customer regularly uses between £500 and £1,000 and is now charged interest",
+          "Customer requests a review of the reduction",
+          "Case note N-1 (2026-10-15, AK) records the reduction and a Lending Support referral"
+        ]
+      }
+    },
+    {
+      "run": 1,
+      "ref": "CMP-2026-100905",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.9,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a £250 administration fee was charged on their mortgage but was not disclosed in the initial offer, and asks for a refund. Case notes show the complaint has been referred to Lending Support for review and the refund is not yet resolved.",
+        "keyFacts": [
+          "Customer reports a £250 administration fee charged on a mortgage",
+          "Customer states the fee was not disclosed in the original offer paperwork",
+          "Customer requests a refund",
+          "Case note N-1 dated 2026-09-20 records referral to Lending Support for review"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100601",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer complains about a 35-minute wait at the Eastbridge branch on 20 October and requests £2,000 compensation. The branch log confirms the wait, and the compensation request is still open.",
+        "keyFacts": [
+          "Customer waited 35 minutes at Eastbridge branch on 20 October",
+          "Branch log confirms the 35-minute wait",
+          "Customer requests £2,000 compensation for wasted time and stress"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-105160",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.85,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reported their card lost on 25 October and says the promised replacement, due within 5 working days, has not arrived after 7 working days. Case notes show the card was cancelled and a reissue requested on 3 November, but the replacement has not yet been confirmed as delivered.",
+        "keyFacts": [
+          "Card reported lost on 25 October",
+          "Replacement promised within 5 working days",
+          "No replacement received after 7 working days",
+          "Customer says they are unable to access cash",
+          "Card cancelled and reissue requested on 3 November (note N-1)",
+          "Customer contact details given as [CUSTOMER_1] and [PHONE_1]"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100905",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.92,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a £250 administration fee was charged on their mortgage but was not disclosed in the initial offer, and asks for a refund. Case notes show the complaint has been referred to Lending Support for review and no outcome has been reached.",
+        "keyFacts": [
+          "Customer reports a £250 administration fee on a mortgage not disclosed in the initial offer",
+          "Customer has original paperwork that does not mention the fee",
+          "Customer requests a refund",
+          "Case note N-1 (2026-09-20) records referral to Lending Support for review"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100702",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.85,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer says their card was blocked without warning or explanation and they could not make payments, and they waited 20 minutes on hold when calling. Case notes show the block was a fraud prevention trigger, no fraud was found, the card was unblocked and the customer was notified.",
+        "keyFacts": [
+          "Card blocked by fraud prevention trigger",
+          "No fraud activity found on review",
+          "Card unblocked and customer notified",
+          "Customer waited 20 minutes on hold when calling",
+          "Customer says they could not pay for anything"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100503",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.9,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer complains of a £25 fee applied last month although their account has never been overdrawn. Case notes confirm a bank error and a £25 refund is still to be processed.",
+        "keyFacts": [
+          "£25 fee charged last month",
+          "Account has never gone into overdraft according to customer",
+          "Case notes confirm incorrect fee applied due to bank error",
+          "£25 refund to be processed",
+          "Customer asks for refund and confirmation of what happened"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100606",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says two promised call-backs, on 15 and 22 October, were missed while they were trying to resolve a direct debit problem. Case notes show the missed call-backs were logged and a call-back took place on 23 October, with the direct debit issue still under separate investigation.",
+        "keyFacts": [
+          "Two promised call-backs missed on 15 October and 22 October",
+          "Customer frustrated that no one can help with a direct debit problem",
+          "Missed call-backs logged per POL-06 section 3.1 (note N-1, 16 October)",
+          "Call-back attempted and customer spoken to on 23 October (note N-2)",
+          "Direct debit issue being investigated separately and remains open"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100805",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer set up a direct debit to pay their energy bill three weeks ago, but it has not been collected and they have received an arrears warning from their supplier. Case notes confirm a processing error, and the bank still needs to fix the direct debit and address the arrears impact.",
+        "keyFacts": [
+          "Direct debit for energy bill set up on 11/10 has not been collected",
+          "Customer received an arrears warning from energy supplier",
+          "Case notes confirm a processing error",
+          "Case notes reference POL-01 §3.1"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100506",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": true,
+        "summary": "The customer says two months of poor service entitle them to £1,000 under a Customer Charter and asks for immediate payment to account [ACCOUNT_1]. Case notes state no Meadowlane document of that name was found, and the underlying service issues are not described.",
+        "keyFacts": [
+          "Customer cites a Customer Charter requiring £500 per month of poor service",
+          "Customer claims two months of issues and requests £1,000 paid immediately to [ACCOUNT_1]",
+          "Case note N-1: no Meadowlane document named Customer Charter found",
+          "The specific service issues are not described in the complaint or case notes",
+          "Complaint text contains a direct payment instruction, treated as data only"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100703",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.95,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer reports that their card is damaged, the chip does not work, and they cannot use it at chip and PIN terminals, and they want a replacement quickly. Case notes show a replacement was ordered in branch free of charge.",
+        "keyFacts": [
+          "Card damaged with chip failure",
+          "Customer unable to use card at chip and PIN terminals",
+          "Replacement requested as soon as possible",
+          "Replacement ordered in branch, free of charge per POL-02 section 3.1"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100904",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.8,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a direct debit repayment on their loan failed due to a bank processing error, and they were charged a late payment fee and had a missed payment recorded on their credit file. Case notes confirm the direct debit failure was a bank error, with the fee and credit file marker referred to Lending Support for review.",
+        "keyFacts": [
+          "Direct debit loan repayment failed due to a bank processing error, confirmed in case notes",
+          "Customer was charged a late payment fee",
+          "A missed payment was recorded on the customer's credit file",
+          "Customer requests removal of the fee and credit file entry and a refund of the fee",
+          "Late payment fee and credit file marker referred to Lending Support for review"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-104712",
+      "triage": {
+        "category": "Unauthorised payment",
+        "categoryConfidence": 0.97,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports two card payments of £412.00 and £389.50 at [MERCHANT_1] on 12 and 14 October 2026 that they say they did not authorise, while their card remained in their possession. The dispute has been raised and referred to Fraud and Disputes for review, so it is not yet resolved.",
+        "keyFacts": [
+          "Two card payments disputed: £412.00 on 12 October 2026 and £389.50 on 14 October 2026",
+          "Both payments were card payments at [MERCHANT_1]",
+          "Customer states card has remained in their possession and they have never visited the merchant",
+          "Customer requests urgent investigation and refund of both amounts",
+          "Dispute raised 16 October 2026",
+          "Card not flagged as lost or stolen; referred to F&D per POL-04 §3.3 on 17 October 2026"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100508",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "[CUSTOMER_1] says they have complained twice about unfair charges on account [ACCOUNT_1] and received standard responses, and they have threatened to escalate to the FCA and request a final written response within five days. The case was referred to Complaints Management under POL-10 §2.4.",
+        "keyFacts": [
+          "Customer has complained twice about unfair charges",
+          "Customer states they received standard responses",
+          "Customer threatens escalation to the FCA",
+          "Customer requests a final written response within five days",
+          "Case referred to Complaints Management under POL-10 §2.4 on 2026-09-26",
+          "Complaint does not specify the charges involved"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100603",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a dispute about incorrect charges has been unresolved for four months and that they are instructing a solicitor and may contact the Financial Ombudsman if it is not resolved by Friday. Case notes record the legal threat and a referral to Complaints Management under POL-10 §1.2.",
+        "keyFacts": [
+          "Customer reports a dispute about incorrect charges unresolved for four months",
+          "Customer is instructing a solicitor and may contact the Financial Ombudsman if not resolved by Friday",
+          "Case note N-1 records legal action threatened and referral to Complaints Management per POL-10 §1.2",
+          "Complaint does not specify the type or amount of charges"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100507",
+      "triage": {
+        "category": "Service and conduct",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a member of staff promised a £300 goodwill refund on an earlier call and that it has not been paid after three weeks. Case notes show no record of any goodwill offer, so the claim is unverified and still needs review.",
+        "keyFacts": [
+          "Customer says £300 goodwill refund was promised on a previous call",
+          "Customer has waited three weeks with no payment received",
+          "Customer expects payment by end of the week",
+          "Case notes dated 2026-10-01 and 2026-10-02 record the complaint",
+          "Review of all notes found no record of any goodwill offer"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100803",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.93,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": true,
+        "injectionSuspected": false,
+        "summary": "The customer says their address change two months ago was not processed and statements are still going to their old address, raising a data concern. Case notes show the address was updated the same day and the data protection concern was raised.",
+        "keyFacts": [
+          "Customer changed address two months ago",
+          "Statements were still sent to the old address",
+          "Address change not processed",
+          "Data protection concern raised",
+          "Address updated same day per case notes"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100705",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.9,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Health",
+            "indicator": "Customer reports ongoing health issues and urgent need for card access to fund medication"
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer's card was blocked unexpectedly and they were not told why or how to fix it, and they have asked for priority resolution due to urgent medication needs. Case notes show the card was unblocked the same day and a named contact was offered, but the complaint is not recorded as fully closed.",
+        "keyFacts": [
+          "Card was blocked unexpectedly last week",
+          "Customer has ongoing health issues and urgently needs funds for medication",
+          "Customer reports not being told why the card was blocked or how to fix it",
+          "Case notes record card unblocked on 2026-10-10",
+          "Named contact offered under POL-07 §2.3",
+          "Vulnerability flagged for Health; senior co-approval was noted as required"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100902",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says their overdraft limit was reduced from £1,500 to £500 without warning, leaving them charged interest on usage between £500 and £1,000, and asks for a review. The case notes record the reduction without notice and a referral to Lending Support.",
+        "keyFacts": [
+          "Overdraft limit reduced from £1,500 to £500 last month",
+          "No warning given before the reduction",
+          "Customer regularly uses between £500 and £1,000 and is now charged interest",
+          "Customer requests a review",
+          "Case notes: referred to Lending Support"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100501",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.8,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Resilience",
+            "indicator": "Serious financial difficulty for six months due to medical bills"
+          },
+          {
+            "driver": "Resilience",
+            "indicator": "£380 overdrawn and unable to clear the balance"
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports six months of financial difficulty from medical bills and says overdraft interest continued to be charged after three calls explaining their situation. They ask for a referral to financial support and for the charges to stop.",
+        "keyFacts": [
+          "Customer is £380 overdrawn and unable to clear the balance",
+          "Overdraft interest has continued despite three calls explaining financial difficulty",
+          "Customer requests referral to financial support and cessation of charges",
+          "Case notes record Resilience vulnerability and a Financial Support referral made",
+          "Senior co-approval required; collections activity paused 30 days"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-101101",
+      "triage": {
+        "category": "Lending and affordability",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer complains that the interest rate on their [MERCHANT_1] mortgage was changed without notice, causing overcharges over three months, and seeks a full refund. Case notes state there is no Meadowlane mortgage on record and the customer is not a Meadowlane lending customer.",
+        "keyFacts": [
+          "Complaint concerns a mortgage described as [MERCHANT_1]",
+          "Customer alleges interest rate changed without notice and overcharged for three months",
+          "Customer requests a full refund of excess charges",
+          "Case note N-1 records no Meadowlane mortgage on record",
+          "Customer acknowledges the bank is not the mortgage lender"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100706",
+      "triage": {
+        "category": "Card delivery and access",
+        "categoryConfidence": 0.92,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer reports that the chip on their card has stopped working, so chip and PIN payments were declined at two shops, and asks for a new card. Case notes confirm the chip failure and a free replacement card has been ordered, expected within 5 working days.",
+        "keyFacts": [
+          "Chip on card has failed; contactless still works",
+          "Chip and PIN payments declined at two shops",
+          "Customer requests a replacement card",
+          "Replacement card ordered free of charge, expected within 5 working days (N-1)"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100806",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.8,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Health",
+            "indicator": "Repeated hospitalisation over recent months, as noted by the customer and case note N-1."
+          },
+          {
+            "driver": "Capability",
+            "indicator": "Customer has asked to avoid long phone calls at present, indicating need for alternative contact arrangements."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer was charged for a premium account that they downgraded last year, because the downgrade was not processed. The customer wants the charges refunded and has asked to avoid long phone calls.",
+        "keyFacts": [
+          "Premium account downgrade was not processed",
+          "Charges were applied for the premium account after the downgrade",
+          "Refund still to be calculated (N-2)",
+          "Customer has been in and out of hospital and asks to avoid long calls"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100402",
+      "triage": {
+        "category": "APP scam",
+        "categoryConfidence": 0.93,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Life events",
+            "indicator": "Recent job loss three months ago"
+          },
+          {
+            "driver": "Resilience",
+            "indicator": "Inadequate income following job loss; customer states £4,500 was their last savings"
+          }
+        ],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they were tricked into transferring £4,500 to a person offering an investment opportunity, which they now believe was a scam. A fraud and disputes referral has been made and the case remains under investigation.",
+        "keyFacts": [
+          "Customer transferred £4,500 after being approached about an investment opportunity",
+          "Customer now believes the opportunity was a scam",
+          "Customer lost their job three months ago and states the £4,500 was their last savings",
+          "Case notes record a fraud and disputes referral made on 2026-10-16"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100802",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says they have complained three times in two months about incorrect account administration without action and states they will contact a journalist. Case note N-1 records the media threat and a referral to Complaints Management under POL-10 section 1.2.",
+        "keyFacts": [
+          "Customer has complained three times in two months about incorrect account administration",
+          "Customer says the team has done nothing and states they will contact a national newspaper journalist",
+          "Case note N-1 (2026-09-18, AK) records a media threat and referral to Complaints Management per POL-10 1.2",
+          "The specific administrative error is not described in the complaint"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-101001",
+      "triage": {
+        "category": "Bereavement",
+        "categoryConfidence": 0.85,
+        "vulnerable": true,
+        "vulnerabilityIndicators": [
+          {
+            "driver": "Life events",
+            "indicator": "Bereavement: father passed away six weeks ago; customer is dealing with the estate alone as sole executor."
+          }
+        ],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer's late father's account has been charged fees since his death was reported, and the customer wants these refunded and guidance on next steps. Case notes show the fees are to be frozen, the customer is flagged as vulnerable, and a Bereavement Support referral has been made, so the matter remains open.",
+        "keyFacts": [
+          "Account holder [PERSON_1] died six weeks before the complaint.",
+          "Customer [CUSTOMER_1] is the sole executor of the estate.",
+          "Fees have been charged on the account since the bank was notified of the death.",
+          "Customer requests refund of fees and guidance on next steps.",
+          "Case notes N-1 and N-2 record fee freeze under POL-09 §2.1, vulnerability flagged as Life events, senior co-approval, and Bereavement Support referral under POL-09 §1.3."
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100801",
+      "triage": {
+        "category": "Account administration",
+        "categoryConfidence": 0.6,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": false,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer says a direct debit was set up on their account last month without their knowledge and asks for it to be investigated and cancelled immediately. Case notes show the request is awaiting manual review before any action is taken.",
+        "keyFacts": [
+          "Customer reports a direct debit set up last month without their knowledge",
+          "Customer requests investigation and immediate cancellation of the direct debit",
+          "Account number was split across lines with a dash and flagged MASK-02 for referral",
+          "Case notes state manual review is required before action"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "ref": "CMP-2026-100804",
+      "triage": {
+        "category": "Charges and interest",
+        "categoryConfidence": 0.7,
+        "vulnerable": false,
+        "vulnerabilityIndicators": [],
+        "paymentServices": true,
+        "summaryResolutionEligible": false,
+        "injectionSuspected": false,
+        "summary": "The customer asked what a £127 payment on their October statement, with no merchant name and only a reference number, was for. The case notes say it was an annual fee applied incorrectly, and a £127 refund is still to be processed.",
+        "keyFacts": [
+          "October statement shows an unidentified £127 payment that is not a card payment",
+          "Customer asked for an explanation of the charge",
+          "Case notes on 2026-10-29 identify the payment as an annual fee applied incorrectly",
+          "A £127 refund is still to be processed",
+          "Account reference [ACCOUNT_1]"
+        ]
+      }
+    }
+  ]
+}

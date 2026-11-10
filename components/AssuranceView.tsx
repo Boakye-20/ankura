@@ -26,6 +26,7 @@ export function AssuranceView({ results, session }: { results: EvalResults | nul
 function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
   const targeted = run.metrics.filter((m) => m.target !== null);
   const cal = run.calibration;
+  const timed = run.batch ? [...runs].reverse().find((r) => !r.batch) : run; // batch timings are queue time, not model time
   const rate = (x: { n: number; correct: number }) => (x.n ? `${x.correct} / ${x.n} (${((x.correct / x.n) * 100).toFixed(1)}%)` : "no cases");
   return (
     <>
@@ -34,7 +35,7 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
           <div className="kpi" key={m.id}>
             <span>{m.label}</span>
             <b>{m.value === null ? "n/a" : m.id === "redress" ? m.display : pctText(m.value)}</b>
-            <span>Target {m.target} · <Pill tone={m.pass ? "ok" : "bad"}>{m.pass ? "Met" : "Missed"}</Pill></span>
+            <span>Target {m.target}. {m.pass === null ? "Not measured in this run" : <Pill tone={m.pass ? "ok" : "bad"}>{m.pass ? "Met" : "Missed"}</Pill>}</span>
           </div>
         ))}
       </div>
@@ -72,10 +73,10 @@ function RunDetail({ run, runs }: { run: EvalRun; runs: EvalRun[] }) {
           <dl className="kv">
             <dt>Average cost per case</dt><dd>{gbp(run.cost.meanGbp, 4)}</dd>
             <dt>Total cost, {run.cases} cases</dt><dd>{gbp(run.cost.totalGbp, 4)}</dd>
-            <dt>Average time per case</dt><dd>{run.latency.meanS.toFixed(1)} seconds</dd>
-            <dt>95th percentile</dt><dd>{run.latency.p95S.toFixed(1)} seconds</dd>
+            <dt>Average time per case</dt><dd>{timed ? `${timed.latency.meanS.toFixed(1)} seconds` : "Not measured"}</dd>
+            <dt>95th percentile</dt><dd>{timed ? `${timed.latency.p95S.toFixed(1)} seconds` : "Not measured"}</dd>
           </dl>
-          <p className="note">Costs use list prices and an assumed USD to GBP rate set in the code; they depend on current model pricing.</p>
+          <p className="note">Costs use list prices and an assumed USD to GBP rate set in the code; they depend on current model pricing.{run.batch && ` This run used the Batch API, which bills at half these prices. Times are from the last run that was not batched (prompt ${timed?.promptVersion ?? "none"}), because batch timings measure the queue, not the model.`}</p>
         </Box>
       </div>
 

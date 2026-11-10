@@ -49,7 +49,7 @@ Read these before writing code, in this order:
 Set by environment variables, never hard-coded:
 - `ANTHROPIC_MODEL_TRIAGE` (default `claude-haiku-5-5`): masking-safe triage, structured output
 - `ANTHROPIC_MODEL_DRAFT` (default `claude-sonnet-5-5`): drafting the response and the handover pack
-Use tool use with a forced `tool_choice` to get structured JSON. Validate every model output with `zod`. On a validation failure, retry once, then route the case to a human with the reason "AI output invalid".
+Get structured JSON with structured outputs (`output_config.format` from the zod schema, see `lib/anthropic.ts`). Do not use a forced `tool_choice`: `claude-sonnet-5-5` rejects it with a 400. Validate every model output with `zod`. On a validation failure, retry once, then route the case to a human with the reason "AI output invalid".
 
 ## Code conventions
 - UK English in all UI text, comments and docs (organise, prioritise, colour).

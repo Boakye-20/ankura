@@ -4,6 +4,7 @@ import { writeFileSync } from "node:fs";
 import names from "../data/names.json";
 import merchants from "../data/merchants.json";
 import { createClient } from "../lib/anthropic";
+import { createBatchClient } from "../lib/batch-client";
 import { findLeaks } from "../lib/mask";
 import { requestText } from "../lib/request-text";
 import { ALL_COMPLAINTS, pipelineDeps, runAll } from "../lib/run-all";
@@ -22,7 +23,9 @@ async function main() {
   // The pipeline's own leak check (MASK-01) is what stops a call; this proves it held.
   let requests = 0;
   const leaks: string[] = [];
-  const results = await runAll(ALL_COMPLAINTS, pipelineDeps(createClient(), models), {
+  const batch = process.argv.includes("--batch"); // Message Batches API: half price, results in minutes to hours
+  const results = await runAll(ALL_COMPLAINTS, pipelineDeps(batch ? createBatchClient() : createClient(), models), {
+    concurrency: batch ? ALL_COMPLAINTS.length : undefined,
     onRequest: (ref, params) => {
       requests++;
       const complaint = ALL_COMPLAINTS.find((c) => c.ref === ref)!;
@@ -40,7 +43,7 @@ Masking check: ${leaks.length} of ${requests} model requests contained personal 
   writeFileSync("data/demo-outputs.json", JSON.stringify(output, null, 2) + "\n");
 
   const cost = results.reduce((sum, r) => sum + r.usage.costGbp, 0);
-  console.log(`\nWrote data/demo-outputs.json · ${results.filter((r) => r.draft).length} drafts · ${results.filter((r) => !r.draft).length} withheld · total cost £${cost.toFixed(4)}`);
+  console.log(`\nWrote data/demo-outputs.json · ${results.filter((r) => r.draft).length} drafts · ${results.filter((r) => !r.draft).length} withheld · total cost £${cost.toFixed(4)}${batch ? " at list price (billed at half via the Batch API)" : ""}`);
 }
 
 main().catch((error) => {

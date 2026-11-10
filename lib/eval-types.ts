@@ -35,6 +35,7 @@ export type EvalRun = {
   failures: Failure[];
   cost: { meanGbp: number; totalGbp: number };
   latency: { meanS: number; p95S: number };
+  batch?: true; // run through the Batch API: billed at half the listed cost, and latency is queue time, not model time
 };
 
 export type EvalResults = { runs: EvalRun[] }; // every run is kept, newest last, so run-to-run variation is visible

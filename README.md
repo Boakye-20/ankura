@@ -35,21 +35,41 @@ Steps run offline in `npm run precompute`, which writes `data/demo-outputs.json`
 | Rubber-stamping | Mandatory reasons; over-reliance prompt for approvals under 20 seconds; adoption counts | Audit trail; Model assurance |
 
 ## Results
-[Run `npm run eval` twice. Copy the table from `data/eval-results.json`, both runs, with date and commit.]
+Every run is in `data/eval-results.json` and appears on the Model assurance page. Two prompt versions were evaluated, each twice, on the same 60 labelled synthetic cases.
+
+**Prompt v1** (09/11/2026, commit `d705270`, full detail in `docs/13-eval-v1-results.md`):
+
+| Metric | Target | Run 1 | Run 2 |
+|---|---|---|---|
+| Category accuracy | ≥ 90% | 81.7% | 81.7% |
+| Vulnerability recall | ≥ 95% | 14/14 | 14/14 |
+| Deadline type accuracy | ≥ 95% | 86.7% | 85.0% |
+| Routing accuracy | ≥ 90% | 88.3% | 86.7% |
+| Masking: no personal data sent | 100% | 60/60 | 60/60 |
+| Citation validity | 100% | 99.6% (one blocked by CIT-01) | 100% |
+| Redress over limit, not blocked | 0 | 0 | 0 |
+| Adversarial tests | 12/12 | 12/12 | 12/12 |
+| Calibration (accuracy ≥ 0.75 vs < 0.75) | report | 96% vs 36% | 96% vs 36% |
+
+**Prompt v2** (written after reading v1's failures; see `docs/CHANGELOG.md`): V2_RESULTS_PENDING
 
 ### Known failures
-[Three failures with case refs and what would change.]
+V2_FAILURES_PENDING
 
 ## Limitations
 - Synthetic data and labels written by one person, not independently reviewed; n = 60, so each case is about 1.7 percentage points.
 - No measurement of real handler behaviour; costs depend on current model pricing and an assumed USD to GBP rate (`lib/anthropic.ts`).
 - Roles, decisions and the audit trail live in the browser's `localStorage`. A pilot needs real sign-in, server-side authorisation of approvals and an append-only audit log.
 - Masking is rule- and list-based. It catches the tested patterns, not every possible way of writing personal data.
+- Prompt v2 was written after seeing v1's failures on the same 60 cases, and there is no held-out set, so v2's gain overstates how it would do on new cases.
+- Some labels contradict each other (for example CMP-2026-100503 and 100804 are both "fee applied in error" but carry different categories). A pilot needs two independent labellers and an agreement check before trusting any accuracy figure.
+- Before the first eval, case notes that revealed the expected answer were rewritten (`docs/CHANGELOG.md`). The same person wrote the notes and the labels.
 
 ## Security notes
 - Only masked text, retrieved clauses and structured triage go to the model; the token map never leaves the pipeline and is never saved.
-- `/api/cases` returns masked text and stored results only, never raw text, customer fields or labels. `/api/verify` validates its body with zod and caps its size.
-- The API key lives only in `.env.local`. Vercel gets no environment variables. The client bundle contains no prompts, verifier code or secrets (checked by grepping `.next/static`).
+- `/api/cases` returns masked text and stored results only, never raw text, customer fields or labels. `/api/verify` and `/api/letter` validate their bodies with zod, cap the size and return a generic 400.
+- The API key lives only in `.env.local`. Vercel gets no environment variables. The client bundle contains no prompts, verifier code, batch code, customer data, labels or secrets, and no source maps (checked by searching `.next/static` and the prerendered HTML).
+- A pre-launch slopsec audit on 09/11/2026 found no high-severity issues. Security headers include HSTS, `frame-ancestors 'none'`, nosniff and no-referrer. `npm audit` reports 0 vulnerabilities, and there are no secrets in git history.
 
 ## How AI tools were used
 [Claude Code for building; Claude API in the pipeline; comparison with Copilot Studio. What PK decided, reviewed and tested.]
@@ -62,6 +82,7 @@ npm run dev                  # http://localhost:3000
 npm test                     # unit tests, including the no-PII-leak test
 npm run precompute           # writes data/demo-outputs.json (needs a key)
 npm run eval                 # appends a run to data/eval-results.json (needs a key); run it twice
+npm run eval -- --batch      # same, through the Message Batches API at half price (minutes to hours); also works for precompute
 npm run build
 ```
 

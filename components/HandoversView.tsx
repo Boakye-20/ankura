@@ -45,7 +45,7 @@ export function HandoversView({ data, role, session, act, selected, onSelect, on
       <div className="panel">
         <div className="empty">
           <b>No escalated cases in this session.</b>
-          <span>Open a case in My work queue, choose Escalate and give a reason. The handover pack then appears here.</span>
+          <span>Open a case in My queue, choose Escalate and give a reason. The handover pack then appears here.</span>
           <button className="btn" onClick={() => onOpenCase("CMP-2026-104712")}>Open CMP-2026-104712 (card payments, Fraud &amp; Disputes)</button>
         </div>
       </div>
@@ -55,7 +55,7 @@ export function HandoversView({ data, role, session, act, selected, onSelect, on
   return (
     <>
       <div className="panel">
-        <div className="ptitle">Escalated cases · {escalated.length}</div>
+        <h2>Escalated cases <span className="note">{escalated.length}</span></h2>
         <div className="tw">
           <table className="dt">
             <thead><tr><th>Reference</th><th>Team</th><th>Deadline</th><th>Status</th></tr></thead>
@@ -100,7 +100,7 @@ function Pack({ c, data, role, session, act }: { c: CaseView; data: WorkbenchDat
   return (
     <>
       <div className="casehead">
-        <div className="t"><span className="ptitle">Handover pack · {pack.team}</span><b>{c.ref}</b></div>
+        <div className="t"><span>Handover pack for {pack.team}</span><b>{c.ref}</b></div>
         <div className="fact"><span>Deadline</span><b>{d ? <>{d.total} {d.unit} (<CitationChip id={d.basis} clauses={data.clauses} />)</> : "Not set"}</b></div>
         <div className="fact"><span>Due</span><b>{d ? fmtDate(d.due) : "—"}</b></div>
         <div className="fact"><span>Elapsed</span><b>{d ? `${d.used} of ${d.total}` : "—"}</b></div>
