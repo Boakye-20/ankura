@@ -18,26 +18,25 @@ export function isLetterDue(deadline: Deadline | null, status: CaseStatus): bool
   return Boolean(deadline && letterTypeFor(deadline) && deadline.used >= deadline.total && !CLOSED.includes(status));
 }
 
-export function letterTemplate(type: LetterType): string {
-  const opening = "Dear [CUSTOMER_1],";
-  const fos = [
-    "You can refer your complaint to the Financial Ombudsman Service now, if you wish. It is a free, independent service.",
-    "We have enclosed the Financial Ombudsman Service's leaflet, which explains how to do this.",
-    "You can also find out more at www.financial-ombudsman.org.uk.",
-  ];
+// Deliberately no "six months from this letter": that time limit runs from a final response (DISP 2.8), so an
+// eight-week letter must not start it. LTR-01 fails a letter that mentions six months (docs/12).
+export function letterTemplate(type: LetterType, ref?: string): string {
+  const head = ["Dear [CUSTOMER_1],", ...(ref ? [`Your complaint reference: ${ref}`] : [])];
   if (type === "Eight-week letter") {
     return [
-      opening,
-      "We are sorry that we have not yet been able to give you our final response to your complaint.",
+      ...head,
+      "It is now eight weeks since we received your complaint, and we are sorry that we have not yet been able to give you our final response.",
       "This is because [reason for the delay].",
-      "We expect to send you our final response by [DD/MM/YYYY].",
-      ...fos,
+      "We are still investigating and expect to send you our final response by [DD/MM/YYYY].",
+      "If you do not want to wait, you can refer your complaint to the Financial Ombudsman Service now. It is a free, independent service that settles disputes between customers and financial businesses.",
+      "We have enclosed the Financial Ombudsman Service's leaflet, which explains how to do this. You can also find out more at www.financial-ombudsman.org.uk.",
+      "If you are happy to wait, you do not need to do anything. We will contact you as soon as we have our final response.",
       "Yours sincerely,",
     ].join("\n");
   }
   return [
-    opening,
-    "We are sorry that we cannot give you our final response within 15 business days.",
+    ...head,
+    "We are sorry that we cannot give you our final response within 15 business days of receiving your complaint.",
     "This is because [reason for the delay].",
     "You will receive our final response by [DD/MM/YYYY].",
     "Yours sincerely,",

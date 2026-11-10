@@ -6,6 +6,7 @@ import type { WorkbenchData } from "@/lib/stored-types";
 import { AboutView } from "./AboutView";
 import { GovernanceView } from "./GovernanceView";
 import { QueueView } from "./QueueView";
+import { ClausesProvider } from "./ui";
 
 const TABS = [
   ["queue", "Cases"],
@@ -103,9 +104,11 @@ export function Workbench({ data }: { data: WorkbenchData }) {
       </div>
 
       <main id="view" role="tabpanel" aria-labelledby={`tab-${tab}`}>
-        {tab === "queue" && <QueueView data={data} role={role} session={session} act={act} selected={selected} onSelect={setSelected} />}
-        {tab === "governance" && <GovernanceView data={data} seeded={seeded} session={session} onReset={reset} />}
-        {tab === "about" && <AboutView data={data} onOpenCase={openCase} />}
+        <ClausesProvider value={data.clauses}>
+          {tab === "queue" && <QueueView data={data} role={role} session={session} act={act} selected={selected} onSelect={setSelected} />}
+          {tab === "governance" && <GovernanceView data={data} seeded={seeded} session={session} onReset={reset} />}
+          {tab === "about" && <AboutView data={data} onOpenCase={openCase} />}
+        </ClausesProvider>
       </main>
     </div>
   );

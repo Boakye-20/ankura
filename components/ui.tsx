@@ -1,6 +1,6 @@
 "use client";
 // Small shared pieces. All complaint and draft text is rendered as React text, never as HTML (slopsec rule 3).
-import { useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { clauseName, type Tone } from "@/lib/case-helpers";
 import type { RegulatorySource } from "@/lib/regulation";
 import type { ClauseInfo } from "@/lib/stored-types";
@@ -26,18 +26,30 @@ export function StatTile({ label, value, sub, tone = "", active, onClick }: { la
     : <div className="stat">{body}</div>;
 }
 
-const TOKEN = /(\[[A-Z]+_\d+\])/;
+/** The policy library, so any text on screen can turn a clause ID into its readable name. Set once in Workbench. */
+const ClausesContext = createContext<Record<string, ClauseInfo>>({});
+export const ClausesProvider = ClausesContext.Provider;
+
+const TOKEN = /^\[[A-Z]+_\d+\]$/;
+const CLAUSE = /^(?:POL-\d{2}|DISP-G) §\d+\.\d+$/;
+const SPLIT = /(\[[A-Z]+_\d+\]|\b(?:POL-\d{2}|DISP-G) §\d+\.\d+)/;
 const tokenText = (token: string) => {
   const [kind, n] = token.slice(1, -1).split("_");
   return `${kind[0]}${kind.slice(1).toLowerCase()} ${n}`;
 };
 
-/** Text with personal-data tokens such as [CUSTOMER_1] shown as "Customer 1" chips. */
+/**
+ * Stored text (complaint, notes, AI summary, check details) as a person should read it: personal-data tokens such as
+ * [CUSTOMER_1] become "Customer 1" chips, and policy IDs typed into the text become readable, clickable references.
+ */
 export function MaskedText({ text }: { text: string }) {
+  const clauses = useContext(ClausesContext);
   return (
     <>
-      {text.split(TOKEN).map((part, i) =>
-        TOKEN.test(part) ? <span key={i} className="m" title={`Personal data masked before AI processing (${part})`}>{tokenText(part)}</span> : part)}
+      {text.split(SPLIT).map((part, i) =>
+        TOKEN.test(part) ? <span key={i} className="m" title={`Personal data masked before AI processing (${part})`}>{tokenText(part)}</span>
+          : CLAUSE.test(part) && clauses[part] ? <CitationChip key={i} id={part} clauses={clauses} />
+          : part)}
     </>
   );
 }

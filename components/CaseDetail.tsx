@@ -76,7 +76,7 @@ export function CaseDetail({ c, data, role, session, act, onBack }: Props) {
           </dl>
         </>
       ) : (
-        <p className="withheld">{r.draftWithheldReason ?? "No draft was produced."}</p>
+        <p className="withheld"><MaskedText text={r.draftWithheldReason ?? "No draft was produced."} /></p>
       )}
       {fails + refers > 0 && (
         <>

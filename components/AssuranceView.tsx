@@ -60,10 +60,10 @@ export function AssuranceView({ results, checksRerun }: { results: EvalResults |
               {latest.metrics.map((m) => (
                 <tr key={m.id} className={m.pass === true ? "ok" : m.pass === false ? "bad" : ""}>
                   <td><b>{plain(m)}</b>{m.note && <><br /><span className="note">{m.note}</span></>}</td>
-                  <td className="mono">{m.display}</td>
+                  <td className="num-cell">{m.display}</td>
                   <td>{m.target ?? "No target"}</td>
                   <td>{m.pass === null ? <span className="label">Reported only</span> : <Pill tone={m.pass ? "ok" : "bad"}>{m.pass ? "Met" : "Missed"}</Pill>}</td>
-                  <td className="mono">{first.metrics.find((x) => x.id === m.id)?.display ?? "n/a"}</td>
+                  <td className="num-cell">{first.metrics.find((x) => x.id === m.id)?.display ?? "n/a"}</td>
                   <td>{change(m)}</td>
                 </tr>
               ))}

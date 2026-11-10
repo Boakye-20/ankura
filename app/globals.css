@@ -299,7 +299,7 @@ textarea.editor { min-height: 190px; }
 .pill.ok::before, .pill.warn::before, .pill.bad::before, .pill.info::before { background: currentColor; }
 
 .m {
-  font-family: var(--f-mono); font-size: 12px;
+  font: 500 0.92em var(--f-ui);
   background: var(--mask); color: var(--mask-ink);
   padding: 1px 5px; border-radius: 3px; white-space: nowrap;
 }
@@ -435,3 +435,9 @@ details.detail[open] > summary { margin-bottom: 20px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* Scale and browser surfaces (polish pass 10/11/2026). Text is shown about 12% larger, as asked by PK. */
+.app { zoom: 1.12; }
+.num-cell { white-space: nowrap; font-variant-numeric: tabular-nums; }
+::selection { background: var(--accent-soft); color: var(--ink); }
+html { scrollbar-color: var(--line-strong) var(--ground); }

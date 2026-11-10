@@ -2,7 +2,7 @@
 import { checkName, checkWhat } from "@/lib/check-copy";
 import type { RegulatorySource } from "@/lib/regulation";
 import type { Check } from "@/lib/types";
-import { BasisList, Pill } from "./ui";
+import { BasisList, MaskedText, Pill } from "./ui";
 
 const TONE = { Pass: "ok", Fail: "bad", Refer: "warn" } as const;
 
@@ -40,7 +40,7 @@ export function ChecksTable({ checks, basis, only }: { checks: Check[]; basis: R
             <tr key={c.id} className={c.result === "Fail" ? "bad" : c.result === "Refer" ? "warn" : ""}>
               <td><Pill tone={TONE[c.result]}>{c.result === "Refer" ? "Check" : c.result}</Pill></td>
               <td><span className="name">{checkName(c)}</span>{only === "all" && <><br /><span className="note">{checkWhat(c.id)}</span></>}</td>
-              <td>{c.detail}</td>
+              <td><MaskedText text={c.detail} /></td>
               <td><BasisList basis={basis[c.id] ?? []} prefix={false} /></td>
             </tr>
           ))}

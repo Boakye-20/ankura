@@ -14,7 +14,7 @@ type Props = { c: CaseView; data: WorkbenchData; state: CaseState; act: ReturnTy
 
 export function LetterBox({ c, data, state, act }: Props) {
   const type = letterTypeFor(c.result?.deadline ?? null)!;
-  const [text, setText] = useState(() => letterTemplate(type));
+  const [text, setText] = useState(() => letterTemplate(type, c.ref));
   const [check, setCheck] = useState<Check | null>(null);
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);

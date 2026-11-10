@@ -56,7 +56,7 @@ export function CaseTable({ rows, sortKey, dir, onSort, page, pageSize, onPage, 
                 <td>{r.route}</td>
                 <td><Pill tone={statusTone(r.status)}>{r.where}</Pill></td>
                 <td className={`time ${tone === "bad" ? "late" : tone === "warn" ? "soon" : ""}`}>{dueText(r.deadline)}</td>
-                <td className="mono">{r.deadline ? fmtDate(r.deadline.due) : "—"}</td>
+                <td className="num-cell">{r.deadline ? fmtDate(r.deadline.due) : "—"}</td>
                 <td><span className="flags">{r.flags.map(([label, t]) => <Pill key={label} tone={t}>{label}</Pill>)}</span></td>
               </tr>
             );
