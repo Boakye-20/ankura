@@ -6,7 +6,7 @@ An AI-assisted workbench for complaint handlers at **Meadowlane Bank plc, a fict
 
 > **All data is synthetic.** Every customer, account, merchant and policy is invented. This is a prototype, not a product.
 
-**Hosted demo:** [hosted link] · **Supporting deck:** attached to submission
+**Hosted demo:** https://ankura-five.vercel.app · **Supporting deck:** attached to submission
 
 ## Test it
 The full guide is on the in-app **About this prototype** page (source: `components/guide.ts`). It also opens from **Demo guide** on Cases, and each guided case shows what to look for in a banner.

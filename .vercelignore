@@ -1,0 +1,10 @@
+.env
+.env.local
+.env*.local
+HANDOFF.md
+.playwright-mcp
+use style
+.continue
+docs/deck
+data/eval-runs/*
+!data/eval-runs/latest.json

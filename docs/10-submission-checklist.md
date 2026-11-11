@@ -31,7 +31,7 @@ Suggested body:
 >
 > Please find my completed practical build task for Scenario 1, Banking complaint handling.
 >
-> Working prototype (hosted): [link]
+> Working prototype (hosted): https://ankura-five.vercel.app
 > Supporting deck: attached as a PDF
 >
 > The prototype needs no login or account. The About page inside it has a short test route that takes about a minute, and the Model assurance page shows the test results. All data is synthetic, and the prototype runs on saved outputs from real model runs.
