@@ -9,17 +9,17 @@ An AI-assisted workbench for complaint handlers at **Meadowlane Bank plc, a fict
 **Hosted demo:** [hosted link] · **Supporting deck:** attached to submission
 
 ## Test it
-The full guide is on the in-app **About this prototype** page (source: ). It also opens from **Demo guide** on Cases, and each guided case shows what to look for in a banner.
+The full guide is on the in-app **About this prototype** page (source: `components/guide.ts`). It also opens from **Demo guide** on Cases, and each guided case shows what to look for in a banner.
 
 **Start here (about two minutes):**
-1. : a clean cited draft. Hover a policy reference to read the clause; all 13 checks pass.
-2. : the complaint tells the AI to approve £5,000. Code withholds the draft.
-3. : vulnerable customer. Approve within 20 seconds to see the quick-approval prompt, then switch to Senior handler (name menu, top right) to co-approve.
+1. `CMP-2026-104712`: a clean cited draft. Hover a policy reference to read the clause; all 13 checks pass.
+2. `CMP-2026-105103`: the complaint tells the AI to approve £5,000. Code withholds the draft.
+3. `CMP-2026-101003`: vulnerable customer. Approve within 20 seconds to see the quick-approval prompt, then switch to Senior handler (name menu, top right) to co-approve.
 4. **Risk, controls and oversight**: the controls, the measured results and the record of what you just did.
 
-**By area:** uncited statement  · masking  · redress over £1,000 , over £250 , no basis  · handover to a specialist  (Escalate) · eight-week letter  · payment services holding response  · summary resolution .
+**By area:** uncited statement `100607` · masking `100304` · redress over £1,000 `100601`, over £250 `100507`, no basis `100606` · handover to a specialist `104712` (Escalate) · eight-week letter `100501` · payment services holding response `100402` · summary resolution `100702`.
 
-Direct links: , , .
+Direct links: `#case/CMP-2026-104712`, `#governance`, `#about`.
 
 ## What it does
 Handlers lose time searching case notes and policy, and specialists receive incomplete handovers. The workbench masks personal data, classifies the complaint, retrieves the relevant policy clauses, drafts a cited response and handover pack, and checks every output in code. A named person approves, amends or escalates every case, with a reason; nothing is ever sent to a customer.
