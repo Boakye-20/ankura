@@ -9,18 +9,49 @@ export function Pill({ tone = "", children }: { tone?: Tone; children: ReactNode
   return <span className={`pill ${tone}`}>{children}</span>;
 }
 
-export function Box({ title, label, tone, children }: { title: string; label?: ReactNode; tone?: "blocked"; children: ReactNode }) {
+/** A white card with a grey header bar. `flush` drops the body padding, for a table that runs edge to edge. */
+export function Box({ title, label, tone, flush, children }: { title: string; label?: ReactNode; tone?: "blocked"; flush?: boolean; children: ReactNode }) {
   return (
     <section className={`box ${tone ?? ""}`}>
       <div className="bh"><h3>{title}</h3>{typeof label === "string" ? <span className="label">{label}</span> : label}</div>
-      <div className="bb">{children}</div>
+      <div className={`bb ${flush ? "flush" : ""}`}>{children}</div>
     </section>
+  );
+}
+
+const BAND_ICONS = {
+  cases: "M4 6h16v12H4zM4 7l8 6 8-6",
+  shield: "M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z",
+  info: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5",
+};
+
+/** The white title band under the top bar: round icon, page title, optional crumb, notice, actions and tabs. */
+export function PageBand({ icon, title, crumb, sub, end, children, tabs }: {
+  icon: keyof typeof BAND_ICONS; title: ReactNode; crumb?: ReactNode; sub?: ReactNode; end?: ReactNode; children?: ReactNode; tabs?: ReactNode;
+}) {
+  return (
+    <div className="band">
+      <div className="band-in">
+        <span className={`band-icon ${crumb ? "big" : ""}`} aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d={BAND_ICONS[icon]} /></svg>
+        </span>
+        <div className="band-title">
+          {crumb && <div className="crumb">{crumb}</div>}
+          <h1>{title}</h1>
+          {sub && <div className="band-sub">{sub}</div>}
+        </div>
+        {children}
+        <span className="grow" />
+        {end}
+      </div>
+      {tabs && <div className="band-tabs">{tabs}</div>}
+    </div>
   );
 }
 
 /** One number with a label. A button when it applies a filter; `active` shows it is applied. */
 export function StatTile({ label, value, sub, tone = "", active, onClick }: { label: string; value: ReactNode; sub?: string; tone?: Tone; active?: boolean; onClick?: () => void }) {
-  const body = <><span className="stat-label">{label}</span><b className={`stat-value ${tone}`}>{value}</b>{sub && <span className="stat-sub">{sub}</span>}</>;
+  const body = <><b className={`stat-value ${tone}`}>{value}</b><span className="stat-label">{label}</span>{sub && <span className="stat-sub">{sub}</span>}</>;
   return onClick
     ? <button type="button" className="stat" aria-pressed={active} onClick={onClick}>{body}</button>
     : <div className="stat">{body}</div>;

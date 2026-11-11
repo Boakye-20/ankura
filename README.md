@@ -66,6 +66,7 @@ V2_FAILURES_PENDING
 - Prompt v2 was written after seeing v1's failures on the same 60 cases, and there is no held-out set, so v2's gain overstates how it would do on new cases.
 - Some labels contradict each other (for example CMP-2026-100503 and 100804 are both "fee applied in error" but carry different categories). A pilot needs two independent labellers and an agreement check before trusting any accuracy figure.
 - Before the first eval, case notes that revealed the expected answer were rewritten (`docs/CHANGELOG.md`). The same person wrote the notes and the labels.
+- The approval limits (£250 handler, £1,000 senior) are Meadowlane's own and illustrative; banks do not publish theirs. They cover goodwill and redress. In a real bank, refunds the law requires (unauthorised payments, APP scam reimbursement up to £85,000) would go through the fraud team's own process, not these limits. RED-01 currently blocks any offer above £1,000, including such a refund.
 
 ## Security notes
 - Only masked text, retrieved clauses and structured triage go to the model; the token map never leaves the pipeline and is never saved.

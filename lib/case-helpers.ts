@@ -1,10 +1,10 @@
 // Pure helpers for the browser views. Imports types only, so nothing server-side reaches the client bundle.
 import type { CaseState, CaseStatus, Role, Session } from "./audit";
-import { isLetterDue } from "./letter";
+import { isLetterDue, letterTypeFor } from "./letter";
 import type { CaseView, ClauseInfo } from "./stored-types";
 import type { Check, Deadline, DraftPart, HandoverPack } from "./types";
 
-export type Tone = "ok" | "warn" | "bad" | "info" | "";
+export type Tone = "ok" | "warn" | "bad" | "info" | "vuln" | "";
 
 /** Which queue a case belongs in for a role: act now, coming to me once the handler has acted, with someone else, or finished. */
 export type QueueBucket = "mine" | "upcoming" | "progress" | "done";
@@ -84,7 +84,7 @@ export function flags(c: CaseView): [string, Tone][] {
   const r = c.result;
   if (!r) return [["Not processed", ""]];
   const out: [string, Tone][] = [];
-  if (r.triage?.vulnerable) out.push(["Vulnerable", "bad"]);
+  if (r.triage?.vulnerable) out.push(["Vulnerable", "vuln"]);
   if (resultOf(r.checks, "INJ-01") === "Fail") out.push(["Injection detected", "bad"]);
   if (resultOf(r.checks, "MASK-01") === "Fail") out.push(["Masking failed", "bad"]);
   if (!r.draft) out.push(["Draft withheld", "bad"]);
@@ -93,6 +93,12 @@ export function flags(c: CaseView): [string, Tone][] {
   if (resultOf(r.checks, "MASK-02") === "Refer") out.push(["Check personal data", "warn"]);
   if (r.responseType === "Summary resolution") out.push(["Summary resolution", "ok"]);
   return out;
+}
+
+/** An eight-week letter (red) gives the customer the right to go to the Ombudsman now; a payment services holding
+ * response (amber) extends the deadline to 35 business days. Different weight, so different tags. */
+function letterFlag(d: Deadline | null): [string, Tone] {
+  return letterTypeFor(d) === "Eight-week letter" ? ["8-week letter due", "bad"] : ["Holding response due", "warn"];
 }
 
 export function deadlineShare(d: Deadline | null): number {
@@ -162,7 +168,7 @@ export function toRows(cases: CaseView[], session: Session, role: Role): CaseRow
       letterDue,
       vulnerable: Boolean(r?.triage?.vulnerable),
       locked: effectiveChecks(c, state).some((k) => k.result === "Fail"),
-      flags: [...(letterDue ? [["Delay letter due", "bad"] as [string, Tone]] : []), ...flags(c)],
+      flags: [...(letterDue ? [letterFlag(d)] : []), ...flags(c)],
       c,
     };
   });

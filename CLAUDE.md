@@ -21,7 +21,7 @@ Read these before writing code, in this order:
 8. `docs/08-build-plan.md`: the order to build in, with checkpoints
 9. `docs/11-regulatory-basis.md`: the FCA, data protection and AI rules the controls map to (verified 08/11/2026)
 
-The visual design is defined in `docs/07-ui-design.md` and `app/globals.css` (redesigned 10/11/2026). `reference/mockup.html` is the earlier mock-up, kept for history only: do not match it.
+The visual design follows PK's SuiteCRM-style mock-ups in `use style/` (adopted 11/11/2026) and lives in `app/globals.css`: purple top bar, white title band, white cards with grey header bars, Lato. Action buttons use the brand purple; red is kept for overdue and blocked. Dead controls in the mock-ups (new case, bulk action, search, star) are deliberately left out. `docs/07-ui-design.md` predates this restyle. `reference/mockup.html` is the earlier mock-up, kept for history only: do not match it.
 `data/policies/` is the approved synthetic policy library. Do not change clause IDs.
 
 ## Non-negotiable rules

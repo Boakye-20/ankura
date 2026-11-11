@@ -38,7 +38,7 @@ export function ControlsView({ data, eventCount }: { data: WorkbenchData; eventC
 
   return (
     <div className="panel">
-      <p className="lead">
+      <p className="lead card-text">
         The AI reads, sorts and drafts. It never decides, never sends and never sees personal data. Code checks every case before a person can approve it, and every step is written to the record.
       </p>
 
@@ -46,12 +46,12 @@ export function ControlsView({ data, eventCount }: { data: WorkbenchData; eventC
         <Box title="What the AI may do">
           <ul className="plain tick">{MAY.map((m) => <li key={m}>{m}</li>)}</ul>
         </Box>
-        <Box title="What it may not do">
+        <Box title="What it may not do" tone="blocked">
           <ul className="plain cross">{MAY_NOT.map((m) => <li key={m}>{m}</li>)}</ul>
         </Box>
       </div>
 
-      <Box title="Who decides">
+      <Box title="Who decides" flush>
         <div className="tw">
           <table className="dt">
             <thead><tr><th scope="col">Role</th><th scope="col">What they do</th><th scope="col">What must come to them</th></tr></thead>
@@ -61,7 +61,7 @@ export function ControlsView({ data, eventCount }: { data: WorkbenchData; eventC
         <p className="note">Approving changes the case status and writes to the record. Nothing is sent to a customer from this prototype.</p>
       </Box>
 
-      <Box title={`The checks code runs on every case`} label={`How each one came out across the ${n} stored cases`}>
+      <Box title={`The checks code runs on every case (${rows.length})`} label={`How each one came out across the ${n} stored cases`} flush>
         <div className="tw">
           <table className="dt controls">
             <thead>
@@ -95,7 +95,7 @@ export function ControlsView({ data, eventCount }: { data: WorkbenchData; eventC
 
       <Box title="What the record shows" label={`${eventCount} events so far`}>
         <p className="txt">
-          Every AI step (masking, sorting, policy search, drafting, checks, routing) and every human decision is written to the record with who did it, when and why. The Audit trail section lists them and exports them as a spreadsheet. In this prototype your own actions are kept in this browser; a pilot needs a tamper-proof log on the server.
+          Every AI step (masking, sorting, policy search, drafting, checks, routing) and every human decision is written to the record with who did it, when and why. The Audit trail section lists them. In this prototype your own actions are kept in this browser; a pilot needs a tamper-proof log on the server.
         </p>
       </Box>
     </div>

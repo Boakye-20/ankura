@@ -32,11 +32,11 @@ export function CaseFilters({ role, filters, counts, categories, routes, onChang
   const active = Boolean(filters.category || filters.route || (filters.deadline && filters.deadline !== "any") || filters.vulnerableOnly);
   const set = (patch: RowFilters) => onChange({ ...filters, ...patch });
   return (
-    <div className="filterbar">
-      <div className="filters" role="group" aria-label="Whose action the case is waiting for">
+    <>
+      <div className="chips" role="group" aria-label="Whose action the case is waiting for">
         {views.map((v) => (
-          <button key={v} type="button" aria-pressed={(filters.view ?? "mine") === v} onClick={() => set({ view: v })}>
-            {viewLabel(v, role)}<span className="n">{counts[v]}</span>
+          <button key={v} type="button" className="chip" aria-pressed={(filters.view ?? "mine") === v} onClick={() => set({ view: v })}>
+            {viewLabel(v, role)} ({counts[v]})
           </button>
         ))}
       </div>
@@ -61,6 +61,6 @@ export function CaseFilters({ role, filters, counts, categories, routes, onChang
         <label className="check"><input type="checkbox" checked={Boolean(filters.vulnerableOnly)} onChange={(e) => set({ vulnerableOnly: e.target.checked || undefined })} /> Vulnerable customers only</label>
         {active && <button type="button" className="linkish plain" onClick={() => onChange({ view: filters.view })}>Clear filters</button>}
       </div>
-    </div>
+    </>
   );
 }

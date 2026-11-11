@@ -4,7 +4,7 @@
 import { fmtDate, gbp } from "@/lib/format";
 import type { WorkbenchData } from "@/lib/stored-types";
 import { GUIDE } from "./QueueView";
-import { Box } from "./ui";
+import { Box, PageBand } from "./ui";
 
 export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCase: (ref: string) => void }) {
   const run = data.run;
@@ -15,27 +15,32 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
   const open = (ref: string) => <button type="button" className="linkish" onClick={() => onOpenCase(ref)}>{ref}</button>;
 
   return (
-    <div className="page">
-      <div className="page-head">
-        <h2>About this prototype</h2>
-        <p className="lead">
-          Meadowlane Bank plc is a fictional UK high-street retail bank: current accounts, debit and credit cards, overdrafts, personal loans and mortgages, served through branches, phone, app and web, and regulated by the FCA. Its complaints team has a growing backlog. This workbench finds the policy that applies, drafts a reply that cites it, and builds the handover pack a specialist team needs. The AI assists; a named person makes every decision.
-        </p>
-        <p className="lead">
-          Everything here is synthetic. {run
-            ? `The AI outputs are real, produced on ${fmtDate(run.runDate)} and stored, so the app needs no key and shows the same results to everyone.`
-            : "The AI outputs have not been generated yet."}
-        </p>
+    <>
+    <PageBand icon="info" title="About this prototype" />
+    <div className="page about">
+      <div className="about-intro">
+        <Box title="Meadowlane Bank plc">
+          <p className="txt">
+            Meadowlane Bank plc is a fictional UK high-street retail bank: current accounts, debit and credit cards, overdrafts, personal loans and mortgages, served through branches, phone, app and web, and regulated by the FCA. Its complaints team has a growing backlog. This workbench finds the policy that applies, drafts a reply that cites it, and builds the handover pack a specialist team needs. The AI assists; a named person makes every decision.
+          </p>
+          <p className="txt">
+            Everything here is synthetic. {run
+              ? `The AI outputs are real, produced on ${fmtDate(run.runDate)} and stored, so the app needs no key and shows the same results to everyone.`
+              : "The AI outputs have not been generated yet."}
+          </p>
+        </Box>
       </div>
 
-      <Box title="Test it in a minute">
-        <ol className="steps">
-          {GUIDE.map((g) => <li key={g.ref}><b>{g.title}.</b> Open {open(g.ref)}. {g.hint}</li>)}
-          <li><b>See the evidence.</b> Risk, controls and oversight shows every check, the measured results and the record of what you just did.</li>
-        </ol>
-      </Box>
+      <div className="about-test">
+        <Box title={`Test it in a minute (${GUIDE.length + 1})`}>
+          <ol className="steps">
+            {GUIDE.map((g) => <li key={g.ref}><b>{g.title}.</b> Open {open(g.ref)}. {g.hint}</li>)}
+            <li><b>See the evidence.</b> <a href="#governance">Risk, controls and oversight</a> shows every check, the measured results and the record of what you just did.</li>
+          </ol>
+        </Box>
+      </div>
 
-      <div className="cols3">
+      <div className="cols3 about-sets">
         <Box title="AI Strategy" label="Where AI helps most">
           <ul className="plain">
             <li>Five places AI could help with complaints were scored on value, feasibility, risk and readiness. Policy search, drafting and handovers won; deciding outcomes was ruled out.</li>
@@ -59,6 +64,7 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
         </Box>
       </div>
 
+      <div className="about-limits">
       <Box title="What it cannot do yet">
         <ul className="plain">
           <li>The code checks lock approval on {locked} of the {withResult.length} stored drafts, each for a real reason. That is the controls working, and a measure of how often a handler must edit the AI's draft.</li>
@@ -66,9 +72,12 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
           <li>Masking uses rules and name lists, which catch the patterns tested, not every way of writing personal data.</li>
           <li>Roles, decisions and your part of the record live in this browser. A pilot needs real sign-in, approvals checked on the server and a tamper-proof log.</li>
           <li>No real handler has used it. Effects on handling time and behaviour are untested.</li>
+          <li>The approval limits (£250 handler, £1,000 senior) are Meadowlane's own and illustrative; banks do not publish theirs. They cover goodwill and redress. In a real bank, refunds the law requires (unauthorised payments, APP scam reimbursement up to £85,000) would be paid through the fraud team's own process, not through these limits.</li>
         </ul>
         <p className="note">Built with Claude Code. The source code is private and available on request.</p>
       </Box>
+      </div>
     </div>
+    </>
   );
 }

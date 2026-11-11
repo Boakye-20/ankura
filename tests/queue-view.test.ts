@@ -66,7 +66,7 @@ describe("clauseName: a policy reference a handler can read", () => {
 
 const pass = (id: string): Check => ({ id, label: id, result: "Pass", detail: "" });
 const fail = (id: string): Check => ({ id, label: id, result: "Fail", detail: "" });
-function view(ref: string, o: Partial<{ category: string; route: string; vulnerable: boolean; used: number; total: number; needsSenior: boolean; checks: Check[] }> = {}): CaseView {
+function view(ref: string, o: Partial<{ category: string; route: string; vulnerable: boolean; used: number; total: number; needsSenior: boolean; checks: Check[]; payments: boolean }> = {}): CaseView {
   return {
     ref, received: "2026-10-01", channel: "Email", product: "Current account", maskedText: "", maskedNotes: [],
     result: {
@@ -75,7 +75,9 @@ function view(ref: string, o: Partial<{ category: string; route: string; vulnera
       draft: { response: [], proposedRedress: null, handover: null },
       checks: o.checks ?? [pass("MASK-01")],
       route: (o.route ?? "Handler") as never, routeReason: "", requiresSeniorCoApproval: o.needsSenior ?? false,
-      deadline: { basis: "DISP-G §2.2", total: o.total ?? 56, used: o.used ?? 10, unit: "days", due: "2026-12-01" },
+      deadline: o.payments
+        ? { basis: "DISP-G §2.4", total: o.total ?? 15, used: o.used ?? 5, unit: "business days", due: "2026-12-01" }
+        : { basis: "DISP-G §2.2", total: o.total ?? 56, used: o.used ?? 10, unit: "days", due: "2026-12-01" },
       audit: [], usage: { inputTokens: 0, outputTokens: 0, costGbp: 0, ms: 0 }, promptVersion: "v2", policyVersion: "v1", model: { triage: "t", draft: "d" },
     },
   };
@@ -90,6 +92,14 @@ const cases = [
 
 describe("toRows, filterRows, sortRows, rowStats", () => {
   const rows = toRows(cases, session, "Handler");
+
+  it("names the overdue letter: an eight-week letter (red) or a payment services holding response (amber)", () => {
+    const eightWeek = toRows([view("CMP-8", { used: 56 })], session, "Handler")[0];
+    const holding = toRows([view("CMP-P", { payments: true, used: 15 })], session, "Handler")[0];
+    expect(eightWeek.flags[0]).toEqual(["8-week letter due", "bad"]);
+    expect(holding.flags[0]).toEqual(["Holding response due", "warn"]);
+    expect(toRows([view("CMP-N", { used: 10 })], session, "Handler")[0].flags.some(([l]) => l.endsWith("due"))).toBe(false);
+  });
 
   it("flattens a case into what the table shows", () => {
     const r = rows.find((x) => x.ref === "CMP-1")!;

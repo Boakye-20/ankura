@@ -6,7 +6,7 @@ import type { WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
 import { CaseFilters, viewLabel, type ViewKey } from "./CaseFilters";
 import { CaseTable } from "./CaseTable";
-import { StatTile } from "./ui";
+import { PageBand, StatTile } from "./ui";
 
 type Props = {
   data: WorkbenchData;
@@ -15,6 +15,7 @@ type Props = {
   act: ReturnType<typeof useSession>["act"];
   selected: string | null;
   onSelect: (ref: string | null) => void;
+  notice: string;
 };
 
 const PAGE_SIZE = 20;
@@ -44,7 +45,7 @@ export const GUIDE: { ref: string; title: string; hint: string }[] = [
   },
 ];
 
-export function QueueView({ data, role, session, act, selected, onSelect }: Props) {
+export function QueueView({ data, role, session, act, selected, onSelect, notice }: Props) {
   const [filters, setFiltersState] = useState<RowFilters>({ view: "mine" });
   const [sortKey, setSortKey] = useState<CaseSortKey>("deadline");
   const [dir, setDir] = useState<"asc" | "desc">("asc");
@@ -66,27 +67,31 @@ export function QueueView({ data, role, session, act, selected, onSelect }: Prop
 
   const current = selected ? data.cases.find((c) => c.ref === selected) ?? null : null;
   if (current) {
-    return <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onBack={() => onSelect(null)} />;
+    return <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onBack={() => onSelect(null)} guide={GUIDE.find((g) => g.ref === current.ref)?.hint} />;
   }
 
-  const guided = GUIDE.find((g) => g.ref === selected);
   const third = role === "Handler"
     ? { label: "Approval locked by a check", value: stats.locked, filter: { view: "mine" as const } }
     : { label: viewLabel("upcoming", role), value: stats.upcoming, filter: { view: "upcoming" as const } };
   const is = (f: RowFilters) => Object.entries(f).every(([k, v]) => filters[k as keyof RowFilters] === v) && Object.keys(filters).length === Object.keys(f).length;
 
   return (
-    <div className="page wide">
-      <details className="guide" open>
-        <summary>Demo guide: four cases that show the controls</summary>
-        <div className="guide-body">
+    <>
+    <PageBand icon="cases" title="Cases" end={<>
+      <span className="band-note">{notice}</span>
+      <details className="guide">
+        <summary className="btn outline">Demo guide ▾</summary>
+        <div className="menu wide">
+          <span className="menu-label">Four cases that show the controls</span>
           {GUIDE.map((g) => (
-            <button key={g.ref} type="button" aria-pressed={selected === g.ref} onClick={() => onSelect(g.ref)}>{g.title}</button>
+            <button key={g.ref} type="button" className="guide-item" onClick={() => onSelect(g.ref)}>
+              <b>{g.title}</b> <span className="ref-text">{g.ref}</span><span>{g.hint}</span>
+            </button>
           ))}
-          {guided && <span className="try">{guided.hint}</span>}
         </div>
       </details>
-
+    </>} />
+    <div className="page wide">
       <div className="stats">
         <StatTile label="Cases" value={stats.total} active={is({ view: "all" })} onClick={() => setFilters({ view: "all" })} />
         <StatTile label={viewLabel("mine", role)} value={stats.mine} tone={stats.mine ? "info" : ""} active={is({ view: "mine" })} onClick={() => setFilters({ view: "mine" })} />
@@ -95,11 +100,6 @@ export function QueueView({ data, role, session, act, selected, onSelect }: Prop
         <StatTile label="Vulnerable customers" value={stats.vulnerable} active={is({ view: "all", vulnerableOnly: true })} onClick={() => setFilters({ view: "all", vulnerableOnly: true })} />
       </div>
 
-      <CaseFilters role={role} filters={filters} counts={counts} categories={categories} routes={routes} onChange={setFilters} />
-
-      <p className="count" aria-live="polite">
-        {shown.length} {shown.length === 1 ? "case" : "cases"}{sortKey === "deadline" && dir === "asc" ? ", closest to deadline first" : ""}.
-      </p>
       {(filters.view ?? "mine") === "mine" && shown.length === 0 && (
         <p className="banner">
           Nothing is waiting for you as {role === "Senior" ? "senior handler" : role.toLowerCase()}.
@@ -108,7 +108,10 @@ export function QueueView({ data, role, session, act, selected, onSelect }: Prop
         </p>
       )}
 
-      <CaseTable rows={shown} sortKey={sortKey} dir={dir} onSort={onSort} page={page} pageSize={PAGE_SIZE} onPage={setPage} onOpen={onSelect} />
+      <CaseTable rows={shown} sortKey={sortKey} dir={dir} onSort={onSort} page={page} pageSize={PAGE_SIZE} onPage={setPage} onOpen={onSelect}
+        toolbar={<CaseFilters role={role} filters={filters} counts={counts} categories={categories} routes={routes} onChange={setFilters} />}
+        caption={sortKey === "deadline" && dir === "asc" ? "Closest to deadline first" : undefined} />
     </div>
+    </>
   );
 }
