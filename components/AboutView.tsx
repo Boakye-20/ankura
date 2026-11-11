@@ -19,7 +19,7 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
       <div className="page-head">
         <h2>About this prototype</h2>
         <p className="lead">
-          Meadowlane Bank is a fictional UK bank with a complaints backlog. This workbench finds the policy that applies, drafts a reply that cites it, and builds the handover pack a specialist team needs. The AI assists; a named person makes every decision.
+          Meadowlane Bank plc is a fictional UK high-street retail bank: current accounts, debit and credit cards, overdrafts, personal loans and mortgages, served through branches, phone, app and web, and regulated by the FCA. Its complaints team has a growing backlog. This workbench finds the policy that applies, drafts a reply that cites it, and builds the handover pack a specialist team needs. The AI assists; a named person makes every decision.
         </p>
         <p className="lead">
           Everything here is synthetic. {run

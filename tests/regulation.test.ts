@@ -6,7 +6,7 @@ const CHECK_IDS = [
   "MASK-01", "MASK-02", "INJ-01", "CIT-01", "CIT-02", "CIT-03", "RED-01", "RED-02",
   "FOS-01", "VUL-01", "CONF-01", "SCHEMA-01", "CLEAR-01", "LTR-01",
 ];
-const PRIMARY_SOURCES = ["handbook.fca.org.uk", "www.fca.org.uk", "www.legislation.gov.uk", "ico.org.uk"];
+const PRIMARY_SOURCES = ["handbook.fca.org.uk", "www.fca.org.uk", "www.legislation.gov.uk", "ico.org.uk", "www.psr.org.uk", "www.financial-ombudsman.org.uk"];
 
 describe("regulatory map", () => {
   it("only maps clauses that exist in the policy library", () => {

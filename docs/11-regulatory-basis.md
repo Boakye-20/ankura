@@ -44,3 +44,9 @@ Every reference below was checked against the primary source on 08/11/2026 (FCA 
 
 ## Policy updated to current guidance
 POL-07 §2.1 originally said "Record vulnerability with the customer's consent". On 08/11/2026 it was updated (same clause ID) to "Record vulnerability on an appropriate lawful basis, tell the customer how the information will be used, and record only the detail needed", in line with the joint FCA–ICO statement (26/03/2026), which says consent is one lawful basis among several.
+
+## Added 10/11/2026: grounding the bank's own redress and APP scam rules
+Checked against primary sources on 10/11/2026 at PK's request, so that clauses which were "Meadowlane's own rules" show the UK practice they follow.
+- **FOS distress and inconvenience award bands** (financial-ombudsman.org.uk, "compensation for distress or inconvenience"): apology or under £100; £100 to £300; over £300 to around £750; over £750 to around £1,500; over £1,500 to around £5,000; over £5,000. Mapped to POL-05 §1.2 and §3.1–§3.3. Meadowlane's bands (£25–£75, £75–£200, £200–£750) sit inside the FOS's first three bands.
+- **PSR APP fraud reimbursement** (psr.org.uk, "APP fraud reimbursement protections"): up to £85,000 per claim for Faster Payments and CHAPS; optional excess up to £100, not applied to vulnerable consumers, nor the gross negligence exception; reimbursement within 5 business days, or an outcome within 35 business days if paused. The existing mapping for POL-04 §4.1–§4.2 now carries this verified title and link.
+- **Approval limits (POL-05 §2.1–§2.4)** are delegated authorities that UK banks set internally and do not publish. No public rule sets them, so they stay marked as the bank's own rule.

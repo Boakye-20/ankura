@@ -1,39 +1,49 @@
 /* Meadowlane Complaints Workbench. Design rules: docs/07-ui-design.md.
    One white surface, hairlines and spacing instead of cards, colour only where something needs a person. */
+/* Tokens follow the light theme of Twenty (twentyhq/twenty, packages/twenty-ui/src/theme/theme-light.css), at PK's
+   request on 10/11/2026: Inter, a 13px scale, Radix greys, an indigo accent, 4px spacing, 8px button radius. Text
+   greys are one step darker than Twenty's where its values fall below 4.5:1 contrast. */
 :root {
-  --ground: #f6f8fa;
+  --ground: #f9f9f9;        /* app background (gray3) */
   --surface: #ffffff;
-  --sunk: #f1f4f7;
-  --line: #d3d8de;
-  --line-strong: #a9b1bb;
-  --ink: #111827;
-  --muted: #2f3843;
-  --faint: #47515c;
-  --accent: #1a5a45;
+  --sunk: #f1f1f1;          /* background tertiary */
+  --sunk-2: #fcfcfc;        /* background secondary */
+  --line: #ebebeb;          /* border medium */
+  --line-light: #f1f1f1;    /* border light */
+  --line-strong: #d6d6d6;   /* border strong */
+  --ink: #333333;           /* font primary */
+  --muted: #666666;         /* font secondary */
+  --faint: #666666;         /* Twenty uses #999999 here; too light for 4.5:1 */
+  --accent: #3e63dd;        /* blue */
+  --accent-deep: #3358d4;
   --accent-ink: #ffffff;
-  --accent-soft: #e7f0ec;
-  --focus: #2563eb;
-  --ok: #1b6a41;
-  --soon: #855000;
-  --late: #ad1f1a;
-  --late-soft: #fbeceb;
-  --soon-soft: #fbf3e2;
-  --ok-soft: #e6f3ec;
-  --mask: #eeebf6;
-  --mask-ink: #45376f;
-  --f-ui: var(--font-plex-sans), "Segoe UI", system-ui, sans-serif;
+  --accent-soft: #edf2fe;   /* accent tertiary */
+  --accent-faint: #f8faff;  /* accent quaternary */
+  --focus: #3e63dd;
+  --ok: #1f7a4d;
+  --soon: #c2410c;
+  --late: #ce2c31;
+  --late-soft: #feebec;
+  --soon-soft: #fcefd9;
+  --ok-soft: #e9f6ec;
+  --mask: #edf2fe;
+  --mask-ink: #3a5bc7;
+  --f-ui: var(--font-plex-sans), Inter, "Segoe UI", system-ui, sans-serif;
   --f-mono: var(--font-plex-mono), ui-monospace, Menlo, Consolas, monospace;
-  --radius: 4px;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.039), 0 0 4px rgba(0, 0, 0, 0.078);
   color-scheme: light;
-  --pad: 28px;
+  --pad: 24px;
+  --side: 220px;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  background: var(--surface);
+  background: var(--ground);
   color: var(--ink);
-  font: 14px/1.55 var(--f-ui);
+  font: 13px/1.5 var(--f-ui);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
@@ -51,47 +61,40 @@ button { font-family: inherit; color: inherit; }
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-/* Shell */
-.app { min-height: 100dvh; display: flex; flex-direction: column; }
-.top {
-  position: sticky; top: 0; z-index: 20; background: var(--surface);
-  display: flex; align-items: center; gap: 28px;
-  padding: 0 var(--pad); min-height: 52px;
-  border-bottom: 1px solid var(--line);
+/* Shell, after Twenty: a 220px navigation drawer on the grey app background, a white page card with a 48px header. */
+.app { min-height: 100dvh; display: grid; grid-template-columns: var(--side) minmax(0, 1fr); }
+.side {
+  position: sticky; top: 0; height: 100dvh; display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 8px 16px 8px; overflow-y: auto;
 }
-.brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-.brand svg { color: var(--accent); flex: none; }
+.brand { display: flex; align-items: center; gap: 8px; padding: 4px 8px 12px; white-space: nowrap; }
+.brand svg { color: var(--ink); flex: none; }
 .brand b { font-weight: 600; }
-.brand span { color: var(--faint); }
-
-.tabs { display: flex; gap: 4px; }
-.tabs button {
-  font: 500 14px var(--f-ui); color: var(--muted);
-  background: none; border: 0; border-radius: var(--radius); padding: 6px 12px; cursor: pointer;
+.brand span { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
+.side .group { font-size: 11px; font-weight: 500; color: var(--muted); padding: 10px 8px 4px; }
+.tabs, .seg { display: flex; flex-direction: column; gap: 2px; }
+.tabs button, .seg button {
+  display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px; width: 100%;
+  font: 500 13px var(--f-ui); color: var(--muted); text-align: left;
+  background: none; border: 0; border-radius: var(--radius); cursor: pointer;
 }
-.tabs button:hover { color: var(--ink); background: var(--sunk); }
-.tabs button[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.tabs button:hover, .seg button:hover { color: var(--ink); background: rgba(0, 0, 0, 0.039); }
+.tabs button[aria-selected="true"], .seg button[aria-pressed="true"] { color: var(--ink); background: rgba(0, 0, 0, 0.039); font-weight: 600; }
+.roles { display: flex; flex-direction: column; gap: 2px; }
+.roles .who { padding: 6px 8px 0; font-size: 12px; color: var(--muted); }
+.side .meta { margin-top: auto; padding: 12px 8px 0; display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--line); }
+.side .meta .live { color: var(--ink); font-weight: 500; display: inline-flex; align-items: baseline; gap: 6px; }
+.side .meta .dot { color: var(--ok); }
 
-.roles { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--faint); white-space: nowrap; }
-.seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
-.seg button {
-  font: 500 13px var(--f-ui); color: var(--muted);
-  background: var(--surface); border: 0; padding: 5px 11px; cursor: pointer;
+.card-page { min-width: 0; display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--line); box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.005); }
+.phead {
+  position: sticky; top: 0; z-index: 20; min-height: 48px; display: flex; align-items: center; gap: 8px;
+  padding: 0 12px; background: var(--sunk-2); border-bottom: 1px solid var(--line);
 }
-.seg button + button { border-left: 1px solid var(--line-strong); }
-.seg button:hover { color: var(--ink); }
-.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.roles .who { color: var(--ink); font-weight: 500; }
-
-main { flex: 1; display: flex; flex-direction: column; }
-.strip {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 24px;
-  padding: 7px var(--pad); border-bottom: 1px solid var(--line);
-  background: var(--ground); font-size: 12.5px; color: var(--faint);
-}
-.strip .live { color: var(--muted); font-weight: 500; display: inline-flex; align-items: baseline; gap: 7px; }
-.strip .live .dot { color: var(--ok); }
-.strip .end { margin-left: auto; }
+.phead h1 { font-size: 13px; font-weight: 600; }
+.phead .crumb { color: var(--muted); font-weight: 400; }
+.phead .end { margin-left: auto; font-size: 12px; color: var(--muted); }
+main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 /* Cases page: demo guide, stat tiles, filter bar, table (structure after aipolicy.uk) */
 .page.wide { max-width: 1400px; padding-top: 20px; gap: 20px; }
@@ -441,3 +444,62 @@ details.detail[open] > summary { margin-bottom: 20px; }
 .num-cell { white-space: nowrap; font-variant-numeric: tabular-nums; }
 ::selection { background: var(--accent-soft); color: var(--ink); }
 html { scrollbar-color: var(--line-strong) var(--ground); }
+
+/* Twenty-style data table, tags and buttons (10/11/2026). Later rules win over the earlier generic ones. */
+.dt { font-size: 13px; }
+.dt th, .dt td { padding: 0 8px; height: 32px; vertical-align: middle; border-bottom: 1px solid var(--line-light); border-right: 1px solid var(--line-light); }
+.dt th:last-child, .dt td:last-child { border-right: 0; }
+.dt td { padding-top: 6px; padding-bottom: 6px; }
+.dt thead th { font-size: 13px; font-weight: 500; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--line-light); }
+.dt thead th:hover { background: var(--sunk-2); }
+.dt tbody tr:last-child td { border-bottom: 1px solid var(--line-light); }
+.dt.cases th, .dt.cases td { padding-left: 8px; padding-right: 8px; }
+.dt.cases tbody tr.row:hover { background: var(--sunk-2); }
+.dt.cases tbody tr.row:focus-within { background: var(--accent-faint); }
+.tw { border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; }
+.ref { font-weight: 500; color: var(--ink); background: var(--sunk); border-radius: var(--radius-sm); padding: 2px 6px; }
+.ref:hover { background: var(--line); text-decoration: none; }
+
+.pill { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 400; background: var(--ground); color: var(--muted); white-space: nowrap; gap: 0; }
+.pill::before { display: none; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--soon-soft); color: var(--soon); }
+.pill.bad { background: var(--late-soft); color: var(--late); }
+.pill.info { background: var(--accent-soft); color: var(--mask-ink); }
+.flags { gap: 4px 6px; }
+
+.btn, .choices button {
+  height: 32px; padding: 0 10px; border-radius: var(--radius); font: 500 13px var(--f-ui);
+  background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.078); color: var(--ink); transition: background 0.1s ease;
+}
+.btn:hover:not([disabled]), .choices button:hover:not([disabled]) { background: var(--sunk); border-color: rgba(0, 0, 0, 0.078); }
+.btn.primary { background: var(--accent); border-color: rgba(0, 0, 0, 0.039); color: #fff; }
+.btn.primary:hover:not([disabled]) { background: var(--accent-deep); filter: none; }
+.btn.small { height: 24px; padding: 0 8px; font-size: 12px; }
+.btn[aria-pressed="true"], .choices button[aria-checked="true"] { background: var(--accent-soft); border-color: #d2deff; color: var(--mask-ink); }
+.btn[disabled], .choices button[disabled] { opacity: 0.5; background: rgba(0, 0, 0, 0.02); color: var(--ink); cursor: not-allowed; }
+select, textarea, input[type="text"], input[type="number"] { border-radius: var(--radius); border-color: var(--line-strong); font-size: 13px; }
+
+.page.wide { padding: 16px var(--pad) 40px; gap: 16px; }
+.page { padding-top: 24px; }
+.guide { border-radius: var(--radius); background: var(--sunk-2); }
+.stats { border-radius: var(--radius); overflow: hidden; }
+.stat-value { font-size: 20px; }
+.filters button { font-size: 13px; }
+.sec + .sec { border-top: 1px solid var(--line); }
+.facts { background: var(--sunk-2); }
+.col + .col { border-left: 1px solid var(--line); }
+.case-head, .flow, .facts { border-color: var(--line); }
+.cite { color: var(--accent-deep); }
+.pop { border-radius: var(--radius); box-shadow: var(--shadow); border-color: var(--line); }
+.subtabs button, .tabs button { font-size: 13px; }
+h2 { font-size: 18px; }
+.page-head h2 { font-size: 20px; }
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .side .meta { display: none; }
+  .tabs, .seg { flex-direction: row; flex-wrap: wrap; }
+  .card-page { border-left: 0; }
+}

@@ -7,8 +7,6 @@ import type { ClauseInfo } from "@/lib/stored-types";
 import type { AuditEvent } from "@/lib/types";
 import { Box } from "./ui";
 
-const csvCell = (s: string) => `"${s.replace(/"/g, '""')}"`;
-
 export function AuditView({ seeded, session, onReset, clauses }: { seeded: AuditEvent[]; session: Session; onReset: () => void; clauses: Record<string, ClauseInfo> }) {
   const [onlyMine, setOnlyMine] = useState(false);
 
@@ -17,17 +15,6 @@ export function AuditView({ seeded, session, onReset, clauses }: { seeded: Audit
     [seeded, session.events]
   );
   const events = onlyMine ? session.events.slice().reverse() : allEvents;
-
-  const exportCsv = () => {
-    const rows = [["Timestamp", "Case", "Actor", "Event", "Detail"], ...events.map((e) => [e.ts, e.ref, e.actor, e.event, e.detail])];
-    const blob = new Blob([rows.map((r) => r.map(csvCell).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `meadowlane-audit-trail-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div className="panel">
@@ -38,7 +25,6 @@ export function AuditView({ seeded, session, onReset, clauses }: { seeded: Audit
             <button type="button" className="btn small" aria-pressed={onlyMine} onClick={() => setOnlyMine((v) => !v)}>
               Only this session ({session.events.length})
             </button>
-            <button type="button" className="btn small" onClick={exportCsv}>Export CSV</button>
             <button type="button" className="btn small" onClick={onReset} disabled={!session.events.length}>
               Reset session
             </button>
@@ -72,7 +58,7 @@ export function AuditView({ seeded, session, onReset, clauses }: { seeded: Audit
           </table>
         </div>
         <p className="note">
-          Newest first{events.length > 200 ? ", latest 200 shown; the export has all of them" : ""}. Every automatic step and every human decision is recorded with who did it, when and why. The export keeps the exact technical record for auditors. In this prototype your own actions are kept in this browser only; a pilot needs a tamper-proof log on the server.
+          Newest first{events.length > 200 ? ", latest 200 shown" : ""}. Every automatic step and every human decision is recorded with who did it, when and why. In this prototype your own actions are kept in this browser only; a pilot needs a tamper-proof log on the server, with an export for auditors.
         </p>
       </Box>
     </div>

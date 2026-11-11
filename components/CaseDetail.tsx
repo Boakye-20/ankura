@@ -178,23 +178,22 @@ export function CaseDetail({ c, data, role, session, act, onBack }: Props) {
 
           {r && r.retrieved.length > 0 && (
             <section className="sec">
-              <div className="sec-head">
-                <h3>Policy that applies ({r.retrieved.length} clauses)</h3>
-                <span className="label">Found by code, not by the AI</span>
-              </div>
-              <div className="tw">
-                <table className="dt refs">
-                  <thead><tr><th scope="col">Policy</th><th scope="col">What it says</th></tr></thead>
-                  <tbody>
-                    {r.retrieved.map((ref) => (
-                      <tr key={ref.id}>
-                        <td><CitationChip id={ref.id} clauses={data.clauses} /></td>
-                        <td>{data.clauses[ref.id]?.text}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <details>
+                <summary>Policy that applies ({r.retrieved.length} clauses, found by code, not by the AI)</summary>
+                <div className="tw">
+                  <table className="dt refs">
+                    <thead><tr><th scope="col">Policy</th><th scope="col">What it says</th></tr></thead>
+                    <tbody>
+                      {r.retrieved.map((ref) => (
+                        <tr key={ref.id}>
+                          <td><CitationChip id={ref.id} clauses={data.clauses} /></td>
+                          <td><MaskedText text={data.clauses[ref.id]?.text ?? ""} /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
             </section>
           )}
         </div>
