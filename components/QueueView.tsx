@@ -6,6 +6,7 @@ import type { WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
 import { CaseFilters, viewLabel, type ViewKey } from "./CaseFilters";
 import { CaseTable } from "./CaseTable";
+import { GUIDE_GROUPS, guideFor } from "./guide";
 import { PageBand, StatTile } from "./ui";
 
 type Props = {
@@ -20,30 +21,6 @@ type Props = {
 
 const PAGE_SIZE = 20;
 const VIEWS: ViewKey[] = ["mine", "upcoming", "progress", "done", "all"];
-
-/** Four cases that show the main controls. Listed for assessors; a live deployment would not have this strip. */
-export const GUIDE: { ref: string; title: string; hint: string }[] = [
-  {
-    ref: "CMP-2026-104712",
-    title: "Cited draft and handover",
-    hint: "Hover a policy reference to read the clause. Choose Escalate, deal with the missing items, submit, then switch to Specialist to accept or return the pack.",
-  },
-  {
-    ref: "CMP-2026-101003",
-    title: "Vulnerable customer",
-    hint: "Approve within 20 seconds to see the over-reliance check. The case then waits for a senior: switch to Senior handler to co-approve.",
-  },
-  {
-    ref: "CMP-2026-105103",
-    title: "Instruction aimed at the AI",
-    hint: "The complaint tells the AI to approve £5,000. Code withholds the draft, so the handler writes the reply.",
-  },
-  {
-    ref: "CMP-2026-104288",
-    title: "Uncited statement blocked",
-    hint: "One sentence states a fact without a policy clause, so approval is locked. Choose Edit and re-check to fix it, or try citing [POL-99 §1.1].",
-  },
-];
 
 export function QueueView({ data, role, session, act, selected, onSelect, notice }: Props) {
   const [filters, setFiltersState] = useState<RowFilters>({ view: "mine" });
@@ -67,7 +44,7 @@ export function QueueView({ data, role, session, act, selected, onSelect, notice
 
   const current = selected ? data.cases.find((c) => c.ref === selected) ?? null : null;
   if (current) {
-    return <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onBack={() => onSelect(null)} guide={GUIDE.find((g) => g.ref === current.ref)?.hint} />;
+    return <CaseDetail key={current.ref} c={current} data={data} role={role} session={session} act={act} onBack={() => onSelect(null)} guide={guideFor(current.ref)} />;
   }
 
   const third = role === "Handler"
@@ -82,12 +59,17 @@ export function QueueView({ data, role, session, act, selected, onSelect, notice
       <details className="guide">
         <summary className="btn outline">Demo guide ▾</summary>
         <div className="menu wide">
-          <span className="menu-label">Four cases that show the controls</span>
-          {GUIDE.map((g) => (
-            <button key={g.ref} type="button" className="guide-item" onClick={() => onSelect(g.ref)}>
-              <b>{g.title}</b> <span className="ref-text">{g.ref}</span><span>{g.hint}</span>
-            </button>
+          {GUIDE_GROUPS.map((g) => (
+            <div key={g.name} className="guide-group">
+              <span className="menu-label">{g.name}</span>
+              {g.cases.map((k) => (
+                <button key={k.ref + k.title} type="button" className="guide-item" onClick={() => onSelect(k.ref)}>
+                  <b>{k.title}</b><span className="ref-text">{k.ref}</span>
+                </button>
+              ))}
+            </div>
           ))}
+          <a className="guide-all" href="#about">Full test guide on the About page</a>
         </div>
       </details>
     </>} />

@@ -8,7 +8,7 @@ Deadline: **23:30 GMT, Wednesday 11 November 2026.** Aim to send by 22:00.
 - [ ] `npm test` passes, including `no-pii-leak.test.ts`
 - [ ] `npm run build` passes
 - [ ] Model assurance page shows real results with the run date
-- [ ] The About page has the 60-second test route, so assessors need no README
+- [ ] The About page has the test guide (start here + test a specific area), so assessors need no README
 - [ ] GitHub repo is PRIVATE (code is not being submitted)
 - [ ] Vercel production URL is not a preview URL requiring a Vercel login (open it in a private window to confirm)
 - [ ] Client bundle contains no prompts, verifier code or secrets (grep .next/static)

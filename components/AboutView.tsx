@@ -1,9 +1,9 @@
 "use client";
-// The assessor's guide: what this is, how to test it in a minute, how it maps to Ankura's three solution sets,
+// The assessor's guide: what this is, how to test it (components/guide.ts), how it maps to Ankura's three solution sets,
 // and what it cannot do. There is no public README.
 import { fmtDate, gbp } from "@/lib/format";
 import type { WorkbenchData } from "@/lib/stored-types";
-import { GUIDE } from "./QueueView";
+import { GUIDE_GROUPS, guideFor, QUICK_ROUTE } from "./guide";
 import { Box, PageBand } from "./ui";
 
 export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCase: (ref: string) => void }) {
@@ -13,6 +13,7 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
   const locked = withResult.filter((c) => c.result!.checks.some((k) => k.result === "Fail")).length;
   const docs = new Set(Object.values(data.clauses).map((c) => c.doc)).size;
   const open = (ref: string) => <button type="button" className="linkish" onClick={() => onOpenCase(ref)}>{ref}</button>;
+  const quick = QUICK_ROUTE.map((ref) => guideFor(ref)[0]);
 
   return (
     <>
@@ -32,13 +33,58 @@ export function AboutView({ data, onOpenCase }: { data: WorkbenchData; onOpenCas
       </div>
 
       <div className="about-test">
-        <Box title={`Test it in a minute (${GUIDE.length + 1})`}>
-          <ol className="steps">
-            {GUIDE.map((g) => <li key={g.ref}><b>{g.title}.</b> Open {open(g.ref)}. {g.hint}</li>)}
-            <li><b>See the evidence.</b> <a href="#governance">Risk, controls and oversight</a> shows every check, the measured results and the record of what you just did.</li>
-          </ol>
+        <Box title="Before you start">
+          <ul className="plain">
+            <li>No login or key. Every case opens straight away.</li>
+            <li>You start as a <b>complaint handler</b>. To act as a senior handler or a specialist, open the <b>name menu at the top right</b>.</li>
+            <li>What you do is saved in this browser only. To start again, open Risk, controls and oversight, then Audit trail, then <b>Reset session</b>.</li>
+            <li>Nothing is ever sent to a customer. Approving changes the case status and writes to the record.</li>
+          </ul>
         </Box>
       </div>
+
+      <section className="about-quick box">
+        <div className="bh"><h3>Start here: three cases, about two minutes</h3></div>
+        <ol className="quick">
+          {quick.map((g, i) => (
+            <li key={g.ref}>
+              <span className="step-n" aria-hidden="true">{i + 1}</span>
+              <b>{g.title}</b>
+              {open(g.ref)}
+              <span><b>Look for:</b> {g.see}</span>
+              {g.act && <span><b>Try:</b> {g.act}</span>}
+            </li>
+          ))}
+          <li>
+            <span className="step-n" aria-hidden="true">{quick.length + 1}</span>
+            <b>See the evidence</b>
+            <a href="#governance">Risk, controls and oversight</a>
+            <span><b>Look for:</b> what the AI may and may not do, how often each check fired across the 60 cases, the measured results against people's judgement, and the record of what you just did.</span>
+          </li>
+        </ol>
+      </section>
+
+      <section className="about-areas box">
+        <div className="bh"><h3>Test a specific area</h3><span className="label">Each case was chosen because it shows that control clearly</span></div>
+        <div className="tw">
+          <table className="dt guide-table">
+            <thead><tr><th scope="col">Case</th><th scope="col">What it shows</th><th scope="col">Look for</th><th scope="col">Try</th></tr></thead>
+            {GUIDE_GROUPS.map((grp) => (
+              <tbody key={grp.name}>
+                <tr className="group-row"><th colSpan={4} scope="colgroup">{grp.name} <span className="label">· {grp.set}</span></th></tr>
+                {grp.cases.map((g) => (
+                  <tr key={g.ref + g.title}>
+                    <td className="num-cell">{open(g.ref)}</td>
+                    <td><b>{g.title}</b></td>
+                    <td>{g.see}</td>
+                    <td>{g.act ?? <span className="label">Just open it</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+      </section>
 
       <div className="cols3 about-sets">
         <Box title="AI Strategy" label="Where AI helps most">

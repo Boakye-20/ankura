@@ -357,3 +357,23 @@ details:not(.card):not(.usermenu):not(.guide)[open] > summary { margin-bottom: 1
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* Test guide (About page, Demo guide menu, case banner) */
+.guide-group { display: flex; flex-direction: column; padding-bottom: 4px; }
+.guide-group + .guide-group { border-top: 1px solid var(--line); padding-top: 6px; }
+.guide-item { flex-wrap: nowrap; justify-content: space-between; }
+.guide-item span:last-child { flex-basis: auto; }
+.guide-all { padding: 8px 6px 2px; border-top: 1px solid var(--line); font-weight: 700; }
+.menu.wide { max-height: 70vh; overflow-y: auto; }
+.guide-banner { display: flex; flex-direction: column; gap: 2px; line-height: 1.55; }
+.about-quick, .about-areas { grid-column: 1 / -1; }
+.quick { list-style: none; margin: 0; padding: 14px 16px 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.quick li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; line-height: 1.55; --c: var(--brand); }
+.quick li > b { font-size: 14px; color: var(--brand); }
+.guide-table tr.group-row th { background: var(--head) !important; color: var(--brand); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 8px; padding-bottom: 8px; }
+.guide-table tr.group-row th .label { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.guide-table td { line-height: 1.5; }
+.guide-table td:nth-child(3), .guide-table td:nth-child(4) { min-width: 240px; }
+@media (max-width: 1100px) { .quick { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .quick { grid-template-columns: minmax(0, 1fr); } }
+.about-sets { grid-column: 1 / -1; }

@@ -8,6 +8,7 @@ import { isLetterDue, letterTypeFor } from "@/lib/letter";
 import type { CaseView, WorkbenchData } from "@/lib/stored-types";
 import { CheckSummary, ChecksTable } from "./ChecksPanel";
 import { DecisionPanel } from "./DecisionPanel";
+import type { GuideCase } from "./guide";
 import { LetterBox } from "./LetterBox";
 import { CitationChip, MaskedText, PageBand, Pill } from "./ui";
 
@@ -18,7 +19,7 @@ type Props = {
   session: Session;
   act: ReturnType<typeof useSession>["act"];
   onBack: () => void;
-  guide?: string;
+  guide: GuideCase[];
 };
 
 export function CaseDetail({ c, data, role, session, act, onBack, guide }: Props) {
@@ -134,7 +135,13 @@ export function CaseDetail({ c, data, role, session, act, onBack, guide }: Props
       <div className="case-grid">
         <div className="case-main">
           <button type="button" className="back" onClick={onBack}>← Back to cases</button>
-          {guide && <p className="banner info"><b>Demo guide.</b> {guide}</p>}
+          {guide.map((g) => (
+            <div key={g.title} className="banner info guide-banner">
+              <b>Demo guide: {g.title}</b>
+              <span><b>Look for:</b> {g.see}</span>
+              {g.act && <span><b>Try:</b> {g.act}</span>}
+            </div>
+          ))}
 
           <section className="card">
             <div className="card-h"><h2>Overview</h2></div>

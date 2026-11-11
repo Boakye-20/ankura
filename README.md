@@ -8,14 +8,18 @@ An AI-assisted workbench for complaint handlers at **Meadowlane Bank plc, a fict
 
 **Hosted demo:** [hosted link] · **Supporting deck:** attached to submission
 
-## Test it in 60 seconds
-1. Open the hosted link in a private window. It shows stored outputs from a real model run, so no login or key is needed.
-2. On **Cases**, open the **Demo guide** strip and click **Instruction aimed at the AI** (`CMP-2026-105103`). The complaint contains a hidden instruction to the AI: the draft is withheld and the check is shown as blocked.
-3. Click **Vulnerable customer** (`CMP-2026-101003`). Approve within 20 seconds to see the over-reliance prompt; the case then waits for a senior. Switch **Viewing as** to Senior handler to co-approve.
-4. Click **Cited draft and handover** (`CMP-2026-104712`). Choose **Escalate** and see the handover pack block submission until each missing item is attached or marked not available.
-5. Open **Risk, controls and oversight** for the controls, the measured results and the record of what you just did.
+## Test it
+The full guide is on the in-app **About this prototype** page (source: ). It also opens from **Demo guide** on Cases, and each guided case shows what to look for in a banner.
 
-Direct links: `#case/CMP-2026-104712`, `#governance`, `#about`.
+**Start here (about two minutes):**
+1. : a clean cited draft. Hover a policy reference to read the clause; all 13 checks pass.
+2. : the complaint tells the AI to approve £5,000. Code withholds the draft.
+3. : vulnerable customer. Approve within 20 seconds to see the quick-approval prompt, then switch to Senior handler (name menu, top right) to co-approve.
+4. **Risk, controls and oversight**: the controls, the measured results and the record of what you just did.
+
+**By area:** uncited statement  · masking  · redress over £1,000 , over £250 , no basis  · handover to a specialist  (Escalate) · eight-week letter  · payment services holding response  · summary resolution .
+
+Direct links: , , .
 
 ## What it does
 Handlers lose time searching case notes and policy, and specialists receive incomplete handovers. The workbench masks personal data, classifies the complaint, retrieves the relevant policy clauses, drafts a cited response and handover pack, and checks every output in code. A named person approves, amends or escalates every case, with a reason; nothing is ever sent to a customer.
