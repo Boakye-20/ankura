@@ -1,12 +1,12 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Role, Session, useSession } from "@/lib/audit";
 import { filterRows, rowStats, sortRows, toRows, type CaseSortKey, type RowFilters } from "@/lib/case-helpers";
 import type { WorkbenchData } from "@/lib/stored-types";
 import { CaseDetail } from "./CaseDetail";
 import { CaseFilters, viewLabel, type ViewKey } from "./CaseFilters";
 import { CaseTable } from "./CaseTable";
-import { GUIDE_GROUPS, guideFor } from "./guide";
+import { GUIDE_GROUPS, guideFor, QUICK_ROUTE } from "./guide";
 import { PageBand, StatTile } from "./ui";
 
 type Props = {
@@ -74,6 +74,7 @@ export function QueueView({ data, role, session, act, selected, onSelect, notice
       </details>
     </>} />
     <div className="page wide">
+      <StartStrip onOpen={onSelect} />
       <div className="stats">
         <StatTile label="Cases" value={stats.total} active={is({ view: "all" })} onClick={() => setFilters({ view: "all" })} />
         <StatTile label={viewLabel("mine", role)} value={stats.mine} tone={stats.mine ? "info" : ""} active={is({ view: "mine" })} onClick={() => setFilters({ view: "mine" })} />
@@ -95,5 +96,37 @@ export function QueueView({ data, role, session, act, selected, onSelect, notice
         caption={sortKey === "deadline" && dir === "asc" ? "Closest to deadline first" : undefined} />
     </div>
     </>
+  );
+}
+
+const STRIP_KEY = "meadowlane.startStrip.hidden";
+
+/** First thing an assessor sees on Cases: the two-minute route. Closing it is remembered in this browser only. */
+function StartStrip({ onOpen }: { onOpen: (ref: string) => void }) {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    try { setShown(window.localStorage.getItem(STRIP_KEY) !== "1"); } catch { setShown(true); }
+  }, []);
+  if (!shown) return null;
+  const hide = () => {
+    setShown(false);
+    try { window.localStorage.setItem(STRIP_KEY, "1"); } catch { /* storage blocked: hide for this visit only */ }
+  };
+  return (
+    <section className="start-strip" aria-label="Start here">
+      <div>
+        <b>New here? Start with the two-minute test route.</b>
+        <span className="note"> Each case opens with a note on what to look for.</span>
+      </div>
+      <div className="btnrow">
+        {QUICK_ROUTE.map((ref, i) => (
+          <button key={ref} type="button" className="btn small primary" onClick={() => onOpen(ref)}>
+            {i + 1}. {guideFor(ref)[0]?.title}
+          </button>
+        ))}
+        <a className="btn small" href="#about">Full test guide</a>
+        <button type="button" className="linkish" onClick={hide}>Hide</button>
+      </div>
+    </section>
   );
 }

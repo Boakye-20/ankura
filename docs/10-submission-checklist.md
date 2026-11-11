@@ -31,10 +31,10 @@ Suggested body:
 >
 > Please find my completed practical build task for Scenario 1, Banking complaint handling.
 >
-> Working prototype (hosted): https://ankura-five.vercel.app
+> Working prototype (hosted): https://ankura-five.vercel.app/#about
 > Supporting deck: attached as a PDF
 >
-> The prototype needs no login or account. The About page inside it has a short test route that takes about a minute, and the Model assurance page shows the test results. All data is synthetic, and the prototype runs on saved outputs from real model runs.
+> The link opens on the About page, which has a two-minute test route and, for each control, the case that shows it best. No login or account is needed. The Risk, controls and oversight page shows the test results. All data is synthetic, and the prototype runs on saved outputs from real model runs.
 >
 > Thank you for the opportunity. I enjoyed working on it and look forward to hearing from you.
 >
