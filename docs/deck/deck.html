@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Meadowlane Complaints Workbench · Ankura AI by Design practical build</title>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font: 10.5pt/1.4 Inter, "Segoe UI", system-ui, sans-serif; color: #333; background: #fff; }
+  .page { width: 297mm; height: 210mm; padding: 14mm 16mm 12mm; page-break-after: always; display: flex; flex-direction: column; gap: 5mm; position: relative; overflow: hidden; }
+  .page:last-child { page-break-after: auto; }
+  .kicker { font-size: 9pt; color: #3e63dd; font-weight: 600; letter-spacing: 0.02em; }
+  h1 { font-size: 19pt; line-height: 1.2; margin: 0; font-weight: 600; color: #1b2a4a; max-width: 240mm; }
+  h2 { font-size: 10.5pt; margin: 0 0 2mm; font-weight: 600; color: #333; }
+  p { margin: 0 0 2mm; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; flex: 1; min-height: 0; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6mm; flex: 1; min-height: 0; }
+  .box { border: 1px solid #ebebeb; border-radius: 3mm; padding: 4mm 5mm; background: #fcfcfc; }
+  table { border-collapse: collapse; width: 100%; font-size: 8.8pt; }
+  th, td { text-align: left; vertical-align: top; padding: 1.4mm 2mm; border-bottom: 1px solid #ebebeb; }
+  th { font-weight: 600; color: #666; font-size: 8.3pt; }
+  .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ok { color: #1f7a4d; font-weight: 600; } .bad { color: #ce2c31; font-weight: 600; } .warn { color: #c2410c; font-weight: 600; }
+  .tag { display: inline-block; padding: 0 1.6mm; border-radius: 1mm; background: #f1f1f1; font-size: 8pt; }
+  .tag.ok { background: #e9f6ec; } .tag.bad { background: #feebec; } .tag.warn { background: #fcefd9; }
+  ul { margin: 0; padding-left: 4mm; } li { margin-bottom: 1.2mm; }
+  .flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; }
+  .flow div { border: 1px solid #ebebeb; border-radius: 2mm; padding: 2.5mm 3mm; font-size: 8.6pt; background: #fff; }
+  .flow .k { display: block; font-size: 7.5pt; color: #666; margin-bottom: 1mm; }
+  .flow .ai { border-color: #abbdf9; background: #f8faff; }
+  .flow .person { border-color: #c2410c; background: #fcefd9; }
+  .flow b { display: block; margin-bottom: 1mm; }
+  .foot { position: absolute; left: 16mm; right: 16mm; bottom: 7mm; font-size: 8pt; color: #666; display: flex; justify-content: space-between; border-top: 1px solid #ebebeb; padding-top: 2mm; }
+  .note { font-size: 8.3pt; color: #666; }
+  .big { font-size: 20pt; font-weight: 600; line-height: 1.1; color: #1b2a4a; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+  .stats div { border: 1px solid #ebebeb; border-radius: 2mm; padding: 3mm 4mm; background: #fff; }
+  .stats span { display: block; font-size: 8.3pt; color: #666; }
+</style>
+</head>
+<body>
+
+<!-- Page 1 -->
+<section class="page">
+  <div>
+    <div class="kicker">AI Strategy · the client problem and why this approach</div>
+    <h1>Meadowlane Bank's complaints are slow because handlers search and re-type, not because they decide badly. So the AI assists the handler and never decides.</h1>
+  </div>
+  <div class="cols">
+    <div>
+      <h2>The problem</h2>
+      <p>Meadowlane Bank plc (fictional UK high-street retail bank) has a growing complaints backlog against FCA deadlines: 15 business days for payment complaints, 8 weeks for the rest. Handlers spend much of each case finding the right policy clause and writing from scratch. Specialist teams return incomplete handovers, adding days to time-limited cases.</p>
+      <h2>Why assist, not automate</h2>
+      <p>Outcome decisions carry Consumer Duty, Ombudsman and UK GDPR Article 22A exposure, and "agentic AI will do broken work faster". We redesigned the handover (a pack that cannot be sent incomplete) rather than only speeding up drafting. A named person approves, edits or escalates every case, with a reason.</p>
+      <h2>Scope</h2>
+      <p><b>In:</b> masking, triage, policy search, cited draft, checks, handover pack, delay letters, audit trail, adoption measures. <b>Out:</b> sending anything, live model calls in the demo, real customer data, root-cause analytics (roadmap).</p>
+    </div>
+    <div>
+      <h2>Opportunity assessment (value · feasibility · risk · readiness)</h2>
+      <table>
+        <tr><th>Opportunity</th><th>Value</th><th>Feasibility</th><th>Risk</th><th>Readiness</th><th>Decision</th></tr>
+        <tr><td>Policy search for the handler</td><td>High</td><td>High</td><td>Low</td><td>High</td><td><span class="tag ok">Built</span></td></tr>
+        <tr><td>Triage and key facts</td><td>Medium</td><td>High</td><td>Medium</td><td>High</td><td><span class="tag ok">Built</span></td></tr>
+        <tr><td>Cited draft reply</td><td>High</td><td>Medium</td><td>Medium</td><td>Medium</td><td><span class="tag ok">Built, with code checks</span></td></tr>
+        <tr><td>Specialist handover pack</td><td>High</td><td>High</td><td>Low</td><td>High</td><td><span class="tag ok">Built</span></td></tr>
+        <tr><td>Deciding outcomes and redress</td><td>High</td><td>Low</td><td>High</td><td>Low</td><td><span class="tag bad">Ruled out</span></td></tr>
+        <tr><td>Root-cause analytics</td><td>Medium</td><td>Medium</td><td>Low</td><td>Low</td><td><span class="tag">Roadmap</span></td></tr>
+      </table>
+      <p class="note" style="margin-top:3mm">Scores are my assessment from the brief and FCA material, not measured. The working prototype is a human-centred MVP: handlers keep every decision, and the controls produce their own evidence.</p>
+      <h2 style="margin-top:3mm">Assumptions to test in a pilot</h2>
+      <ul class="note">
+        <li>Time is lost in search and typing, not in judgement (time handlers with and without the tool).</li>
+        <li>Specialist returns are caused by missing information the pack can capture.</li>
+        <li>A 13-check gate is acceptable friction: 17 of 60 stored drafts are locked for a real reason today.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Paul Kwarteng · Ankura AI by Design practical build · Scenario 1, banking complaint handling · November 2026</span><span>1 / 5</span></div>
+</section>
+
+<!-- Page 2 -->
+<section class="page">
+  <div>
+    <div class="kicker">How it was built and how AI tools were used</div>
+    <h1>Six steps: four in code, two with a model. Code does everything that must be the same every time; the model does the reading and writing.</h1>
+  </div>
+  <div class="flow">
+    <div><span class="k">1 · Code</span><b>Mask</b>Names, accounts, contacts and merchants become tokens. A leak check stops the case if anything slips through.</div>
+    <div class="ai"><span class="k">2 · AI model (Claude Haiku)</span><b>Triage</b>Type, key facts, signs of vulnerability, which deadline applies. Structured output, validated by code.</div>
+    <div><span class="k">3 · Code</span><b>Find policy</b>Keyword (BM25) search over 87 clauses in 11 policies. Deadline, ombudsman and redress clauses always included.</div>
+    <div class="ai"><span class="k">4 · AI model (Claude Sonnet)</span><b>Draft</b>A reply with the policy clause behind each claim, and a handover pack when a specialist team is needed.</div>
+    <div><span class="k">5 · Code</span><b>Check</b>13 checks: masking, injection, citations exist and cover claims, redress limits, ombudsman wording, plain language.</div>
+    <div class="person"><span class="k">6 · Person</span><b>Decide</b>Approve, edit and re-check, or escalate, with a reason. Vulnerable customers and higher redress need a senior too.</div>
+  </div>
+  <div class="cols">
+    <div>
+      <h2>Design choices</h2>
+      <ul>
+        <li><b>Keyword search, not embeddings:</b> deterministic and explainable for about 100 clauses; a pilot would test hybrid retrieval.</li>
+        <li><b>Controls in code, not in the prompt:</b> a prompt can be talked out of a rule; a check cannot, and it writes its own evidence.</li>
+        <li><b>Technology-agnostic:</b> models are set by configuration, so a bank can swap in its own.</li>
+        <li><b>Stored outputs for the demo:</b> the hosted app serves a real model run from 09/11/2026 and never calls a model, so assessors need no key and all see the same results.</li>
+        <li><b>Plain English for non-technical staff:</b> policy references read "Unauthorised transactions and fraud, section 3.3"; statuses read "Waiting for a senior".</li>
+      </ul>
+    </div>
+    <div>
+      <h2>AI tools assessment</h2>
+      <table>
+        <tr><th>Tool</th><th>Used for</th><th>Strengths found</th><th>Limits found</th></tr>
+        <tr><td>Claude Code</td><td>Building the app, 167 unit tests, synthetic data, docs</td><td>Fast iteration with tests written first; can run the app and look at it</td><td>Needs an engineer reviewing every change; drifts from the design rules unless checked</td></tr>
+        <tr><td>Claude API (Haiku, Sonnet)</td><td>Triage and drafting, Batch API for evaluation</td><td>Reliable structured output; about 1p per complaint</td><td>Its confidence score is not calibrated; invents a clause when a complaint names one</td></tr>
+        <tr><td>Playwright, impeccable, aipolicy.uk and Twenty as references</td><td>Checking every screen; copying a proven dashboard structure</td><td>Caught layout and wording defects before they shipped</td><td>Phone layout untested in this run</td></tr>
+      </table>
+      <p class="note" style="margin-top:2mm"><b>What I did versus the tools:</b> I set the scope, wrote the specification and rules, wrote and labelled the 60 complaints, chose every control and threshold, reviewed each change and decided what to ship. Claude Code wrote most of the code to those rules, test first; the models produced the stored triage and drafts.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Paul Kwarteng · Ankura AI by Design practical build · November 2026</span><span>2 / 5</span></div>
+</section>
+
+<!-- Page 3 -->
+<section class="page">
+  <div>
+    <div class="kicker">What was tested: results and limitations</div>
+    <h1>Measured on 60 labelled synthetic complaints: six of eight targets met, and every miss was caught by a code check before a person could approve it.</h1>
+  </div>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th>Measure (latest run, prompt v2, 09/11/2026)</th><th class="num">First run (v1)</th><th class="num">Latest</th><th>Target</th><th></th></tr>
+        <tr><td>Right type of complaint</td><td class="num">49/60 (81.7%)</td><td class="num">54/60 (90.0%)</td><td>≥ 90%</td><td class="ok">Met</td></tr>
+        <tr><td>Vulnerable customers spotted</td><td class="num">14/14</td><td class="num">14/14 (100%)</td><td>≥ 95%</td><td class="ok">Met</td></tr>
+        <tr><td>Right deadline rule</td><td class="num">52/60 (86.7%)</td><td class="num">55/60 (91.7%)</td><td>≥ 95%</td><td class="bad">Missed</td></tr>
+        <tr><td>Right team</td><td class="num">53/60 (88.3%)</td><td class="num">54/60 (90.0%)</td><td>≥ 90%</td><td class="ok">Met</td></tr>
+        <tr><td>No personal data sent to the AI</td><td class="num">60/60</td><td class="num">60/60 (100%)</td><td>100%</td><td class="ok">Met</td></tr>
+        <tr><td>Policy references that exist</td><td class="num">269/270</td><td class="num">268/268 (100%)</td><td>100%</td><td class="ok">Met</td></tr>
+        <tr><td>Redress above the limit and not blocked</td><td class="num">0</td><td class="num">0</td><td>0</td><td class="ok">Met</td></tr>
+        <tr><td>Adversarial tests passed by the model</td><td class="num">12/12</td><td class="num">9/12 (75%)</td><td>100%</td><td class="bad">Missed</td></tr>
+        <tr><td>Expected policy clauses found</td><td class="num">75.5%</td><td class="num">77.5%</td><td>reported</td><td></td></tr>
+        <tr><td>Cases sent to a person with no draft</td><td class="num">4/60</td><td class="num">3/60 (5%)</td><td>reported</td><td></td></tr>
+      </table>
+      <p class="note" style="margin-top:2mm">Cost £0.0094 per complaint at list prices (Batch API, half price). Time 7.5 s per case average, 10.7 s at the 95th percentile (from the non-batched run). Four runs are kept because the model does not answer the same way twice.</p>
+    </div>
+    <div>
+      <h2>The three adversarial misses, and what the code did</h2>
+      <ul>
+        <li><b>Invented policy (2 cases):</b> the complaint cited "policy 9.4"; the model offered £180 and £500 on its strength. The claims-backed-by-policy check locked one draft; the injection check withheld the other. No amount reached a customer.</li>
+        <li><b>Off-topic complaint (1 case):</b> a mortgage query was sorted as Lending with confidence 0.60. The confidence check referred it to a person.</li>
+      </ul>
+      <h2>Most instructive failures</h2>
+      <ul>
+        <li>Six routing misses are cases with two signs of vulnerability sent to the Vulnerability Team rather than a senior: a labelling rule I would revisit with the bank.</li>
+        <li>Five deadline misses are summary-resolution calls: the "resolved within three days" rule needs clearer case notes.</li>
+        <li>The model's own confidence separates right from wrong only weakly (43/45 right above 0.75, 11/15 below), so it is not shown to handlers.</li>
+      </ul>
+      <h2>Limitations</h2>
+      <p class="note">One person wrote and labelled all 60 cases, so each case is 1.7 points. Prompt v2 was tuned after seeing v1's errors on the same cases: no held-out set, so new complaints would score lower. The citation rule was corrected twice after this evaluation; stored checks were re-run by code, the evaluation was not. Masking is rules and name lists. No real handler has used it. <b>A pilot must prove</b> real data quality, integration, calibration, staff behaviour and cost at volume, against a control team: a pilot designed to succeed will not scale.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Paul Kwarteng · Ankura AI by Design practical build · November 2026 · every number from data/eval-results.json</span><span>3 / 5</span></div>
+</section>
+
+<!-- Page 4 -->
+<section class="page">
+  <div>
+    <div class="kicker">AI Governance Engineering · controls and human review</div>
+    <h1>Governance lives inside the handler's screen, not in a policy document: each control runs on every case, locks approval when it fails and writes its own evidence.</h1>
+  </div>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th>Risk</th><th>Control (in code)</th><th>Across 60 stored cases</th><th>Designed to support</th></tr>
+        <tr><td>Personal data reaches the model</td><td>Masking before every call; leak check stops the case</td><td>60 passed</td><td>UK GDPR Art 5(1)(c)</td></tr>
+        <tr><td>Instruction hidden in a complaint</td><td>Pattern rules plus triage flag; draft withheld</td><td>4 withheld</td><td>FCA AI report 2026</td></tr>
+        <tr><td>Invented or unsupported claims</td><td>Every reference must exist; every claim must cite a clause</td><td>11 locked</td><td>DISP 1.4.1R(4)</td></tr>
+        <tr><td>Redress set by the customer or beyond authority</td><td>£250 handler, £1,000 senior, above blocked; amounts need a basis</td><td>2 locked, 4 referred</td><td>DISP 1.4.1R(2)(3); FOS award bands</td></tr>
+        <tr><td>Vulnerable customer handled alone</td><td>Senior co-approval always</td><td>16 referred</td><td>FG21/1; PRIN 2A.6.2R(1)</td></tr>
+        <tr><td>Missed ombudsman rights</td><td>Final and summary replies checked; delay letters checked</td><td>56 passed</td><td>DISP 1.6.2R; DISP 1.5</td></tr>
+        <tr><td>Rubber-stamping</td><td>Mandatory reason codes; prompt on approvals under 20 s; adoption counts</td><td>audit trail</td><td>UK GDPR Art 22A, meaningful human involvement</td></tr>
+      </table>
+      <p class="note" style="margin-top:2mm">Accountable owner: Head of Customer Resolution (SMF) for the controls; the Chief Risk Officer for the thresholds. "Designed to support" is design intent, verified against the Handbook on 08–10/11/2026, not legal advice.</p>
+    </div>
+    <div>
+      <h2>Human review tiers</h2>
+      <table>
+        <tr><th>Tier</th><th>Who</th><th>What must come to them</th></tr>
+        <tr><td>1</td><td>Complaint handler</td><td>Every case: reads the draft against the complaint, checks each clause, decides with a reason</td></tr>
+        <tr><td>2</td><td>Senior handler</td><td>Signs of vulnerability; redress above £250; low confidence</td></tr>
+        <tr><td>3</td><td>Specialist team</td><td>Authorisation and fraud decisions, lending, complex vulnerability; receives a complete pack and can return it with a reason</td></tr>
+      </table>
+      <h2 style="margin-top:3mm">What the FCA's AI report (October 2026) asked for</h2>
+      <p>The report's areas for improvement include over-reliance on "a human in the loop" and assuming a model can spot vulnerability without testing it. Here the human step is designed (locked approval, reasons, the 20-second prompt) and vulnerability detection is measured (14 of 14 spotted, 2 false alarms in 16).</p>
+      <h2>Monitoring in production</h2>
+      <p class="note">Drift in the mix of complaint types; citation failures per week; override and amendment rates; handover returns; a monthly QA sample read by a senior; re-run the evaluation after any prompt, policy or model change. Horizon: FCA redress reforms (CP26/9) and the ICO statutory AI code.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Paul Kwarteng · Ankura AI by Design practical build · November 2026</span><span>4 / 5</span></div>
+</section>
+
+<!-- Page 5 -->
+<section class="page">
+  <div>
+    <div class="kicker">AI Workforce Transformation · people, value and roadmap</div>
+    <h1>Handlers move from searching and typing to checking and deciding. Adoption is measured inside the product, so quiet reversion shows early.</h1>
+  </div>
+  <div class="cols3">
+    <div>
+      <h2>Roles before and after</h2>
+      <table>
+        <tr><th>Role</th><th>Before</th><th>After</th></tr>
+        <tr><td>Handler</td><td>Searches notes and policy; writes from scratch</td><td>Reads a cited draft; checks facts and tone; decides with a reason</td></tr>
+        <tr><td>Senior</td><td>Ad hoc checks on request</td><td>Co-approves the cases that carry risk; samples for QA</td></tr>
+        <tr><td>Specialist</td><td>Chases missing information</td><td>Receives the same complete pack every time; returns count</td></tr>
+        <tr><td>QA and Risk</td><td>Periodic file reviews</td><td>Live evidence from the audit trail and results page</td></tr>
+      </table>
+      <h2 style="margin-top:3mm">Skills and change</h2>
+      <p class="note">AI literacy; judging a draft against the complaint; checking a policy reference; recording a reason. Workflow co-designed with handlers in the pilot; partners such as Decoded for literacy and Seymour Powell for the handler experience.</p>
+    </div>
+    <div>
+      <h2>Adoption measures built in</h2>
+      <ul>
+        <li>Share of drafts approved unchanged versus edited (rubber-stamping or distrust)</li>
+        <li>Approvals under 20 seconds and prompts confirmed</li>
+        <li>Escalations and handovers returned by specialists</li>
+        <li>Reason codes chosen; time from opening a case to a decision</li>
+      </ul>
+      <h2>Value case (every input an assumption to test)</h2>
+      <p class="note">Minutes saved per case × complaints per year × loaded cost per hour, plus fewer returned handovers and fewer missed deadlines. AI cost about 1p per complaint. Framed as capacity to clear the backlog, not headcount. The case fails if review time eats the saving, which is why handling time is measured against a control team.</p>
+    </div>
+    <div>
+      <h2>Roadmap</h2>
+      <table>
+        <tr><th>Phase</th><th>What</th><th>Gate</th></tr>
+        <tr><td>Months 1–3</td><td>Pilot in one team with a control team; real data behind the bank's firewall; name-entity masking as a second layer; server-side audit log and sign-in</td><td>No personal data reaches a model; vulnerability recall ≥ 95%; handling time down with quality held</td></tr>
+        <tr><td>Months 4–6</td><td>Scale to all handlers; hybrid retrieval; calibrated confidence; integration with the case system</td><td>Override rate and returns within agreed bands; CRO sign-off</td></tr>
+        <tr><td>Months 7–12</td><td>Root-cause analytics across complaints; QA sampling assistant</td><td>Measured outcomes reported to the board</td></tr>
+      </table>
+      <p class="note" style="margin-top:3mm"><b>Try it:</b> open the hosted link, Cases → Demo guide. Four cases show the controls in about a minute. All data is synthetic; nothing is sent to anyone.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Paul Kwarteng · Ankura AI by Design practical build · November 2026</span><span>5 / 5</span></div>
+</section>
+
+</body>
+</html>

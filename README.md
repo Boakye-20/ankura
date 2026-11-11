@@ -9,11 +9,13 @@ An AI-assisted workbench for complaint handlers at **Meadowlane Bank plc, a fict
 **Hosted demo:** [hosted link] · **Supporting deck:** attached to submission
 
 ## Test it in 60 seconds
-1. Open the hosted link. It shows stored outputs from a real model run, so no login or key is needed.
-2. In **My work queue**, open `CMP-2026-105103`. The complaint contains a hidden instruction to the AI. See the draft withheld and the failed check.
-3. Open `CMP-2026-104288`. The customer is bereaved. Approve: it goes to senior co-approval (switch role to Senior to co-approve).
-4. Open `CMP-2026-104712`. Choose **Escalate** and see the handover pack block submission until missing information is resolved.
-5. Open **Model assurance** for the measured test results, and **Audit trail** for every AI step and human decision.
+1. Open the hosted link in a private window. It shows stored outputs from a real model run, so no login or key is needed.
+2. On **Cases**, open the **Demo guide** strip and click **Instruction aimed at the AI** (`CMP-2026-105103`). The complaint contains a hidden instruction to the AI: the draft is withheld and the check is shown as blocked.
+3. Click **Vulnerable customer** (`CMP-2026-101003`). Approve within 20 seconds to see the over-reliance prompt; the case then waits for a senior. Switch **Viewing as** to Senior handler to co-approve.
+4. Click **Cited draft and handover** (`CMP-2026-104712`). Choose **Escalate** and see the handover pack block submission until each missing item is attached or marked not available.
+5. Open **Risk, controls and oversight** for the controls, the measured results and the record of what you just did.
+
+Direct links: `#case/CMP-2026-104712`, `#governance`, `#about`.
 
 ## What it does
 Handlers lose time searching case notes and policy, and specialists receive incomplete handovers. The workbench masks personal data, classifies the complaint, retrieves the relevant policy clauses, drafts a cited response and handover pack, and checks every output in code. A named person approves, amends or escalates every case, with a reason; nothing is ever sent to a customer.
